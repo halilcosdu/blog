@@ -70,19 +70,19 @@ class PostsList extends Component
     public function getQueryString(): array
     {
         $query = [];
-        
+
         if ($this->search) {
             $query['search'] = $this->search;
         }
-        
-        if (!empty($this->categoryIds)) {
+
+        if (! empty($this->categoryIds)) {
             $query['categories'] = $this->categoryIds;
         }
-        
+
         if ($this->sortBy !== 'latest') {
             $query['sort'] = $this->sortBy;
         }
-        
+
         return $query;
     }
 
@@ -118,14 +118,14 @@ class PostsList extends Component
         // Apply search filter
         if ($this->search) {
             $query->where(function ($q) {
-                $q->where('title', 'ILIKE', '%'.$this->search.'%')
-                    ->orWhere('excerpt', 'ILIKE', '%'.$this->search.'%')
-                    ->orWhere('content', 'ILIKE', '%'.$this->search.'%');
+                $q->where('title', 'like', '%'.$this->search.'%')
+                    ->orWhere('excerpt', 'like', '%'.$this->search.'%')
+                    ->orWhere('content', 'like', '%'.$this->search.'%');
             });
         }
 
         // Apply category filter
-        if (!empty($this->categoryIds)) {
+        if (! empty($this->categoryIds)) {
             $query->whereIn('category_id', $this->categoryIds);
         }
 
@@ -224,7 +224,7 @@ class PostsList extends Component
     {
         $mapping = [
             'text-red-700 dark:text-red-300' => 'bg-red-600',
-            'text-purple-700 dark:text-purple-300' => 'bg-purple-600', 
+            'text-purple-700 dark:text-purple-300' => 'bg-purple-600',
             'text-green-700 dark:text-green-300' => 'bg-green-600',
             'text-yellow-700 dark:text-yellow-300' => 'bg-yellow-600',
             'text-blue-700 dark:text-blue-300' => 'bg-blue-600',

@@ -1,5 +1,5 @@
 <div class="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
-    
+
     <x-shared.header current-page="home" />
 
     <x-shared.announcements />
@@ -140,7 +140,7 @@
                                 $seriesFallback = array_merge($seriesFallback, $seriesFallback);
                             @endphp
                             @foreach($seriesFallback as $it)
-                                <a href="/series/{{ $it['slug'] }}" class="group w-[320px] shrink-0 snap-start">
+                                <a href="/series/{{ $it['slug'] }}" class="group w-[320px] shrink-0 snap-start cursor-pointer">
                                     <div class="relative aspect-video overflow-hidden rounded-2xl border border-slate-200/70 dark:border-slate-700/70 bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm">
                                         <img src="{{ $it['cover'] }}" alt="{{ $it['title'] }}" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105">
                                         <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent"></div>
@@ -749,7 +749,7 @@
             if (!btn || !nav) return;
             const iconOpen = btn.querySelector('[data-mobile-icon="open"]');
             const iconClose = btn.querySelector('[data-mobile-icon="close"]');
-            
+
             let open = false;
             function setState(isOpen) {
                 open = isOpen;
@@ -758,7 +758,7 @@
                 iconClose.classList.toggle('hidden', !open);
                 btn.setAttribute('aria-expanded', open);
             }
-            
+
             btn.addEventListener('click', () => setState(!open));
             document.addEventListener('click', (e) => {
                 const t = e.target;

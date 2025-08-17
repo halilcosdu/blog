@@ -3,6 +3,7 @@
 namespace App\Livewire\Blog;
 
 use App\Models\Post;
+use App\Repositories\PostRepository;
 use Illuminate\Support\Str;
 use Livewire\Component;
 
@@ -20,6 +21,11 @@ class PostShow extends Component
 
         // Increment views count
         $this->post->increment('views_count');
+    }
+
+    private function getTopLessons(): \Illuminate\Database\Eloquent\Collection
+    {
+        return app(PostRepository::class)->getTopByViews(12);
     }
 
     public function render()
@@ -61,6 +67,7 @@ class PostShow extends Component
 
         return view('livewire.blog.post-show', [
             'relatedPosts' => $relatedPosts,
+            'topLessons' => $this->getTopLessons(),
         ])
             ->title($this->post->title.' - phpuzem')
             ->layout('components.layouts.app', compact('seoData'));

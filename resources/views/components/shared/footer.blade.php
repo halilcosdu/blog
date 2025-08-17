@@ -45,7 +45,7 @@
                         <a href="/posts/{{ $t->slug }}" class="group rounded-xl border border-slate-800/80 bg-slate-800/40 hover:bg-orange-500/20 hover:border-orange-500/40 transition-colors cursor-pointer">
                             <div class="aspect-video overflow-hidden rounded-t-xl relative">
                                 <img src="{{ $t->featured_image }}" alt="{{ $t->title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-                                
+
                                 <!-- Video Play Overlay -->
                                 <div class="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors">
                                     <!-- Play Button -->
@@ -56,7 +56,7 @@
                                             </svg>
                                         </div>
                                     </div>
-                                    
+
                                     <!-- Video Duration -->
                                     @if($t->reading_time)
                                     <div class="absolute bottom-2 right-2 px-2 py-1 bg-black/80 text-white text-xs font-medium rounded">

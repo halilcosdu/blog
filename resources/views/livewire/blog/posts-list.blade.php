@@ -6,7 +6,7 @@
     <!-- Main Content -->
     <main class="relative">
         <!-- Search and Filters Section -->
-        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-4">
+        <section class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-8 pb-4">
             <!-- Main Filter Card -->
             <div class="bg-white/70 dark:bg-slate-800/70 backdrop-blur-xl rounded-3xl border border-slate-200/60 dark:border-slate-700/60 shadow-xl shadow-slate-200/20 dark:shadow-slate-900/20 p-8">
                 <!-- Filter Header -->
@@ -52,13 +52,13 @@
                     </div>
 
                     <!-- Category Filter -->
-                    <div class="sm:col-span-1 lg:col-span-3">
+                    <div class="sm:col-span-1 lg:col-span-3 relative z-50">
                         <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                             Categories
                         </label>
-                        <div class="relative">
+                        <div class="relative z-50" x-data="{ open: false }" @click.away="open = false">
                             <!-- Dropdown Toggle -->
-                            <button type="button" x-data="{ open: false }" @click="open = !open" @click.away="open = false"
+                            <button type="button" @click="open = !open"
                                     class="block w-full py-3 px-4 pr-10 text-sm border border-slate-200/60 dark:border-slate-600/60 rounded-xl bg-white/50 dark:bg-slate-700/50 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500/50 transition-all text-left cursor-pointer">
                                 <span class="block truncate">
                                     @if(empty($categoryIds))
@@ -72,28 +72,28 @@
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                                     </svg>
                                 </div>
-
-                                <!-- Dropdown Menu -->
-                                <div x-show="open" x-transition
-                                     class="absolute top-full left-0 right-0 mt-1 bg-white/95 dark:bg-slate-800/95 backdrop-blur-sm border border-slate-200/60 dark:border-slate-700/60 rounded-xl shadow-xl z-50 max-h-60 overflow-y-auto">
-                                    <div class="p-2 space-y-1">
-                                        @foreach($categories as $category)
-                                        <label class="flex items-center gap-2 p-2 rounded-lg hover:bg-slate-100/50 dark:hover:bg-slate-700/50 cursor-pointer transition-colors">
-                                            <input type="checkbox"
-                                                   wire:click="toggleCategory({{ $category->id }})"
-                                                   {{ in_array($category->id, $categoryIds) ? 'checked' : '' }}
-                                                   class="w-4 h-4 text-red-600 bg-white dark:bg-slate-700 border-slate-300 dark:border-slate-600 rounded focus:ring-red-500 focus:ring-2 cursor-pointer">
-                                            <span class="text-sm text-slate-700 dark:text-slate-300 flex-1">
-                                                {{ $category->name }}
-                                            </span>
-                                            <span class="text-xs text-slate-500 dark:text-slate-400">
-                                                {{ $category->posts_count }}
-                                            </span>
-                                        </label>
-                                        @endforeach
-                                    </div>
-                                </div>
                             </button>
+
+                            <!-- Dropdown Menu -->
+                            <div x-show="open" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95"
+                                 class="absolute top-full left-0 right-0 mt-1 bg-white/95 dark:bg-slate-800/95 backdrop-blur-sm border border-slate-200/60 dark:border-slate-700/60 rounded-xl shadow-2xl max-h-60 overflow-y-auto z-[999999]">
+                                <div class="p-2 space-y-1">
+                                    @foreach($categories as $category)
+                                    <label class="flex items-center gap-2 p-2 rounded-lg hover:bg-slate-100/50 dark:hover:bg-slate-700/50 cursor-pointer transition-colors">
+                                        <input type="checkbox"
+                                               wire:click="toggleCategory({{ $category->id }})"
+                                               {{ in_array($category->id, $categoryIds) ? 'checked' : '' }}
+                                               class="w-4 h-4 text-red-600 bg-white dark:bg-slate-700 border-slate-300 dark:border-slate-600 rounded focus:ring-red-500 focus:ring-2 cursor-pointer">
+                                        <span class="text-sm text-slate-700 dark:text-slate-300 flex-1">
+                                            {{ $category->name }}
+                                        </span>
+                                        <span class="text-xs text-slate-500 dark:text-slate-400">
+                                            {{ $category->posts_count }}
+                                        </span>
+                                    </label>
+                                    @endforeach
+                                </div>
+                            </div>
                         </div>
                     </div>
 
@@ -104,7 +104,7 @@
                         </label>
                         <div class="relative">
                             <select wire:model.live="sortBy" id="sort"
-                                    class="block w-full py-3 px-4 pr-10 text-sm border border-slate-200/60 dark:border-slate-600/60 rounded-xl bg-white/50 dark:bg-slate-700/50 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500/50 transition-all appearance-none">
+                                    class="block w-full py-3 px-4 pr-10 text-sm border border-slate-200/60 dark:border-slate-600/60 rounded-xl bg-white/50 dark:bg-slate-700/50 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500/50 transition-all appearance-none cursor-pointer">
                                 <option value="latest">Latest First</option>
                                 <option value="popular">Most Popular</option>
                                 <option value="oldest">Oldest First</option>
@@ -128,7 +128,7 @@
                                 @if($search)
                                 <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300">
                                     Search: "{{ $search }}"
-                                    <button wire:click="$set('search', '')" class="ml-1 hover:text-red-900 dark:hover:text-red-100 cursor-pointer">
+                                    <button wire:click="$set('search', '')" class="ml-1 hover:text-red-900 dark:hover:text-red-100">
                                         <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
                                             <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/>
                                         </svg>
@@ -143,7 +143,7 @@
                                 <span class="inline-flex items-center gap-1 px-3 py-1 rounded-full text-xs font-medium {{ $categoryColors['bg'] }} {{ $categoryColors['text'] }} border {{ $categoryColors['border'] }}">
                                     <div class="w-1.5 h-1.5 rounded-full {{ $this->getDotColor($categoryColors['text']) }} opacity-80"></div>
                                     {{ $selectedCategory->name }}
-                                    <button wire:click="toggleCategory({{ $categoryId }})" class="ml-1 hover:opacity-70 transition-opacity cursor-pointer">
+                                    <button wire:click="toggleCategory({{ $categoryId }})" class="ml-1 hover:opacity-70 transition-opacity">
                                         <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
                                             <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/>
                                         </svg>
@@ -155,7 +155,7 @@
                             </div>
                         </div>
                         <button wire:click="clearAllFilters"
-                                class="text-sm text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 transition-colors cursor-pointer">
+                                class="text-sm text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 transition-colors">
                             Clear all
                         </button>
                     </div>
@@ -359,7 +359,7 @@
                     </p>
                     @if($search || !empty($categoryIds))
                     <button wire:click="clearAllFilters"
-                            class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-red-600 to-orange-500 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-red-500/25 transform hover:scale-105 transition-all duration-200 cursor-pointer">
+                            class="inline-flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-red-600 to-orange-500 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-red-500/25 transform hover:scale-105 transition-all duration-200">
                         <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
                         </svg>

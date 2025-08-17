@@ -40,18 +40,4 @@ return [
         ],
     ],
 
-    'status_colors' => [
-        'Coming Soon' => [
-            'classes' => 'status-coming-soon',
-        ],
-        'In Development' => [
-            'classes' => 'status-in-development',
-        ],
-        'Planning' => [
-            'classes' => 'status-planning',
-        ],
-        'Released' => [
-            'classes' => 'status-released',
-        ],
-    ],
 ];

@@ -1,130 +1,89 @@
-<div class="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
-    
+<div class="min-h-screen bg-white dark:bg-gray-900">
+
     <x-shared.header current-page="posts" />
     <x-shared.announcements />
 
     <!-- Main Content -->
-    <main class="relative">
-        <!-- Article Header -->
-        <article class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-            <!-- Breadcrumb -->
-            <nav class="mb-8">
-                <ol class="flex items-center space-x-2 text-sm text-slate-600 dark:text-slate-400">
-                    <li><a href="{{ route('home') }}" class="hover:text-red-600 dark:hover:text-red-400">Home</a></li>
-                    <li><span>/</span></li>
-                    <li><a href="/posts" class="hover:text-red-600 dark:hover:text-red-400">Posts</a></li>
-                    <li><span>/</span></li>
-                    <li><a href="/category/{{ $post->category->slug }}" class="hover:text-red-600 dark:hover:text-red-400">{{ $post->category->name }}</a></li>
-                    <li><span>/</span></li>
-                    <li class="text-slate-500 dark:text-slate-400 truncate">{{ $post->title }}</li>
-                </ol>
-            </nav>
-
-            <!-- Article Header -->
-            <header class="mb-12">
-                <div class="mb-6">
-                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-medium bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">
+    <main class="relative py-16 sm:py-24">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Article -->
+            <article>
+                <!-- Header -->
+                <header class="mb-12 text-center">
+                    <!-- Category -->
+                    <a href="/category/{{ $post->category->slug }}" class="text-base font-semibold text-red-600 dark:text-red-400 uppercase tracking-wider hover:underline">
                         {{ $post->category->name }}
-                    </span>
-                </div>
-                
-                <h1 class="text-3xl md:text-5xl font-bold text-slate-900 dark:text-white mb-6 leading-tight">
-                    {{ $post->title }}
-                </h1>
-                
-                @if($post->excerpt)
-                <p class="text-xl text-slate-600 dark:text-slate-400 mb-8 leading-relaxed">
-                    {{ $post->excerpt }}
-                </p>
-                @endif
+                    </a>
 
-                <!-- Author & Meta -->
-                <div class="flex items-center justify-between py-6 border-y border-slate-200 dark:border-slate-700">
-                    <div class="flex items-center space-x-4">
-                        <div class="w-12 h-12 rounded-full bg-gradient-to-r from-red-600 to-orange-500 flex items-center justify-center text-white font-bold text-lg">
-                            {{ substr($post->user->name, 0, 1) }}
+                    <!-- Title -->
+                    <h1 class="mt-4 text-4xl md:text-6xl font-extrabold text-gray-900 dark:text-white leading-tight tracking-tighter">
+                        {{ $post->title }}
+                    </h1>
+
+                    <!-- Meta -->
+                    <div class="mt-8 flex items-center justify-center space-x-6 text-sm text-gray-500 dark:text-gray-400">
+                        <div class="flex items-center space-x-3">
+                            <div class="w-10 h-10 rounded-full bg-gradient-to-r from-red-500 to-orange-400 flex items-center justify-center text-white font-bold">
+                                {{ substr($post->user->name, 0, 1) }}
+                            </div>
+                            <span class="font-medium text-gray-800 dark:text-gray-200">{{ $post->user->name }}</span>
                         </div>
-                        <div>
-                            <p class="font-semibold text-slate-900 dark:text-white">{{ $post->user->name }}</p>
-                            <p class="text-sm text-slate-600 dark:text-slate-400">{{ $post->published_at->format('F j, Y') }} • {{ $post->reading_time }}</p>
-                        </div>
-                    </div>
-                    
-                    <div class="flex items-center space-x-4 text-sm text-slate-600 dark:text-slate-400">
+                        <span class="text-gray-400 dark:text-gray-600">|</span>
+                        <span>{{ $post->published_at->format('F j, Y') }}</span>
+                        <span class="text-gray-400 dark:text-gray-600">|</span>
+                        <span>{{ $post->reading_time }}</span>
+                        <span class="text-gray-400 dark:text-gray-600">|</span>
                         <span>{{ number_format($post->views_count) }} views</span>
                     </div>
+                </header>
+
+                <!-- Featured Image -->
+                @if($post->featured_image)
+                <figure class="mb-12 rounded-3xl overflow-hidden shadow-2xl">
+                    <img src="{{ $post->featured_image }}" alt="{{ $post->title }}"
+                         class="w-full h-auto object-cover transition-transform duration-300 hover:scale-105">
+                </figure>
+                @endif
+
+                <!-- Article Body -->
+                <div class="prose prose-lg lg:prose-xl prose-gray dark:prose-invert max-w-none mx-auto">
+                    {!! $post->content !!}
                 </div>
-            </header>
 
-            <!-- Featured Image -->
-            @if($post->featured_image)
-            <div class="mb-12">
-                <img src="{{ $post->featured_image }}" alt="{{ $post->title }}" 
-                     class="w-full h-96 object-cover rounded-2xl shadow-lg">
-            </div>
-            @endif
-
-            <!-- Article Content -->
-            <div class="prose prose-lg prose-slate dark:prose-invert max-w-none">
-                {!! $post->content !!}
-            </div>
-
-            <!-- Tags -->
-            @if($post->tags && count($post->tags) > 0)
-            <div class="mt-12 pt-8 border-t border-slate-200 dark:border-slate-700">
-                <h3 class="text-lg font-semibold text-slate-900 dark:text-white mb-4">Tags</h3>
-                <div class="flex flex-wrap gap-2">
-                    @foreach($post->tags as $tag)
-                    <span class="inline-flex items-center px-3 py-1 rounded-full text-sm bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300">
-                        #{{ $tag }}
-                    </span>
-                    @endforeach
+                <!-- Tags -->
+                @if($post->tags && count($post->tags) > 0)
+                <div class="mt-16 pt-8 border-t border-gray-200 dark:border-gray-700">
+                    <div class="flex flex-wrap items-center gap-3">
+                        <h3 class="text-sm font-semibold text-gray-600 dark:text-gray-400 mr-2">Tags:</h3>
+                        @foreach($post->tags as $tag)
+                        <span class="inline-block bg-gray-100 dark:bg-gray-800 text-gray-700 dark:text-gray-300 text-sm font-medium px-4 py-2 rounded-full hover:bg-red-100 dark:hover:bg-red-900/50 hover:text-red-700 dark:hover:text-red-300 transition-colors duration-200 cursor-pointer">
+                            #{{ $tag }}
+                        </span>
+                        @endforeach
+                    </div>
                 </div>
-            </div>
-            @endif
-        </article>
+                @endif
+
+            </article>
+        </div>
 
         <!-- Related Posts -->
         @if($relatedPosts->count() > 0)
-        <section class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 border-t border-slate-200 dark:border-slate-700">
-            <h2 class="text-2xl font-bold text-slate-900 dark:text-white mb-8">Related Posts</h2>
-            <div class="grid md:grid-cols-3 gap-8">
-                @foreach($relatedPosts as $relatedPost)
-                <article class="bg-white/60 dark:bg-slate-800/60 backdrop-blur-xl rounded-2xl border border-slate-200/60 dark:border-slate-700/60 overflow-hidden hover:shadow-lg transition-shadow">
-                    @if($relatedPost->featured_image)
-                    <div class="aspect-video overflow-hidden">
-                        <img src="{{ $relatedPost->featured_image }}" alt="{{ $relatedPost->title }}" 
-                             class="w-full h-full object-cover">
-                    </div>
-                    @endif
-                    <div class="p-6">
-                        <div class="mb-3">
-                            <span class="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">
-                                {{ $relatedPost->category->name }}
-                            </span>
-                        </div>
-                        <h3 class="text-lg font-semibold text-slate-900 dark:text-white mb-2 line-clamp-2">
-                            <a href="/posts/{{ $relatedPost->slug }}" class="hover:text-red-600 dark:hover:text-red-400 transition-colors">
-                                {{ $relatedPost->title }}
-                            </a>
-                        </h3>
-                        @if($relatedPost->excerpt)
-                        <p class="text-slate-600 dark:text-slate-400 text-sm mb-4 line-clamp-2">
-                            {{ $relatedPost->excerpt }}
-                        </p>
-                        @endif
-                        <div class="flex items-center justify-between text-sm text-slate-500 dark:text-slate-400">
-                            <span>{{ $relatedPost->user->name }}</span>
-                            <span>{{ $relatedPost->reading_time }}</span>
-                        </div>
-                    </div>
-                </article>
-                @endforeach
+        <section class="mt-24 pt-16 border-t border-gray-200 dark:border-gray-700">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <h2 class="text-3xl font-bold text-center text-gray-900 dark:text-white mb-12">
+                    Related Posts
+                </h2>
+                <div class="grid md:grid-cols-3 gap-x-8 gap-y-12">
+                    @foreach($relatedPosts as $relatedPost)
+                    <x-blog.post-card :post="$relatedPost" />
+                    @endforeach
+                </div>
             </div>
         </section>
         @endif
     </main>
 
-    <x-shared.footer />
+    <x-shared.footer :top-lessons="$topLessons" />
     <x-shared.mobile-nav-script />
 </div>

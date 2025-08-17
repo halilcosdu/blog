@@ -54,12 +54,88 @@
     @vite(['resources/css/app.css', 'resources/js/app.js'])
     
     @livewireStyles
+    
+    <!-- Syntax Highlighting -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+    <style>
+        .code-block {
+            position: relative;
+        }
+        .copy-button {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            padding: 0.25rem 0.5rem;
+            background-color: #4a5568;
+            color: white;
+            border: none;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            font-size: 0.8rem;
+            opacity: 0;
+            transition: opacity 0.2s;
+        }
+        .code-block:hover .copy-button {
+            opacity: 1;
+        }
+        .copy-button:hover {
+            background-color: #2d3748;
+        }
+    </style>
 </head>
 <body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
     {{ $slot }}
     
         @livewireScripts
         @stack('scripts')
+
+        <!-- Syntax Highlighting & Copy-to-Clipboard -->
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+        <script>
+            document.addEventListener('livewire:navigated', () => {
+                // Initialize highlighting on all code blocks
+                hljs.highlightAll();
+
+                // Add copy buttons to all pre > code blocks
+                document.querySelectorAll('pre code').forEach(function(block) {
+                    // Check if a button has already been added
+                    if (block.parentNode.querySelector('.copy-button')) {
+                        return;
+                    }
+
+                    // Create a wrapper div
+                    let wrapper = document.createElement('div');
+                    wrapper.className = 'code-block';
+
+                    // Wrap the pre element
+                    block.parentNode.parentNode.replaceChild(wrapper, block.parentNode);
+                    wrapper.appendChild(block.parentNode);
+
+                    // Create the copy button
+                    let button = document.createElement('button');
+                    button.className = 'copy-button';
+                    button.textContent = 'Copy';
+
+                    // Append the button to the wrapper
+                    wrapper.appendChild(button);
+
+                    // Add click event listener
+                    button.addEventListener('click', function() {
+                        let codeText = block.innerText;
+                        navigator.clipboard.writeText(codeText).then(function() {
+                            button.textContent = 'Copied!';
+                            setTimeout(function() {
+                                button.textContent = 'Copy';
+                            }, 2000); // Reset text after 2 seconds
+                        }, function(err) {
+                            console.error('Could not copy text: ', err);
+                            button.textContent = 'Error';
+                        });
+                    });
+                });
+            });
+        </script>
+
         <!-- Global theme toggle handler -->
         <script>
             (function () {

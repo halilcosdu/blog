@@ -28,6 +28,16 @@ class CompactNewsletter extends BaseComponent
     {
         // Check if user is already subscribed (you can implement this logic)
         $this->isSubscribed = false;
+
+        if (! empty($this->search) || ! empty($this->selectedCategory)) {
+            $this->showFilters = true;
+        }
+    }
+
+    public function updatedSearch(string $value): void
+    {
+        // This space is intentionally left blank.
+        // The presence of this method triggers a re-render when the 'search' property is updated.
     }
 
     public function toggleFilters(): void
@@ -58,52 +68,48 @@ class CompactNewsletter extends BaseComponent
 
     public function getNewsletterPosts()
     {
-        return $this->cacheShort($this->getCacheKey('newsletter_posts'), function () {
-            try {
-                $query = Post::query()
-                    ->published()
-                    ->with(['user:id,name', 'category:id,name,color'])
-                    ->latest('published_at')
-                    ->limit(6);
+        try {
+            $query = Post::query()
+                ->published()
+                ->with(['user:id,name', 'category:id,name,color'])
+                ->latest('published_at')
+                ->limit(6);
 
-                if ($this->search) {
-                    $query->where(function ($q) {
-                        $q->where('title', 'like', '%'.$this->search.'%')
-                            ->orWhere('excerpt', 'like', '%'.$this->search.'%');
-                    });
-                }
-
-                if ($this->selectedCategory) {
-                    $query->whereHas('category', function ($q) {
-                        $q->where('slug', $this->selectedCategory);
-                    });
-                }
-
-                return $query->get();
-            } catch (\Exception $e) {
-                // Return empty collection if database is not available
-                return collect();
+            if ($this->search) {
+                $query->where(function ($q) {
+                    $q->whereLike('title', '%'.$this->search.'%')
+                        ->orwhereLike('excerpt', '%'.$this->search.'%');
+                });
             }
-        });
+
+            if ($this->selectedCategory) {
+                $query->whereHas('category', function ($q) {
+                    $q->where('slug', $this->selectedCategory);
+                });
+            }
+
+            return $query->get();
+        } catch (\Exception $e) {
+            // Return empty collection if database is not available
+            return collect();
+        }
     }
 
     public function getCategories()
     {
-        return $this->cacheMedium($this->getCacheKey('newsletter_categories'), function () {
-            try {
-                return Category::query()
-                    ->where('is_active', true)
-                    ->withCount(['posts as posts_count' => function ($query) {
-                        $query->published();
-                    }])
-                    ->having('posts_count', '>', 0)
-                    ->orderBy('name')
-                    ->get();
-            } catch (\Exception $e) {
-                // Return empty collection if database is not available
-                return collect();
-            }
-        });
+        try {
+            return Category::query()
+                ->where('is_active', true)
+                ->withCount(['posts as posts_count' => function ($query) {
+                    $query->published();
+                }])
+                ->having('posts_count', '>', 0)
+                ->orderBy('name')
+                ->get();
+        } catch (\Exception $e) {
+            // Return empty collection if database is not available
+            return collect();
+        }
     }
 
     public function render(): View
