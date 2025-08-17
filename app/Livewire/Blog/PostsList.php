@@ -76,11 +76,22 @@ class PostsList extends Component
         $categories = \Cache::remember('posts_list.categories', 600, function () {
             return \App\Models\Category::query()
                 ->where('is_active', true)
-                ->withCount(['posts as posts_count' => function ($query) {
-                    $query->published();
-                }])
-                ->having('posts_count', '>', 0)
+                ->whereHas('posts', function ($q): void {
+                    $q->published();
+                })
+                ->withCount([
+                    'posts' => function ($q): void {
+                        $q->published();
+                    },
+                ])
                 ->orderBy('name')
+                ->get();
+        });
+
+        $topLessons = \Cache::remember('posts_list.top_lessons', 3600, function () {
+            return Post::published()
+                ->orderBy('views_count', 'desc')
+                ->take(12)
                 ->get();
         });
 
@@ -96,6 +107,7 @@ class PostsList extends Component
         return view('livewire.blog.posts-list', [
             'posts' => $posts,
             'categories' => $categories,
+            'topLessons' => $topLessons,
         ])
             ->title('All Posts - phpuzem | Laravel & PHP Tutorials')
             ->layout('components.layouts.app', compact('seoData'));

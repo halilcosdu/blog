@@ -402,40 +402,10 @@
     <!-- Lazy-loaded Trending Section -->
     <livewire:blog.trending-section />
 
-    <!-- Newsletter -->
-    <section class="py-16 lg:py-24 relative overflow-hidden">
-        <div class="absolute inset-0 bg-gradient-to-r from-red-600 via-orange-500 to-red-600"></div>
-        <div class="absolute inset-0 bg-[url('data:image/svg+xml,%3Csvg width="20" height="20" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"%3E%3Cg fill="%23ffffff" fill-opacity="0.05"%3E%3Ccircle cx="3" cy="3" r="3"/%3E%3Ccircle cx="13" cy="13" r="3"/%3E%3C/g%3E%3C/svg%3E')]"></div>
-
-        <div class="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-            <div class="inline-flex items-center px-4 py-2 rounded-full bg-white/20 backdrop-blur-sm mb-8">
-                <svg class="w-5 h-5 text-white mr-2" fill="currentColor" viewBox="0 0 20 20">
-                    <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/>
-                </svg>
-                <span class="text-white font-medium">Newsletter</span>
-            </div>
-
-            <h2 class="text-3xl lg:text-4xl font-bold text-white mb-4">
-                Stay up to date!
-            </h2>
-            <p class="text-red-100 mb-12 text-lg lg:text-xl leading-relaxed max-w-2xl mx-auto">
-                Get the latest posts, tips, and tech news delivered straight to your inbox every week.
-            </p>
-
-            <form class="max-w-md mx-auto">
-                <div class="flex flex-col sm:flex-row gap-4">
-                    <div class="flex-1">
-                        <input type="email"
-                               placeholder="Your email address"
-                               class="w-full px-6 py-4 bg-white/90 backdrop-blur-sm border border-white/20 rounded-2xl text-slate-900 placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-white/50 focus:bg-white transition-all">
-                    </div>
-                    <button type="submit"
-                            class="px-8 py-4 bg-white text-red-600 font-bold rounded-2xl hover:bg-red-50 hover:scale-105 transition-all duration-300 shadow-lg">
-                        Subscribe
-                    </button>
-                </div>
-                <p class="text-red-200 text-xs mt-4">We won’t send spam. You can unsubscribe at any time.</p>
-            </form>
+    <!-- Compact Newsletter Section -->
+    <section class="py-16 lg:py-24">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <livewire:blog.compact-newsletter />
         </div>
     </section>
 

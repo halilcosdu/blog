@@ -122,8 +122,8 @@ class PostRepository extends BaseRepository
             ->published()
             ->whereNotNull('tags')
             ->where(function ($query) {
-                $query->where('tags', '!=', '[]')
-                    ->where('tags', '!=', 'null');
+                $query->whereRaw("tags::text != '[]'")
+                    ->whereRaw("tags::text != 'null'");
             })
             ->latest('published_at')
             ->take($limit)

@@ -30,7 +30,12 @@
                     @endif
                 </a>
                 <a href="/posts" class="px-3 py-2 text-sm font-medium {{ $currentPage === 'posts' ? 'text-red-600 dark:text-red-400' : 'text-slate-700 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400' }} transition-colors">Posts</a>
-                <a href="/lessons" class="px-3 py-2 text-sm font-medium {{ $currentPage === 'lessons' ? 'text-red-600 dark:text-red-400' : 'text-slate-700 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400' }} transition-colors">Lessons</a>
+                <a href="/lessons" class="inline-flex items-center gap-2 px-3 py-2 text-sm font-medium text-slate-700 dark:text-slate-300 transition-colors" style="hover:color: #26c859;" onmouseover="this.style.color='#26c859'" onmouseout="this.style.color=''">
+                    <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                        <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/>
+                    </svg>
+                    Watch
+                </a>
                 <a href="/discussion" class="px-3 py-2 text-sm font-medium {{ $currentPage === 'discussion' ? 'text-red-600 dark:text-red-400' : 'text-slate-700 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400' }} transition-colors">Discussion</a>
                 <a href="{{ route('pricing') }}" class="px-3 py-2 text-sm font-medium {{ $currentPage === 'pricing' ? 'text-red-600 dark:text-red-400' : 'text-slate-700 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400' }} transition-colors">Pricing</a>
                 <a href="/sponsors" class="px-3 py-2 text-sm font-medium {{ $currentPage === 'sponsors' ? 'text-red-600 dark:text-red-400' : 'text-slate-700 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400' }} transition-colors">Sponsors</a>
@@ -81,7 +86,12 @@
         <nav class="grid gap-1 text-slate-800 dark:text-slate-200">
             <a href="{{ route('home') }}" class="px-3 py-2 rounded-lg {{ $currentPage === 'home' ? 'bg-red-100/60 dark:bg-red-900/60 text-red-700 dark:text-red-300 font-semibold' : 'hover:bg-slate-100/60 dark:hover:bg-slate-800/60' }} transition">Home</a>
             <a href="/posts" class="px-3 py-2 rounded-lg {{ $currentPage === 'posts' ? 'bg-red-100/60 dark:bg-red-900/60 text-red-700 dark:text-red-300 font-semibold' : 'hover:bg-slate-100/60 dark:hover:bg-slate-800/60' }} transition">Posts</a>
-            <a href="/lessons" class="px-3 py-2 rounded-lg {{ $currentPage === 'lessons' ? 'bg-red-100/60 dark:bg-red-900/60 text-red-700 dark:text-red-300 font-semibold' : 'hover:bg-slate-100/60 dark:hover:bg-slate-800/60' }} transition">Lessons</a>
+            <a href="/lessons" class="inline-flex items-center gap-2 px-3 py-2 rounded-lg transition" onmouseover="this.style.color='#26c859'; this.style.backgroundColor='rgba(38, 200, 89, 0.1)'" onmouseout="this.style.color=''; this.style.backgroundColor=''">
+                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                    <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/>
+                </svg>
+                Watch
+            </a>
             <a href="/discussion" class="px-3 py-2 rounded-lg {{ $currentPage === 'discussion' ? 'bg-red-100/60 dark:bg-red-900/60 text-red-700 dark:text-red-300 font-semibold' : 'hover:bg-slate-100/60 dark:hover:bg-slate-800/60' }} transition">Discussion</a>
             <a href="{{ route('pricing') }}" class="px-3 py-2 rounded-lg {{ $currentPage === 'pricing' ? 'bg-red-100/60 dark:bg-red-900/60 text-red-700 dark:text-red-300 font-semibold' : 'hover:bg-slate-100/60 dark:hover:bg-slate-800/60' }} transition">Pricing</a>
             <a href="/sponsors" class="px-3 py-2 rounded-lg {{ $currentPage === 'sponsors' ? 'bg-red-100/60 dark:bg-red-900/60 text-red-700 dark:text-red-300 font-semibold' : 'hover:bg-slate-100/60 dark:hover:bg-slate-800/60' }} transition">Sponsors</a>
