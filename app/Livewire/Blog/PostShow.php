@@ -35,14 +35,14 @@ class PostShow extends Component
         $breadcrumbs = [
             ['name' => 'Home', 'url' => route('home')],
             ['name' => 'Posts', 'url' => '/posts'],
-            ['name' => $this->post->category->name, 'url' => '/category/' . $this->post->category->slug],
+            ['name' => $this->post->category->name, 'url' => '/category/'.$this->post->category->slug],
             ['name' => $this->post->title, 'url' => request()->url()],
         ];
 
         $seoData = [
-            'title' => $this->post->title . ' - phpuzem',
+            'title' => $this->post->title.' - phpuzem',
             'description' => $this->post->excerpt ?: Str::limit(strip_tags($this->post->content), 160),
-            'keywords' => implode(', ', $this->post->tags ?? []) . ', Laravel, PHP, Tutorial',
+            'keywords' => implode(', ', $this->post->tags ?? []).', Laravel, PHP, Tutorial',
             'url' => request()->url(),
             'type' => 'article',
             'image' => $this->post->featured_image ?: asset('images/og-default.jpg'),
@@ -62,7 +62,7 @@ class PostShow extends Component
         return view('livewire.blog.post-show', [
             'relatedPosts' => $relatedPosts,
         ])
-            ->title($this->post->title . ' - phpuzem')
+            ->title($this->post->title.' - phpuzem')
             ->layout('components.layouts.app', compact('seoData'));
     }
 }

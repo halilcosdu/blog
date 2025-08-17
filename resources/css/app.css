@@ -23,6 +23,80 @@
     }
 }
 
+@layer components {
+    /* Card Components */
+    .card-base {
+        @apply bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border border-slate-200/60 dark:border-slate-700/60 rounded-2xl;
+    }
+    
+    .card-section {
+        @apply card-base p-5;
+    }
+    
+    /* Text Styles */
+    .gradient-text {
+        @apply bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-300 bg-clip-text text-transparent;
+    }
+    
+    .section-title {
+        @apply text-lg font-bold gradient-text;
+    }
+    
+    .page-title {
+        @apply text-3xl lg:text-4xl font-bold gradient-text;
+    }
+    
+    /* Link Styles */
+    .link-hover {
+        @apply hover:text-red-600 dark:hover:text-red-400 transition-colors;
+    }
+    
+    /* List Styles */
+    .list-divider {
+        @apply divide-y divide-slate-200/60 dark:divide-slate-700/60;
+    }
+    
+    /* Avatar Styles */
+    .avatar-gradient {
+        @apply bg-gradient-to-r from-red-600 to-orange-500;
+    }
+    
+    .icon-gradient {
+        @apply bg-gradient-to-r from-blue-600 to-purple-500;
+    }
+    
+    /* Status Badge Styles */
+    .status-coming-soon {
+        @apply bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300;
+    }
+    
+    .status-in-development {
+        @apply bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300;
+    }
+    
+    .status-planning {
+        @apply bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300;
+    }
+    
+    .status-released {
+        @apply bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-300;
+    }
+    
+    /* Button Styles */
+    .btn-primary {
+        @apply inline-flex items-center px-8 py-4 bg-gradient-to-r from-red-600 to-orange-500 text-white font-semibold rounded-2xl hover:shadow-lg hover:shadow-red-500/25 transition-all duration-300 hover:-translate-y-0.5;
+    }
+    
+    .btn-secondary {
+        @apply inline-flex items-center px-8 py-4 bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm border border-slate-200/70 dark:border-slate-700/70 text-slate-800 dark:text-slate-200 font-semibold rounded-2xl hover:bg-white/90 dark:hover:bg-slate-800/90 transition-all duration-300 hover:-translate-y-0.5;
+    }
+    
+    /* Animation & Loading */
+    .skeleton-base {
+        @apply bg-slate-200 dark:bg-slate-700 animate-pulse;
+    }
+}
+
 @theme {
     --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';

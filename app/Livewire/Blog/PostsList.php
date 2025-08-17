@@ -11,7 +11,9 @@ class PostsList extends Component
     use WithPagination;
 
     public $search = '';
+
     public $categoryId = null;
+
     public $sortBy = 'latest'; // latest, popular, oldest
 
     protected $queryString = [
@@ -45,9 +47,9 @@ class PostsList extends Component
         // Apply search filter
         if ($this->search) {
             $query->where(function ($q) {
-                $q->where('title', 'like', '%' . $this->search . '%')
-                  ->orWhere('excerpt', 'like', '%' . $this->search . '%')
-                  ->orWhere('content', 'like', '%' . $this->search . '%');
+                $q->where('title', 'like', '%'.$this->search.'%')
+                    ->orWhere('excerpt', 'like', '%'.$this->search.'%')
+                    ->orWhere('content', 'like', '%'.$this->search.'%');
             });
         }
 
@@ -70,7 +72,7 @@ class PostsList extends Component
         }
 
         $posts = $query->paginate(12);
-        
+
         $categories = \Cache::remember('posts_list.categories', 600, function () {
             return \App\Models\Category::query()
                 ->where('is_active', true)

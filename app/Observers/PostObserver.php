@@ -58,7 +58,7 @@ class PostObserver
         Cache::forget('homepage.trending_tags');
         Cache::forget('homepage.top_lessons');
         Cache::forget('pricing.top_lessons');
-        
+
         // Clear any cached posts by category
         Cache::flush(); // In production, be more specific with cache tags
     }

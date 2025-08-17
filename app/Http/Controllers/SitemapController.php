@@ -37,25 +37,25 @@ class SitemapController extends Controller
         $baseUrl = config('app.url');
         $now = now()->toISOString();
 
-        $xml = '<?xml version="1.0" encoding="UTF-8"?>' . "\n";
-        $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">' . "\n";
+        $xml = '<?xml version="1.0" encoding="UTF-8"?>'."\n";
+        $xml .= '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">'."\n";
 
         // Homepage
         $xml .= $this->addUrlToSitemap($baseUrl, $now, 'daily', '1.0');
 
         // Pricing page
-        $xml .= $this->addUrlToSitemap($baseUrl . '/pricing', $now, 'monthly', '0.8');
+        $xml .= $this->addUrlToSitemap($baseUrl.'/pricing', $now, 'monthly', '0.8');
 
         // Posts
         foreach ($posts as $post) {
-            $url = $baseUrl . '/posts/' . $post->slug;
+            $url = $baseUrl.'/posts/'.$post->slug;
             $lastmod = $post->updated_at->toISOString();
             $xml .= $this->addUrlToSitemap($url, $lastmod, 'weekly', '0.9');
         }
 
         // Categories
         foreach ($categories as $category) {
-            $url = $baseUrl . '/category/' . $category->slug;
+            $url = $baseUrl.'/category/'.$category->slug;
             $lastmod = $category->updated_at->toISOString();
             $xml .= $this->addUrlToSitemap($url, $lastmod, 'weekly', '0.7');
         }
@@ -67,11 +67,11 @@ class SitemapController extends Controller
 
     private function addUrlToSitemap(string $url, string $lastmod, string $changefreq, string $priority): string
     {
-        return "  <url>\n" .
-               "    <loc>{$url}</loc>\n" .
-               "    <lastmod>{$lastmod}</lastmod>\n" .
-               "    <changefreq>{$changefreq}</changefreq>\n" .
-               "    <priority>{$priority}</priority>\n" .
+        return "  <url>\n".
+               "    <loc>{$url}</loc>\n".
+               "    <lastmod>{$lastmod}</lastmod>\n".
+               "    <changefreq>{$changefreq}</changefreq>\n".
+               "    <priority>{$priority}</priority>\n".
                "  </url>\n";
     }
 }

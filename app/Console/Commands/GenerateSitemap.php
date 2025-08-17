@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Storage;
 class GenerateSitemap extends Command
 {
     protected $signature = 'sitemap:generate';
+
     protected $description = 'Generate XML sitemap and cache it for better performance';
 
     public function handle(): int
@@ -17,7 +18,7 @@ class GenerateSitemap extends Command
         $this->info('Generating XML sitemap...');
 
         try {
-            $controller = new SitemapController();
+            $controller = new SitemapController;
             $response = $controller->index();
             $sitemapXml = $response->getContent();
 
@@ -28,11 +29,12 @@ class GenerateSitemap extends Command
             Storage::disk('public')->put('sitemap.xml', $sitemapXml);
 
             $this->info('✅ Sitemap generated successfully!');
-            $this->line("📍 Available at: " . config('app.url') . '/sitemap.xml');
+            $this->line('📍 Available at: '.config('app.url').'/sitemap.xml');
 
             return self::SUCCESS;
         } catch (\Exception $e) {
-            $this->error('❌ Failed to generate sitemap: ' . $e->getMessage());
+            $this->error('❌ Failed to generate sitemap: '.$e->getMessage());
+
             return self::FAILURE;
         }
     }

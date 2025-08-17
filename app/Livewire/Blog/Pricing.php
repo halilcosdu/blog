@@ -2,14 +2,14 @@
 
 namespace App\Livewire\Blog;
 
+use App\Livewire\BaseComponent;
 use App\Models\Post;
-use Livewire\Component;
 
-class Pricing extends Component
+class Pricing extends BaseComponent
 {
-    public function render()
+    private function getTopLessons()
     {
-        $topLessons = \Cache::remember('pricing.top_lessons', 600, function () {
+        return $this->cacheMedium($this->getCacheKey('top_lessons'), function () {
             return Post::query()
                 ->published()
                 ->whereNotNull('featured_image')
@@ -18,20 +18,17 @@ class Pricing extends Component
                 ->take(12)
                 ->get();
         });
+    }
 
-        $seoData = [
-            'title' => 'Pricing - phpuzem | Affordable Laravel Learning Plans',
-            'description' => 'Choose your learning plan at phpuzem. From free tutorials to premium courses with source code, priority support, and expert guidance for Laravel developers.',
-            'keywords' => 'Laravel pricing, PHP course pricing, Laravel tutorial cost, web development learning, programming course subscription',
-            'url' => request()->url(),
-            'type' => 'website',
-            'image' => asset('images/og-pricing.jpg'),
-        ];
+    public function render()
+    {
+        $topLessons = $this->getTopLessons();
+        $seoData = $this->getPricingSEO();
 
         return view('livewire.blog.pricing', [
             'topLessons' => $topLessons,
         ])
             ->title('Pricing - phpuzem | Affordable Laravel Learning Plans')
-            ->layout('components.layouts.app', compact('seoData'));
+            ->layout('components.layouts.app', $seoData);
     }
 }

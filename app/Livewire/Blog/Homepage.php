@@ -2,72 +2,72 @@
 
 namespace App\Livewire\Blog;
 
-use App\Models\Category;
-use App\Models\Post;
-use App\Models\User;
-use Livewire\Component;
+use App\Livewire\BaseComponent;
+use App\Repositories\CategoryRepository;
+use App\Repositories\PostRepository;
 
-class Homepage extends Component
+class Homepage extends BaseComponent
 {
-    public function render()
+    /**
+     * Get the featured post for the homepage
+     */
+    private function getFeaturedPost(): ?\App\Models\Post
     {
-        // Cache expensive queries for better performance
-        $featuredPost = \Cache::remember('homepage.featured_post', 300, function () {
-            return Post::query()
-                ->published()
-                ->featured()
-                ->with(['user:id,name,email', 'category:id,name,slug'])
-                ->latest('published_at')
-                ->first();
+        return $this->cacheShort($this->getCacheKey('featured_post'), function () {
+            return $this->repository(PostRepository::class)->getFeatured();
         });
+    }
 
-        $latestPosts = \Cache::remember('homepage.latest_posts', 300, function () {
-            return Post::query()
-                ->published()
-                ->with(['user:id,name,email', 'category:id,name,slug'])
-                ->latest('published_at')
-                ->take(6)
-                ->get();
+    /**
+     * Get the latest posts for the homepage
+     */
+    private function getLatestPosts(): \Illuminate\Database\Eloquent\Collection
+    {
+        return $this->cacheShort($this->getCacheKey('latest_posts'), function () {
+            return $this->repository(PostRepository::class)->getLatest(6);
         });
+    }
 
-        $categories = \Cache::remember('homepage.categories', 600, function () {
-            return Category::query()
-                ->where('is_active', true)
-                ->withCount(['posts as posts_count' => function ($query) {
-                    $query->published();
-                }])
-                ->orderBy('sort_order')
-                ->take(24)
-                ->get();
+    /**
+     * Get active categories with post counts
+     */
+    private function getCategories(): \Illuminate\Database\Eloquent\Collection
+    {
+        return $this->cacheMedium($this->getCacheKey('categories'), function () {
+            return $this->repository(CategoryRepository::class)->getActive(24);
         });
+    }
 
-
-        $topLessons = \Cache::remember('homepage.top_lessons', 600, function () {
-            return Post::query()
-                ->published()
-                ->whereNotNull('featured_image')
-                ->with(['user:id,name,email', 'category:id,name,slug'])
-                ->orderByDesc('views_count')
-                ->take(12)
-                ->get();
+    /**
+     * Get top lessons (posts with featured images)
+     */
+    private function getTopLessons(): \Illuminate\Database\Eloquent\Collection
+    {
+        return $this->cacheMedium($this->getCacheKey('top_lessons'), function () {
+            return $this->repository(PostRepository::class)->getTopByViews(12);
         });
+    }
 
-        $seoData = [
-            'title' => 'phpuzem - Modern PHP & Laravel Development',
-            'description' => 'Practical screencasts and complete learning paths for modern PHP & Laravel development. Learn by building real projects, at your own pace.',
-            'keywords' => 'Laravel, PHP, JavaScript, Vue.js, React, Web Development, Coding, Tailwind, Livewire, Tutorial, Screencast',
-            'url' => request()->url(),
-            'type' => 'website',
-            'image' => asset('images/og-homepage.jpg'),
+    /**
+     * Get all data needed for the homepage view
+     */
+    private function getViewData(): array
+    {
+        return [
+            'featuredPost' => $this->getFeaturedPost(),
+            'latestPosts' => $this->getLatestPosts(),
+            'categories' => $this->getCategories(),
+            'topLessons' => $this->getTopLessons(),
         ];
+    }
 
-        return view('livewire.blog.homepage', [
-            'featuredPost' => $featuredPost,
-            'latestPosts' => $latestPosts,
-            'categories' => $categories,
-            'topLessons' => $topLessons,
-        ])
+    public function render(): \Illuminate\Contracts\View\View
+    {
+        $viewData = $this->getViewData();
+        $seoData = $this->getHomepageSEO();
+
+        return view('livewire.blog.homepage', $viewData)
             ->title('phpuzem - Modern PHP & Laravel Development')
-            ->layout('components.layouts.app', compact('seoData'));
+            ->layout('components.layouts.app', $seoData);
     }
 }

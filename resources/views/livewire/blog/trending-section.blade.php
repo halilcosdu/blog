@@ -6,70 +6,20 @@
         <div class="grid grid-cols-1 lg:grid-cols-3 gap-10 items-start">
             <!-- Trending Tags Skeleton -->
             <div class="lg:col-span-1">
-                <div class="mb-6">
-                    <div class="h-8 bg-slate-200 dark:bg-slate-700 rounded-lg w-40 mb-2 animate-pulse"></div>
-                    <div class="h-4 bg-slate-200 dark:bg-slate-700 rounded w-56 animate-pulse"></div>
-                </div>
-                <div class="flex flex-wrap gap-3 mb-10">
-                    @for($i = 0; $i < 8; $i++)
-                    <div class="h-8 bg-slate-200 dark:bg-slate-700 rounded-full w-16 animate-pulse"></div>
-                    @endfor
-                </div>
+                <x-ui.skeleton.tags class="mb-10" />
 
                 <!-- Top Authors Skeleton -->
-                <div class="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border border-slate-200/60 dark:border-slate-700/60 rounded-2xl p-5">
-                    <div class="h-6 bg-slate-200 dark:bg-slate-700 rounded w-32 mb-4 animate-pulse"></div>
-                    <div class="space-y-4">
-                        @for($i = 0; $i < 4; $i++)
-                        <div class="flex items-center space-x-3">
-                            <div class="w-8 h-8 bg-slate-200 dark:bg-slate-700 rounded-full animate-pulse"></div>
-                            <div class="flex-1">
-                                <div class="h-4 bg-slate-200 dark:bg-slate-700 rounded w-24 mb-1 animate-pulse"></div>
-                                <div class="h-3 bg-slate-200 dark:bg-slate-700 rounded w-16 animate-pulse"></div>
-                            </div>
-                        </div>
-                        @endfor
-                    </div>
-                </div>
+                <x-ui.skeleton.section title-width="w-32" :items="4" />
 
                 <!-- Packages Skeleton -->
                 <div class="mt-10">
-                    <div class="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border border-slate-200/60 dark:border-slate-700/60 rounded-2xl p-5">
-                        <div class="h-6 bg-slate-200 dark:bg-slate-700 rounded w-24 mb-4 animate-pulse"></div>
-                        <div class="space-y-4">
-                            @for($i = 0; $i < 4; $i++)
-                            <div class="flex items-center space-x-3">
-                                <div class="w-8 h-8 bg-slate-200 dark:bg-slate-700 rounded-full animate-pulse"></div>
-                                <div class="flex-1">
-                                    <div class="h-4 bg-slate-200 dark:bg-slate-700 rounded w-32 mb-1 animate-pulse"></div>
-                                    <div class="h-3 bg-slate-200 dark:bg-slate-700 rounded w-24 mb-1 animate-pulse"></div>
-                                    <div class="h-3 bg-slate-200 dark:bg-slate-700 rounded w-16 animate-pulse"></div>
-                                </div>
-                            </div>
-                            @endfor
-                        </div>
-                    </div>
+                    <livewire:blog.packages-section />
                 </div>
             </div>
 
             <!-- Popular Posts Skeleton -->
             <div class="lg:col-span-2">
-                <div class="mb-6">
-                    <div class="h-8 bg-slate-200 dark:bg-slate-700 rounded-lg w-40 mb-2 animate-pulse"></div>
-                    <div class="h-4 bg-slate-200 dark:bg-slate-700 rounded w-56 animate-pulse"></div>
-                </div>
-                <div class="grid md:grid-cols-2 gap-6">
-                    @for($i = 0; $i < 4; $i++)
-                    <div class="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border border-slate-200/60 dark:border-slate-700/60 rounded-2xl overflow-hidden">
-                        <div class="h-32 bg-slate-200 dark:bg-slate-700 animate-pulse"></div>
-                        <div class="p-4">
-                            <div class="h-4 bg-slate-200 dark:bg-slate-700 rounded mb-2 animate-pulse"></div>
-                            <div class="h-4 bg-slate-200 dark:bg-slate-700 rounded w-3/4 mb-3 animate-pulse"></div>
-                            <div class="h-3 bg-slate-200 dark:bg-slate-700 rounded w-1/2 animate-pulse"></div>
-                        </div>
-                    </div>
-                    @endfor
-                </div>
+                <x-ui.skeleton.post-grid />
             </div>
         </div>
         @else
@@ -123,79 +73,7 @@
 
                 <!-- Packages -->
                 <div class="mt-10">
-                    <div class="bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border border-slate-200/60 dark:border-slate-700/60 rounded-2xl p-5">
-                        <div class="flex items-center justify-between mb-4">
-                            <h4 class="text-lg font-bold bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-300 bg-clip-text text-transparent">Packages</h4>
-                        </div>
-                        <ul class="divide-y divide-slate-200/60 dark:divide-slate-700/60">
-                            @php
-                                $packages = [
-                                    [
-                                        'name' => 'phpuzem/laravel-boost',
-                                        'description' => 'Supercharge your Laravel development workflow',
-                                        'status' => 'Coming Soon',
-                                        'icon' => '🚀',
-                                        'url' => '#'
-                                    ],
-                                    [
-                                        'name' => 'phpuzem/eloquent-plus',
-                                        'description' => 'Advanced Eloquent model enhancements',
-                                        'status' => 'In Development',
-                                        'icon' => '⚡',
-                                        'url' => '#'
-                                    ],
-                                    [
-                                        'name' => 'phpuzem/test-helpers',
-                                        'description' => 'Powerful testing utilities for Laravel',
-                                        'status' => 'Planning',
-                                        'icon' => '🧪',
-                                        'url' => '#'
-                                    ],
-                                    [
-                                        'name' => 'phpuzem/api-kit',
-                                        'description' => 'Complete API development toolkit',
-                                        'status' => 'Planning',
-                                        'icon' => '🔧',
-                                        'url' => '#'
-                                    ],
-                                     [
-                                        'name' => 'phpuzem/api-kit',
-                                        'description' => 'Complete API development toolkit',
-                                        'status' => 'Planning',
-                                        'icon' => '🔧',
-                                        'url' => '#'
-                                    ]
-                                ];
-                            @endphp
-                            @foreach($packages as $package)
-                                <li>
-                                    <div class="flex items-center py-3">
-                                        <div class="w-8 h-8 rounded-full bg-gradient-to-r from-blue-600 to-purple-500 flex items-center justify-center text-white text-sm mr-3">
-                                            {{ $package['icon'] }}
-                                        </div>
-                                        <div class="flex-1 min-w-0">
-                                            <p class="text-sm font-medium truncate">
-                                                <a href="{{ $package['url'] }}" class="text-slate-900 dark:text-white hover:text-red-600 dark:hover:text-red-400 transition-colors">
-                                                    {{ $package['name'] }}
-                                                </a>
-                                            </p>
-                                            <p class="text-xs text-slate-600 dark:text-slate-300 mb-1">
-                                                {{ $package['description'] }}
-                                            </p>
-                                            <p class="text-xs text-slate-500 dark:text-slate-400">
-                                                <span class="inline-flex items-center px-2 py-0.5 rounded-full text-[10px] font-medium
-                                                    {{ $package['status'] === 'Coming Soon' ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-300' : '' }}
-                                                    {{ $package['status'] === 'In Development' ? 'bg-orange-100 text-orange-700 dark:bg-orange-900/30 dark:text-orange-300' : '' }}
-                                                    {{ $package['status'] === 'Planning' ? 'bg-slate-100 text-slate-700 dark:bg-slate-800 dark:text-slate-300' : '' }}">
-                                                    {{ $package['status'] }}
-                                                </span>
-                                            </p>
-                                        </div>
-                                    </div>
-                                </li>
-                            @endforeach
-                        </ul>
-                    </div>
+                    <livewire:blog.packages-section />
                 </div>
             </div>
 
