@@ -41,11 +41,11 @@
 
                 <!-- CTA Buttons -->
                 <div class="flex flex-col sm:flex-row gap-4 justify-center mb-10">
-                    <a href="#latest-series" class="group inline-flex items-center px-8 py-4 bg-gradient-to-r from-red-600 to-orange-500 text-white font-semibold rounded-2xl hover:shadow-lg hover:shadow-red-500/25 transition-all duration-300 hover:-translate-y-0.5">
+                    <a href="#latest-series" class="group inline-flex items-center px-8 py-4 bg-gradient-to-r from-red-600 to-orange-500 text-white font-semibold rounded-2xl hover:shadow-lg hover:shadow-red-500/25 transition-all duration-300 hover:-translate-y-0.5 cursor-pointer">
                         <span>Start Learning Free</span>
                         <svg class="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>
                     </a>
-                    <button type="button" data-trailer-open class="group inline-flex items-center px-8 py-4 bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm border border-slate-200/70 dark:border-slate-700/70 text-slate-800 dark:text-slate-200 font-semibold rounded-2xl hover:bg-white/90 dark:hover:bg-slate-800/90 transition-all duration-300 hover:-translate-y-0.5">
+                    <button type="button" data-trailer-open class="group inline-flex items-center px-8 py-4 bg-white/70 dark:bg-slate-800/70 backdrop-blur-sm border border-slate-200/70 dark:border-slate-700/70 text-slate-800 dark:text-slate-200 font-semibold rounded-2xl hover:bg-white/90 dark:hover:bg-slate-800/90 transition-all duration-300 hover:-translate-y-0.5 cursor-pointer">
                         <svg class="mr-2 w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path d="M6 4l10 6-10 6V4z"/></svg>
                         <span>Watch Trailer</span>
                     </button>
@@ -71,7 +71,7 @@
                         @endphp
                         @if($hasSeries)
                             @foreach($series as $s)
-                                <a href="/series/{{ $s->slug }}" class="group w-[320px] shrink-0 snap-start">
+                                <a href="/series/{{ $s->slug }}" class="group w-[320px] shrink-0 snap-start cursor-pointer">
                                     <div class="relative aspect-video overflow-hidden rounded-2xl border border-slate-200/70 dark:border-slate-700/70 bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm">
                                         <img src="{{ $s->cover_url }}" alt="{{ $s->title }}" class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105">
                                         <div class="absolute inset-0 bg-gradient-to-t from-black/50 via-black/10 to-transparent"></div>
@@ -165,10 +165,10 @@
 
                     <!-- Centered controls under slider -->
                     <div class="mt-4 flex items-center justify-center gap-2">
-                        <button type="button" aria-label="Previous" data-series-prev onclick="window.seriesSliderScroll && window.seriesSliderScroll(-1)" class="p-2 rounded-xl bg-white/70 dark:bg-slate-800/70 border border-slate-200/70 dark:border-slate-700/70 hover:bg-white/90 dark:hover:bg-slate-800/90 transition-colors">
+                        <button type="button" aria-label="Previous" data-series-prev onclick="window.seriesSliderScroll && window.seriesSliderScroll(-1)" class="p-2 rounded-xl bg-white/70 dark:bg-slate-800/70 border border-slate-200/70 dark:border-slate-700/70 hover:bg-white/90 dark:hover:bg-slate-800/90 transition-colors cursor-pointer">
                             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
                         </button>
-                        <button type="button" aria-label="Next" data-series-next onclick="window.seriesSliderScroll && window.seriesSliderScroll(1)" class="p-2 rounded-xl bg-white/70 dark:bg-slate-800/70 border border-slate-200/70 dark:border-slate-700/70 hover:bg-white/90 dark:hover:bg-slate-800/90 transition-colors">
+                        <button type="button" aria-label="Next" data-series-next onclick="window.seriesSliderScroll && window.seriesSliderScroll(1)" class="p-2 rounded-xl bg-white/70 dark:bg-slate-800/70 border border-slate-200/70 dark:border-slate-700/70 hover:bg-white/90 dark:hover:bg-slate-800/90 transition-colors cursor-pointer">
                             <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 111.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/></svg>
                         </button>
                     </div>
@@ -186,10 +186,10 @@
                     <p class="mt-2 text-slate-600 dark:text-slate-400">Discover trending topics to explore</p>
                 </div>
                 <div class="flex items-center gap-2 relative z-10">
-                    <button type="button" aria-label="Previous" data-cats-prev onclick="window.catsSliderScroll && window.catsSliderScroll(-1)" class="p-2 rounded-xl bg-white/70 dark:bg-slate-800/70 border border-slate-200/70 dark:border-slate-700/70 hover:bg-white/90 dark:hover:bg-slate-800/90 transition-colors">
+                    <button type="button" aria-label="Previous" data-cats-prev onclick="window.catsSliderScroll && window.catsSliderScroll(-1)" class="p-2 rounded-xl bg-white/70 dark:bg-slate-800/70 border border-slate-200/70 dark:border-slate-700/70 hover:bg-white/90 dark:hover:bg-slate-800/90 transition-colors cursor-pointer">
                         <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
                     </button>
-                    <button type="button" aria-label="Next" data-cats-next onclick="window.catsSliderScroll && window.catsSliderScroll(1)" class="p-2 rounded-xl bg-white/70 dark:bg-slate-800/70 border border-slate-200/70 dark:border-slate-700/70 hover:bg-white/90 dark:hover:bg-slate-800/90 transition-colors">
+                    <button type="button" aria-label="Next" data-cats-next onclick="window.catsSliderScroll && window.catsSliderScroll(1)" class="p-2 rounded-xl bg-white/70 dark:bg-slate-800/70 border border-slate-200/70 dark:border-slate-700/70 hover:bg-white/90 dark:hover:bg-slate-800/90 transition-colors cursor-pointer">
                         <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 111.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/></svg>
                     </button>
                 </div>
@@ -200,7 +200,7 @@
                     @php $hasCategories = $categories->count() > 0; @endphp
                     @if($hasCategories)
                         @foreach($categories as $category)
-                            <a href="/category/{{ $category->slug }}" class="cat-card group w-[280px] shrink-0 snap-start relative">
+                            <a href="/category/{{ $category->slug }}" class="cat-card group w-[280px] shrink-0 snap-start relative cursor-pointer">
                                 <div class="relative p-[1px] rounded-2xl" style="background: linear-gradient(135deg, {{ $category->color }}55, {{ $category->color }}22);">
                                     <div class="relative h-[200px] bg-white/90 dark:bg-slate-900/60 backdrop-blur-sm rounded-2xl border border-slate-200/70 dark:border-slate-700/70 shadow-sm transition-all duration-300 group-hover:shadow-lg group-hover:-translate-y-1 will-change-transform">
                                         <div class="p-5 h-full flex flex-col">
@@ -278,7 +278,7 @@
                     </h2>
                     <p class="text-slate-600 dark:text-slate-400">Our newest and freshest content</p>
                 </div>
-                <a href="/posts" class="hidden sm:inline-flex items-center px-6 py-3 bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 text-slate-700 dark:text-slate-300 font-medium rounded-xl hover:bg-white/80 dark:hover:bg-slate-800/80 transition-all duration-300 group">
+                <a href="/posts" class="hidden sm:inline-flex items-center px-6 py-3 bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 text-slate-700 dark:text-slate-300 font-medium rounded-xl hover:bg-white/80 dark:hover:bg-slate-800/80 transition-all duration-300 group cursor-pointer">
                     <span>View all</span>
                     <svg class="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" fill="currentColor" viewBox="0 0 20 20">
                         <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"/>
@@ -307,7 +307,7 @@
                                         <span class="ml-4 text-slate-500 dark:text-slate-400 text-sm">{{ $featuredPost->formatted_published_date }}</span>
                                     </div>
                                     <h3 class="text-2xl lg:text-3xl font-bold text-slate-800 dark:text-slate-200 mb-4 leading-tight">
-                                        <a href="/posts/{{ $featuredPost->slug }}" class="hover:text-red-600 dark:hover:text-red-400 transition-colors">
+                                        <a href="/posts/{{ $featuredPost->slug }}" class="hover:text-red-600 dark:hover:text-red-400 transition-colors cursor-pointer">
                                             {{ $featuredPost->title }}
                                         </a>
                                     </h3>
@@ -324,7 +324,7 @@
                                                 <p class="text-sm text-slate-500 dark:text-slate-400">{{ $featuredPost->reading_time }}</p>
                                             </div>
                                         </div>
-                                        <a href="/posts/{{ $featuredPost->slug }}" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-red-600 to-orange-500 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-red-500/25 transition-all duration-300 group">
+                                        <a href="/posts/{{ $featuredPost->slug }}" class="inline-flex items-center px-6 py-3 bg-gradient-to-r from-red-600 to-orange-500 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-red-500/25 transition-all duration-300 group cursor-pointer">
                                             <span>Read</span>
                                             <svg class="ml-2 w-4 h-4 group-hover:translate-x-1 transition-transform" fill="currentColor" viewBox="0 0 20 20">
                                                 <path fill-rule="evenodd" d="M10.293 3.293a1 1 0 011.414 0l6 6a1 1 0 010 1.414l-6 6a1 1 0 01-1.414-1.414L14.586 11H3a1 1 0 110-2h11.586l-4.293-4.293a1 1 0 010-1.414z" clip-rule="evenodd"/>
