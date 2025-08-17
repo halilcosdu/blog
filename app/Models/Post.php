@@ -108,11 +108,11 @@ class Post extends Model
     {
         $minutes = $this->read_time;
 
-        if ($minutes < 1) {
-            return '1 dakika';
+        if ($minutes < 2) {
+            return '1 min';
         }
 
-        return $minutes.' dakika';
+        return $minutes.' mins';
     }
 
     public function getFormattedPublishedDateAttribute(): string

@@ -1,2 +1,17 @@
 User-agent: *
-Disallow:
+Allow: /
+
+# Sitemap
+Sitemap: http://blog.test/sitemap.xml
+
+# Disallow admin and private areas
+Disallow: /admin/
+Disallow: /api/
+Disallow: /storage/
+Disallow: /vendor/
+
+# Allow well-known URIs as per RFC 5785
+Allow: /.well-known/
+
+# Crawl-delay for being respectful
+Crawl-delay: 1

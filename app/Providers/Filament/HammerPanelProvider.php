@@ -25,9 +25,10 @@ class HammerPanelProvider extends PanelProvider
     {
         return $panel
             ->default()
-            ->id('hammer')
-            ->path('hammer')
+            ->id('customer')
+            ->path('/')
             ->login()
+            ->registration()
             ->colors([
                 'primary' => Color::Amber,
             ])
