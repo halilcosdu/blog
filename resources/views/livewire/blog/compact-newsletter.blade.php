@@ -111,41 +111,45 @@
         @foreach($posts as $post)
         <article class="group">
             <a href="/posts/{{ $post->slug }}" class="block">
-                <div class="relative bg-white/50 dark:bg-slate-700/50 backdrop-blur-sm border border-slate-200/50 dark:border-slate-600/50 rounded-xl overflow-hidden hover:border-slate-300/50 dark:hover:border-slate-500/50 transition-all duration-300 group-hover:-translate-y-1">
+                <div class="relative bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm border border-slate-200/40 dark:border-slate-700/60 rounded-xl overflow-hidden transition-all duration-300 group-hover:shadow-lg group-hover:border-slate-200/60 dark:group-hover:border-slate-600/80 group-hover:-translate-y-1 group-hover:ring-2 group-hover:ring-red-500/50 group-hover:ring-offset-4 group-hover:ring-offset-slate-50 dark:group-hover:ring-offset-slate-900">
                     <!-- Post Image -->
-                    <div class="aspect-video overflow-hidden">
+                    <div class="aspect-[4/3] overflow-hidden">
                         <img src="{{ $post->featured_image ?? 'https://images.unsplash.com/photo-1627398242454-45a1465c2479?w=400&auto=format&fit=crop' }}"
                              alt="{{ $post->title }}"
                              class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105">
                     </div>
                     
                     <!-- Post Content -->
-                    <div class="p-4">
+                    <div class="p-3">
                         <!-- Category Badge -->
                         @if($post->category)
-                        <div class="flex items-center gap-2 mb-2">
-                            <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-semibold"
+                        <div class="flex items-center gap-2 mb-1.5">
+                            <span class="inline-flex items-center px-2 py-0.5 rounded-md text-[11px] font-semibold"
                                   style="background-color: {{ $post->category->color }}20; color: {{ $post->category->color }};">
                                 {{ $post->category->name }}
                             </span>
-                            <span class="text-xs text-slate-500 dark:text-slate-400">{{ $post->formatted_published_date }}</span>
                         </div>
                         @endif
                         
                         <!-- Title -->
-                        <h4 class="text-sm font-bold text-slate-900 dark:text-slate-100 mb-2 leading-tight line-clamp-2 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors">
+                        <h4 class="text-base font-bold text-slate-900 dark:text-slate-100 mb-1 leading-tight line-clamp-2 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors">
                             {{ $post->title }}
                         </h4>
                         
                         <!-- Excerpt -->
-                        <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed line-clamp-2 mb-3">
+                        <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed line-clamp-2 mb-2">
                             {{ Str::limit($post->excerpt, 80) }}
                         </p>
                         
                         <!-- Meta -->
-                        <div class="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
-                            <span>{{ $post->user->name }}</span>
-                            <span>{{ $post->reading_time }}</span>
+                        <div class="flex items-center justify-between pt-2 border-t border-slate-200/60 dark:border-slate-700/60">
+                            <div class="flex items-center gap-2">
+                                <div class="w-5 h-5 rounded-full bg-gradient-to-r from-red-500 to-orange-400 flex items-center justify-center text-white text-[10px] font-bold">
+                                    {{ substr($post->user->name, 0, 1) }}
+                                </div>
+                                <span class="text-xs text-slate-600 dark:text-slate-400">{{ $post->user->name }}</span>
+                            </div>
+                            <span class="text-xs text-slate-500 dark:text-slate-400">{{ $post->reading_time }}</span>
                         </div>
                     </div>
                 </div>

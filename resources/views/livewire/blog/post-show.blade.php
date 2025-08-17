@@ -35,6 +35,41 @@
                         <span class="text-gray-400 dark:text-gray-600">|</span>
                         <span>{{ number_format($post->views_count) }} views</span>
                     </div>
+
+                    <!-- Share Button -->
+                    <div x-data="{
+                        copied: false,
+                        sharePost() {
+                            const shareData = {
+                                title: '{{ addslashes($post->title) }}',
+                                text: '{{ addslashes($post->excerpt ?? '') }}',
+                                url: '{{ url()->current() }}',
+                            };
+                    
+                            if (navigator.share && navigator.canShare(shareData)) {
+                                navigator.share(shareData).catch((err) => {
+                                    if (err.name !== 'AbortError') {
+                                        console.error('Share failed:', err);
+                                    }
+                                });
+                            } else {
+                                navigator.clipboard.writeText(shareData.url);
+                                this.copied = true;
+                                setTimeout(() => { this.copied = false }, 2000);
+                            }
+                        }
+                    }" class="mt-8 flex justify-center">
+                        <button @click="sharePost" 
+                                class="relative w-36 h-11 inline-flex items-center justify-center gap-2 px-5 py-2.5 bg-slate-100 dark:bg-slate-800 rounded-full text-sm font-medium text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors cursor-pointer focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:ring-offset-2 focus:ring-offset-white dark:focus:ring-offset-slate-900 overflow-hidden">
+                            <span :class="{ '-translate-y-full opacity-0': copied }" class="flex items-center gap-2 transition-all duration-300">
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47C13.456 7.68 14.19 8 15 8z"/></svg>
+                                <span>Share Post</span>
+                            </span>
+                            <span x-cloak :class="{ 'translate-y-0 opacity-100': copied, 'translate-y-full opacity-0': !copied }" class="absolute inset-0 flex items-center justify-center transition-all duration-300">
+                                Link Copied!
+                            </span>
+                        </button>
+                    </div>
                 </header>
 
                 <!-- Featured Image -->
