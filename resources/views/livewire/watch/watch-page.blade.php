@@ -1380,6 +1380,304 @@
                             </div>
                         </div>
 
+                        <!-- Learning Pathways Section -->
+                        <div>
+                            <div class="flex items-center justify-between mb-6">
+                                <div class="flex items-center gap-3">
+                                    <h3 class="text-lg font-semibold text-slate-900 dark:text-slate-100">Learning Pathways</h3>
+                                    <div class="w-2 h-2 bg-purple-500 rounded-full"></div>
+                                </div>
+                                <a href="/learning-paths" class="text-sm text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 font-medium transition-colors">
+                                    View All Paths →
+                                </a>
+                            </div>
+
+                            <!-- Pathways Grid -->
+                            <div class="grid gap-6 md:grid-cols-2 lg:grid-cols-3 mb-8">
+                                
+                                <!-- Laravel Developer Path -->
+                                <div class="group bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm border border-slate-200/60 dark:border-slate-700/60 rounded-xl overflow-hidden hover:shadow-lg hover:shadow-slate-200/20 dark:hover:shadow-slate-900/20 transition-all duration-300 hover:-translate-y-1">
+                                    <div class="relative">
+                                        <!-- Header Gradient -->
+                                        <div class="h-24 bg-gradient-to-br from-red-500 via-orange-500 to-yellow-500 relative overflow-hidden">
+                                            <div class="absolute inset-0 bg-gradient-to-br from-red-500/80 via-orange-500/80 to-yellow-500/80"></div>
+                                            <div class="absolute inset-0 flex items-center justify-center">
+                                                <div class="text-3xl text-white/90">🚀</div>
+                                            </div>
+                                            <!-- Progress indicator -->
+                                            <div class="absolute top-3 right-3 bg-white/20 backdrop-blur-sm text-white text-xs px-2 py-1 rounded-full">
+                                                3/8 completed
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="p-6">
+                                        <div class="flex items-start justify-between mb-4">
+                                            <div class="flex-1">
+                                                <h4 class="text-lg font-bold text-slate-900 dark:text-slate-100 mb-2 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors">
+                                                    Laravel Developer
+                                                </h4>
+                                                <p class="text-sm text-slate-600 dark:text-slate-400 line-clamp-2 leading-relaxed">
+                                                    Master Laravel from fundamentals to advanced concepts. Build real-world applications with modern best practices.
+                                                </p>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Skills Tags -->
+                                        <div class="flex flex-wrap gap-2 mb-4">
+                                            <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-red-100 dark:bg-red-900/30 text-red-700 dark:text-red-300">
+                                                MVC
+                                            </span>
+                                            <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-orange-100 dark:bg-orange-900/30 text-orange-700 dark:text-orange-300">
+                                                Eloquent
+                                            </span>
+                                            <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-yellow-100 dark:bg-yellow-900/30 text-yellow-700 dark:text-yellow-300">
+                                                APIs
+                                            </span>
+                                        </div>
+                                        
+                                        <!-- Progress Bar -->
+                                        <div class="mb-4">
+                                            <div class="flex items-center justify-between text-xs text-slate-600 dark:text-slate-400 mb-2">
+                                                <span>Progress</span>
+                                                <span>37%</span>
+                                            </div>
+                                            <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2">
+                                                <div class="bg-gradient-to-r from-red-500 to-orange-500 h-2 rounded-full" style="width: 37%"></div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Path Stats -->
+                                        <div class="grid grid-cols-3 gap-4 text-center text-xs">
+                                            <div>
+                                                <div class="font-semibold text-slate-900 dark:text-slate-100">8</div>
+                                                <div class="text-slate-500 dark:text-slate-400">courses</div>
+                                            </div>
+                                            <div>
+                                                <div class="font-semibold text-slate-900 dark:text-slate-100">24h</div>
+                                                <div class="text-slate-500 dark:text-slate-400">duration</div>
+                                            </div>
+                                            <div>
+                                                <div class="font-semibold text-slate-900 dark:text-slate-100">Mid</div>
+                                                <div class="text-slate-500 dark:text-slate-400">level</div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Continue Button -->
+                                        <button class="w-full mt-4 bg-gradient-to-r from-red-500 to-orange-500 text-white text-sm font-medium py-2.5 rounded-lg hover:from-red-600 hover:to-orange-600 transition-all duration-200 shadow-sm hover:shadow-md">
+                                            Continue Path
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Full-Stack JavaScript Path -->
+                                <div class="group bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm border border-slate-200/60 dark:border-slate-700/60 rounded-xl overflow-hidden hover:shadow-lg hover:shadow-slate-200/20 dark:hover:shadow-slate-900/20 transition-all duration-300 hover:-translate-y-1">
+                                    <div class="relative">
+                                        <!-- Header Gradient -->
+                                        <div class="h-24 bg-gradient-to-br from-blue-500 via-indigo-500 to-purple-500 relative overflow-hidden">
+                                            <div class="absolute inset-0 bg-gradient-to-br from-blue-500/80 via-indigo-500/80 to-purple-500/80"></div>
+                                            <div class="absolute inset-0 flex items-center justify-center">
+                                                <div class="text-3xl text-white/90">💻</div>
+                                            </div>
+                                            <!-- New Badge -->
+                                            <div class="absolute top-3 right-3 bg-white/20 backdrop-blur-sm text-white text-xs px-2 py-1 rounded-full">
+                                                New Path
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="p-6">
+                                        <div class="flex items-start justify-between mb-4">
+                                            <div class="flex-1">
+                                                <h4 class="text-lg font-bold text-slate-900 dark:text-slate-100 mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                                                    Full-Stack JavaScript
+                                                </h4>
+                                                <p class="text-sm text-slate-600 dark:text-slate-400 line-clamp-2 leading-relaxed">
+                                                    Complete JavaScript mastery from vanilla JS to modern frameworks like Vue.js and Node.js.
+                                                </p>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Skills Tags -->
+                                        <div class="flex flex-wrap gap-2 mb-4">
+                                            <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300">
+                                                Vue.js
+                                            </span>
+                                            <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-indigo-100 dark:bg-indigo-900/30 text-indigo-700 dark:text-indigo-300">
+                                                Node.js
+                                            </span>
+                                            <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-300">
+                                                ES6+
+                                            </span>
+                                        </div>
+                                        
+                                        <!-- Progress Bar -->
+                                        <div class="mb-4">
+                                            <div class="flex items-center justify-between text-xs text-slate-600 dark:text-slate-400 mb-2">
+                                                <span>Progress</span>
+                                                <span>0%</span>
+                                            </div>
+                                            <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2">
+                                                <div class="bg-gradient-to-r from-blue-500 to-purple-500 h-2 rounded-full" style="width: 0%"></div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Path Stats -->
+                                        <div class="grid grid-cols-3 gap-4 text-center text-xs">
+                                            <div>
+                                                <div class="font-semibold text-slate-900 dark:text-slate-100">12</div>
+                                                <div class="text-slate-500 dark:text-slate-400">courses</div>
+                                            </div>
+                                            <div>
+                                                <div class="font-semibold text-slate-900 dark:text-slate-100">36h</div>
+                                                <div class="text-slate-500 dark:text-slate-400">duration</div>
+                                            </div>
+                                            <div>
+                                                <div class="font-semibold text-slate-900 dark:text-slate-100">Adv</div>
+                                                <div class="text-slate-500 dark:text-slate-400">level</div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Start Button -->
+                                        <button class="w-full mt-4 bg-gradient-to-r from-blue-500 to-purple-500 text-white text-sm font-medium py-2.5 rounded-lg hover:from-blue-600 hover:to-purple-600 transition-all duration-200 shadow-sm hover:shadow-md">
+                                            Start Path
+                                        </button>
+                                    </div>
+                                </div>
+
+                                <!-- Testing Specialist Path -->
+                                <div class="group bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm border border-slate-200/60 dark:border-slate-700/60 rounded-xl overflow-hidden hover:shadow-lg hover:shadow-slate-200/20 dark:hover:shadow-slate-900/20 transition-all duration-300 hover:-translate-y-1">
+                                    <div class="relative">
+                                        <!-- Header Gradient -->
+                                        <div class="h-24 bg-gradient-to-br from-green-500 via-emerald-500 to-teal-500 relative overflow-hidden">
+                                            <div class="absolute inset-0 bg-gradient-to-br from-green-500/80 via-emerald-500/80 to-teal-500/80"></div>
+                                            <div class="absolute inset-0 flex items-center justify-center">
+                                                <div class="text-3xl text-white/90">🧪</div>
+                                            </div>
+                                            <!-- Completed Badge -->
+                                            <div class="absolute top-3 right-3 bg-white/20 backdrop-blur-sm text-white text-xs px-2 py-1 rounded-full">
+                                                Completed
+                                            </div>
+                                        </div>
+                                    </div>
+                                    
+                                    <div class="p-6">
+                                        <div class="flex items-start justify-between mb-4">
+                                            <div class="flex-1">
+                                                <h4 class="text-lg font-bold text-slate-900 dark:text-slate-100 mb-2 group-hover:text-green-600 dark:group-hover:text-green-400 transition-colors">
+                                                    Testing Specialist
+                                                </h4>
+                                                <p class="text-sm text-slate-600 dark:text-slate-400 line-clamp-2 leading-relaxed">
+                                                    Master software testing with PHPUnit, Pest, TDD, and integration testing best practices.
+                                                </p>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Skills Tags -->
+                                        <div class="flex flex-wrap gap-2 mb-4">
+                                            <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-green-100 dark:bg-green-900/30 text-green-700 dark:text-green-300">
+                                                PHPUnit
+                                            </span>
+                                            <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-emerald-100 dark:bg-emerald-900/30 text-emerald-700 dark:text-emerald-300">
+                                                Pest
+                                            </span>
+                                            <span class="inline-flex items-center px-2 py-1 rounded-md text-xs font-medium bg-teal-100 dark:bg-teal-900/30 text-teal-700 dark:text-teal-300">
+                                                TDD
+                                            </span>
+                                        </div>
+                                        
+                                        <!-- Progress Bar -->
+                                        <div class="mb-4">
+                                            <div class="flex items-center justify-between text-xs text-slate-600 dark:text-slate-400 mb-2">
+                                                <span>Progress</span>
+                                                <span>100%</span>
+                                            </div>
+                                            <div class="w-full bg-slate-200 dark:bg-slate-700 rounded-full h-2">
+                                                <div class="bg-gradient-to-r from-green-500 to-teal-500 h-2 rounded-full" style="width: 100%"></div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Path Stats -->
+                                        <div class="grid grid-cols-3 gap-4 text-center text-xs">
+                                            <div>
+                                                <div class="font-semibold text-slate-900 dark:text-slate-100">6</div>
+                                                <div class="text-slate-500 dark:text-slate-400">courses</div>
+                                            </div>
+                                            <div>
+                                                <div class="font-semibold text-slate-900 dark:text-slate-100">18h</div>
+                                                <div class="text-slate-500 dark:text-slate-400">duration</div>
+                                            </div>
+                                            <div>
+                                                <div class="font-semibold text-slate-900 dark:text-slate-100">Adv</div>
+                                                <div class="text-slate-500 dark:text-slate-400">level</div>
+                                            </div>
+                                        </div>
+                                        
+                                        <!-- Review Button -->
+                                        <button class="w-full mt-4 bg-gradient-to-r from-green-500 to-teal-500 text-white text-sm font-medium py-2.5 rounded-lg hover:from-green-600 hover:to-teal-600 transition-all duration-200 shadow-sm hover:shadow-md">
+                                            Review Path
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Skill-Based Recommendations -->
+                            <div class="bg-gradient-to-r from-purple-100 via-blue-50 to-indigo-100 dark:from-purple-900/20 dark:via-blue-900/10 dark:to-indigo-900/20 rounded-2xl border border-purple-200/60 dark:border-purple-800/40 p-6 mb-8">
+                                <div class="flex items-start gap-4">
+                                    <div class="w-12 h-12 bg-gradient-to-r from-purple-500 to-blue-500 rounded-xl flex items-center justify-center text-white text-xl shrink-0">
+                                        🎯
+                                    </div>
+                                    <div class="flex-1">
+                                        <h4 class="text-lg font-semibold text-slate-900 dark:text-slate-100 mb-2">
+                                            Recommended for You
+                                        </h4>
+                                        <p class="text-sm text-slate-600 dark:text-slate-400 mb-4 leading-relaxed">
+                                            Based on your Laravel experience and testing knowledge, we recommend exploring advanced API development and microservices architecture.
+                                        </p>
+                                        
+                                        <!-- Recommended Series -->
+                                        <div class="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
+                                            <a href="/series/laravel-api-mastery" class="group flex items-center gap-3 bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border border-purple-200/60 dark:border-purple-700/60 rounded-lg p-3 hover:bg-white/80 dark:hover:bg-slate-800/80 transition-all">
+                                                <div class="w-10 h-10 bg-gradient-to-r from-purple-400 to-pink-400 rounded-lg flex items-center justify-center text-white text-sm shrink-0">
+                                                    🔗
+                                                </div>
+                                                <div class="flex-1 min-w-0">
+                                                    <div class="font-medium text-slate-900 dark:text-slate-100 text-sm group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
+                                                        Laravel API Mastery
+                                                    </div>
+                                                    <div class="text-xs text-slate-500 dark:text-slate-400">8 episodes • 4h 30m</div>
+                                                </div>
+                                            </a>
+                                            
+                                            <a href="/series/microservices-with-laravel" class="group flex items-center gap-3 bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border border-purple-200/60 dark:border-purple-700/60 rounded-lg p-3 hover:bg-white/80 dark:hover:bg-slate-800/80 transition-all">
+                                                <div class="w-10 h-10 bg-gradient-to-r from-blue-400 to-indigo-400 rounded-lg flex items-center justify-center text-white text-sm shrink-0">
+                                                    🏗️
+                                                </div>
+                                                <div class="flex-1 min-w-0">
+                                                    <div class="font-medium text-slate-900 dark:text-slate-100 text-sm group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                                                        Microservices Architecture
+                                                    </div>
+                                                    <div class="text-xs text-slate-500 dark:text-slate-400">12 episodes • 6h 15m</div>
+                                                </div>
+                                            </a>
+                                            
+                                            <a href="/series/advanced-livewire" class="group flex items-center gap-3 bg-white/60 dark:bg-slate-800/60 backdrop-blur-sm border border-purple-200/60 dark:border-purple-700/60 rounded-lg p-3 hover:bg-white/80 dark:hover:bg-slate-800/80 transition-all">
+                                                <div class="w-10 h-10 bg-gradient-to-r from-indigo-400 to-purple-400 rounded-lg flex items-center justify-center text-white text-sm shrink-0">
+                                                    ⚡
+                                                </div>
+                                                <div class="flex-1 min-w-0">
+                                                    <div class="font-medium text-slate-900 dark:text-slate-100 text-sm group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">
+                                                        Advanced Livewire
+                                                    </div>
+                                                    <div class="text-xs text-slate-500 dark:text-slate-400">10 episodes • 5h 20m</div>
+                                                </div>
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
                         <!-- Individual Lessons Section -->
                         <div>
                             <div class="flex items-center gap-3 mb-4">
