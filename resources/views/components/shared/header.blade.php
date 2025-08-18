@@ -39,7 +39,7 @@
                         <div class="absolute inset-x-0 bottom-0 h-0.5 bg-gradient-to-r from-red-600 to-orange-500 rounded-full"></div>
                     @endif
                 </a>
-                <a href="/discussion" class="px-3 py-2 text-sm font-medium {{ $currentPage === 'discussion' ? 'text-red-600 dark:text-red-400' : 'text-slate-700 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400' }} transition-colors">Discussion</a>
+                <a href="/discussions" class="px-3 py-2 text-sm font-medium {{ $currentPage === 'discussion' ? 'text-red-600 dark:text-red-400' : 'text-slate-700 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400' }} transition-colors">Discussions</a>
                 <a href="{{ route('pricing') }}" class="px-3 py-2 text-sm font-medium {{ $currentPage === 'pricing' ? 'text-red-600 dark:text-red-400' : 'text-slate-700 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400' }} transition-colors">Pricing</a>
                 <a href="/sponsors" class="px-3 py-2 text-sm font-medium {{ $currentPage === 'sponsors' ? 'text-red-600 dark:text-red-400' : 'text-slate-700 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400' }} transition-colors">Sponsors</a>
                 <a href="/contact" class="px-3 py-2 text-sm font-medium {{ $currentPage === 'contact' ? 'text-red-600 dark:text-red-400' : 'text-slate-700 dark:text-slate-300 hover:text-red-600 dark:hover:text-red-400' }} transition-colors">Contact</a>
@@ -64,9 +64,53 @@
 
                 @if (Route::has('filament.dashboard.auth.login'))
                     @auth
-                        <a href="{{ url('/dashboard') }}" class="hidden sm:inline-flex items-center px-4 py-2 rounded-xl bg-slate-100/50 dark:bg-slate-800/50 border border-slate-200/50 dark:border-slate-700/50 text-slate-700 dark:text-slate-300 hover:bg-slate-200/50 dark:hover:bg-slate-700/50 transition-all text-sm font-medium">
-                            Dashboard
-                        </a>
+                        <!-- User Dropdown -->
+                        <div x-data="{ open: false }" class="relative hidden sm:block">
+                            <button 
+                                @click="open = !open"
+                                @click.away="open = false"
+                                class="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-100/50 dark:bg-slate-800/50 border border-slate-200/50 dark:border-slate-700/50 text-slate-700 dark:text-slate-300 hover:bg-slate-200/50 dark:hover:bg-slate-700/50 transition-all text-sm font-medium"
+                            >
+                                <div class="w-6 h-6 rounded-full bg-gradient-to-r from-red-500 to-orange-400 flex items-center justify-center text-white font-bold text-xs">
+                                    {{ substr(auth()->user()->name, 0, 2) }}
+                                </div>
+                                <span>{{ auth()->user()->name }}</span>
+                                <svg class="w-4 h-4 transition-transform" :class="{ 'rotate-180': open }" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                                </svg>
+                            </button>
+                            
+                            <!-- Dropdown Menu -->
+                            <div 
+                                x-show="open"
+                                x-transition:enter="transition ease-out duration-200"
+                                x-transition:enter-start="opacity-0 scale-95"
+                                x-transition:enter-end="opacity-100 scale-100"
+                                x-transition:leave="transition ease-in duration-150"
+                                x-transition:leave-start="opacity-100 scale-100"
+                                x-transition:leave-end="opacity-0 scale-95"
+                                class="absolute right-0 mt-2 w-48 bg-white/95 dark:bg-slate-800/95 backdrop-blur-xl rounded-xl border border-slate-200/60 dark:border-slate-700/60 shadow-lg overflow-hidden"
+                                style="display: none;"
+                            >
+                                <div class="py-2">
+                                    <a href="{{ url('/dashboard') }}" class="flex items-center gap-3 px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100/60 dark:hover:bg-slate-700/60 transition-all">
+                                        <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M3 4a1 1 0 011-1h12a1 1 0 011 1v2a1 1 0 01-1 1H4a1 1 0 01-1-1V4zM3 10a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H4a1 1 0 01-1-1v-6zM14 9a1 1 0 00-1 1v6a1 1 0 001 1h2a1 1 0 001-1v-6a1 1 0 00-1-1h-2z"/>
+                                        </svg>
+                                        Dashboard
+                                    </a>
+                                    <form method="POST" action="{{ route('filament.dashboard.auth.logout') }}" class="block">
+                                        @csrf
+                                        <button type="submit" class="flex items-center gap-3 w-full px-4 py-2 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100/60 dark:hover:bg-slate-700/60 transition-all text-left">
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"/>
+                                            </svg>
+                                            Log out
+                                        </button>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
                     @else
                         <a href="{{ route('filament.dashboard.auth.login') }}" class="inline-flex items-center px-4 py-2 rounded-xl bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 text-slate-800 dark:text-slate-200 hover:bg-white/80 dark:hover:bg-slate-800/80 transition-all text-sm font-medium">
                             Login
@@ -95,7 +139,7 @@
                 </svg>
                 Watch
             </a>
-            <a href="/discussion" class="px-3 py-2 rounded-lg {{ $currentPage === 'discussion' ? 'bg-red-100/60 dark:bg-red-900/60 text-red-700 dark:text-red-300 font-semibold' : 'hover:bg-slate-100/60 dark:hover:bg-slate-800/60' }} transition">Discussion</a>
+            <a href="/discussions" class="px-3 py-2 rounded-lg {{ $currentPage === 'discussion' ? 'bg-red-100/60 dark:bg-red-900/60 text-red-700 dark:text-red-300 font-semibold' : 'hover:bg-slate-100/60 dark:hover:bg-slate-800/60' }} transition">Discussions</a>
             <a href="{{ route('pricing') }}" class="px-3 py-2 rounded-lg {{ $currentPage === 'pricing' ? 'bg-red-100/60 dark:bg-red-900/60 text-red-700 dark:text-red-300 font-semibold' : 'hover:bg-slate-100/60 dark:hover:bg-slate-800/60' }} transition">Pricing</a>
             <a href="/sponsors" class="px-3 py-2 rounded-lg {{ $currentPage === 'sponsors' ? 'bg-red-100/60 dark:bg-red-900/60 text-red-700 dark:text-red-300 font-semibold' : 'hover:bg-slate-100/60 dark:hover:bg-slate-800/60' }} transition">Sponsors</a>
             <a href="/contact" class="px-3 py-2 rounded-lg {{ $currentPage === 'contact' ? 'bg-red-100/60 dark:bg-red-900/60 text-red-700 dark:text-red-300 font-semibold' : 'hover:bg-slate-100/60 dark:hover:bg-slate-800/60' }} transition">Contact</a>

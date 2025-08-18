@@ -10,10 +10,12 @@ use Livewire\WithPagination;
 class DiscussionForum extends Component
 {
     use WithPagination;
+    
+    protected $paginationView = 'vendor.livewire.tailwind';
 
     public string $search = '';
 
-    public string $status = 'all'; // all, resolved, unresolved
+    public string $status = 'all'; // all, resolved, unresolved, mine, commented
 
     public array $categoryIds = [];
 
@@ -68,6 +70,12 @@ class DiscussionForum extends Component
             $query->where('is_resolved', true);
         } elseif ($this->status === 'unresolved') {
             $query->where('is_resolved', false);
+        } elseif ($this->status === 'mine' && auth()->check()) {
+            $query->where('user_id', auth()->id());
+        } elseif ($this->status === 'commented' && auth()->check()) {
+            $query->whereHas('replies', function ($q) {
+                $q->where('user_id', auth()->id());
+            });
         }
 
         // Category filter
@@ -95,6 +103,10 @@ class DiscussionForum extends Component
             'all' => Discussion::query()->count(),
             'resolved' => Discussion::query()->where('is_resolved', true)->count(),
             'unresolved' => Discussion::query()->where('is_resolved', false)->count(),
+            'mine' => auth()->check() ? Discussion::query()->where('user_id', auth()->id())->count() : 0,
+            'commented' => auth()->check() ? Discussion::query()->whereHas('replies', function ($q) {
+                $q->where('user_id', auth()->id());
+            })->count() : 0,
         ];
 
         return view('livewire.discussion.discussion-forum', [

@@ -22,10 +22,17 @@
                 <aside class="lg:w-1/4 mb-8 lg:mb-0">
                     <div class="sticky top-24 space-y-6">
                         <!-- New Discussion Button -->
-                        <a href="#" class="w-full flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-red-600 to-orange-500 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-red-500/25 transform hover:scale-105 transition-all duration-200 cursor-pointer">
-                            <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/></svg>
-                            <span>New Discussion</span>
-                        </a>
+                        @auth
+                            <a href="{{ route('discussions.create') }}" class="w-full flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-red-600 to-orange-500 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-red-500/25 transform hover:scale-105 transition-all duration-200">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/></svg>
+                                <span>New Discussion</span>
+                            </a>
+                        @else
+                            <a href="/dashboard/login" class="w-full flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-red-600 to-orange-500 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-red-500/25 transform hover:scale-105 transition-all duration-200">
+                                <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5.05 4.05a7 7 0 119.9 9.9L10 18.9l-4.95-4.95a7 7 0 010-9.9zM10 11a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd"/></svg>
+                                <span>Login to Join Discussion</span>
+                            </a>
+                        @endauth
 
                         <!-- Filters Panel -->
                         <div class="bg-white/70 dark:bg-slate-800/70 backdrop-blur-xl rounded-2xl border border-slate-200/60 dark:border-slate-700/60 p-5">
@@ -43,6 +50,10 @@
                                 <h4 class="text-sm font-semibold text-slate-600 dark:text-slate-300 mb-3">Status</h4>
                                 <ul class="space-y-2 text-sm">
                                     <li><button wire:click="$set('status', 'all')" class="w-full flex items-center justify-between px-3 py-2 rounded-lg cursor-pointer transition-all {{ $status === 'all' ? 'bg-green-100/50 dark:bg-green-900/20 text-green-700 dark:text-green-300 font-semibold' : 'hover:bg-slate-100 dark:hover:bg-slate-700/50 text-slate-700 dark:text-slate-300' }}"><span>All Discussions</span> <span class="px-2 py-0.5 text-xs rounded-full bg-white dark:bg-slate-700">{{ $statusCounts['all'] }}</span></button></li>
+                                    @auth
+                                        <li><button wire:click="$set('status', 'mine')" class="w-full flex items-center justify-between px-3 py-2 rounded-lg cursor-pointer transition-all {{ $status === 'mine' ? 'bg-blue-100/50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 font-semibold' : 'hover:bg-slate-100 dark:hover:bg-slate-700/50 text-slate-700 dark:text-slate-300' }}"><span>My Discussions</span> <span class="px-2 py-0.5 text-xs rounded-full bg-white dark:bg-slate-700">{{ $statusCounts['mine'] }}</span></button></li>
+                                        <li><button wire:click="$set('status', 'commented')" class="w-full flex items-center justify-between px-3 py-2 rounded-lg cursor-pointer transition-all {{ $status === 'commented' ? 'bg-purple-100/50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300 font-semibold' : 'hover:bg-slate-100 dark:hover:bg-slate-700/50 text-slate-700 dark:text-slate-300' }}"><span>Commented</span> <span class="px-2 py-0.5 text-xs rounded-full bg-white dark:bg-slate-700">{{ $statusCounts['commented'] }}</span></button></li>
+                                    @endauth
                                     <li><button wire:click="$set('status', 'resolved')" class="w-full flex items-center justify-between px-3 py-2 rounded-lg cursor-pointer transition-all {{ $status === 'resolved' ? 'bg-green-100/50 dark:bg-green-900/20 text-green-700 dark:text-green-300 font-semibold' : 'hover:bg-slate-100 dark:hover:bg-slate-700/50 text-slate-700 dark:text-slate-300' }}"><span>Resolved</span> <span class="px-2 py-0.5 text-xs rounded-full bg-white dark:bg-slate-700">{{ $statusCounts['resolved'] }}</span></button></li>
                                     <li><button wire:click="$set('status', 'unresolved')" class="w-full flex items-center justify-between px-3 py-2 rounded-lg cursor-pointer transition-all {{ $status === 'unresolved' ? 'bg-green-100/50 dark:bg-green-900/20 text-green-700 dark:text-green-300 font-semibold' : 'hover:bg-slate-100 dark:hover:bg-slate-700/50 text-slate-700 dark:text-slate-300' }}"><span>Unresolved</span> <span class="px-2 py-0.5 text-xs rounded-full bg-white dark:bg-slate-700">{{ $statusCounts['unresolved'] }}</span></button></li>
                                 </ul>
@@ -66,7 +77,7 @@
                                                     </svg>
                                                 </div>
                                             </div>
-                                            
+
                                             <!-- Category Content -->
                                             <div class="flex-1 flex items-center justify-between">
                                                 <span class="text-sm font-medium text-slate-700 dark:text-slate-300 group-hover:text-slate-900 dark:group-hover:text-slate-100 transition-colors">
@@ -90,7 +101,7 @@
                                     </button>
                                 @endif
                             </div>
-                            
+
                             <!-- Sort Options -->
                             <div class="mt-6 pt-6 border-t border-slate-200/60 dark:border-slate-700/60">
                                 <label for="forum-sort" class="text-sm font-semibold text-slate-600 dark:text-slate-300 mb-3 block">Sort By</label>
@@ -114,20 +125,32 @@
                 <div class="flex-1">
                     <div class="space-y-4">
                         @forelse($discussions as $discussion)
-                            <a href="#" class="block group cursor-pointer">
-                                <div class="bg-white/70 dark:bg-slate-800/70 backdrop-blur-xl rounded-2xl border border-slate-200/60 dark:border-slate-700/60 p-5 flex items-start gap-4 hover:border-slate-300 dark:hover:border-slate-600 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-slate-200/20 dark:hover:shadow-slate-900/20 cursor-pointer">
+                            <div class="{{ $discussion->is_resolved ? 'bg-green-50/70 dark:bg-green-900/10' : 'bg-white/70 dark:bg-slate-800/70' }} backdrop-blur-xl rounded-2xl border {{ $discussion->is_resolved ? 'border-green-200/60 dark:border-green-800/60' : 'border-slate-200/60 dark:border-slate-700/60' }} p-5 hover:border-slate-300 dark:hover:border-slate-600 transition-all duration-300 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-slate-200/20 dark:hover:shadow-slate-900/20">
+                                <div class="flex items-start gap-4">
                                     <!-- Avatar -->
                                     <div class="w-10 h-10 rounded-full bg-gradient-to-r from-red-500 to-orange-400 flex-shrink-0 flex items-center justify-center text-white font-bold text-sm">
                                         {{ substr($discussion->user->name, 0, 2) }}
                                     </div>
-                                    
-                                    <!-- Main Content -->
-                                    <div class="flex-1">
+
+                                    <!-- Main Content (Clickable) -->
+                                    <a href="{{ route('discussions.show', $discussion->slug) }}" class="flex-1 block group cursor-pointer">
                                         <!-- Title and Status -->
                                         <div class="flex items-center justify-between">
-                                            <h3 class="text-lg font-bold text-slate-800 dark:text-slate-200 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors pr-4">
-                                                {{ $discussion->title }}
-                                            </h3>
+                                            <div class="flex items-center gap-2 flex-1 pr-4">
+                                                <h3 class="text-lg font-bold text-slate-800 dark:text-slate-200 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors">
+                                                    {{ $discussion->title }}
+                                                </h3>
+                                                @auth
+                                                    @if($discussion->user_id === auth()->id())
+                                                        <div class="flex items-center gap-1 px-2 py-1 bg-blue-100 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300 rounded-full text-xs font-medium flex-shrink-0" title="Your discussion">
+                                                            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                                                                <path fill-rule="evenodd" d="M10 9a3 3 0 100-6 3 3 0 000 6zm-7 9a7 7 0 1114 0H3z" clip-rule="evenodd"/>
+                                                            </svg>
+                                                            <span class="hidden sm:inline">Mine</span>
+                                                        </div>
+                                                    @endif
+                                                @endauth
+                                            </div>
                                             @if($discussion->is_resolved)
                                                 <div class="flex items-center gap-2 text-green-600 dark:text-green-400 flex-shrink-0" title="Resolved">
                                                     <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>
@@ -135,21 +158,49 @@
                                                 </div>
                                             @endif
                                         </div>
-                                        
+
                                         <!-- Meta Info -->
                                         <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">
                                             Posted by <span class="font-semibold">{{ $discussion->user->name }}</span> in <span class="font-semibold text-blue-600 dark:text-blue-400">{{ $discussion->category->name }}</span> • {{ $discussion->created_at->diffForHumans() }}
                                         </p>
-                                    </div>
-                                    
-                                    <!-- Stats -->
+                                    </a>
+
+                                    <!-- Stats and Actions (Non-clickable) -->
                                     <div class="flex flex-col gap-3 items-center justify-center text-center w-24 flex-shrink-0">
+                                        <!-- Share Button -->
+                                        <button 
+                                            x-data="{ 
+                                                copied: false,
+                                                shareUrl: '{{ route('discussions.show', $discussion->slug) }}',
+                                                async copyToClipboard() {
+                                                    try {
+                                                        await navigator.clipboard.writeText(this.shareUrl);
+                                                        this.copied = true;
+                                                        setTimeout(() => { this.copied = false; }, 2000);
+                                                    } catch (err) {
+                                                        console.error('Failed to copy: ', err);
+                                                    }
+                                                }
+                                            }"
+                                            @click="copyToClipboard()"
+                                            class="p-2 rounded-lg bg-slate-100/70 dark:bg-slate-700/70 hover:bg-slate-200/70 dark:hover:bg-slate-600/70 transition-all cursor-pointer transform hover:scale-110"
+                                            :class="{ 'bg-green-100/70 dark:bg-green-900/30': copied }"
+                                            title="Share discussion"
+                                        >
+                                            <svg x-show="!copied" class="w-4 h-4 text-slate-600 dark:text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"/>
+                                            </svg>
+                                            <svg x-show="copied" class="w-4 h-4 text-green-600 dark:text-green-400" fill="currentColor" viewBox="0 0 20 20" style="display: none;">
+                                                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                            </svg>
+                                        </button>
+                                        
                                         <!-- Replies Count -->
                                         <div class="flex flex-col items-center">
                                             <span class="text-lg font-bold text-slate-700 dark:text-slate-300">{{ $discussion->replies_count }}</span>
                                             <span class="text-xs text-slate-500 dark:text-slate-400">Replies</span>
                                         </div>
-                                        
+
                                         <!-- Views Count -->
                                         <div class="flex items-center gap-1 text-slate-500 dark:text-slate-400">
                                             <svg class="w-3.5 h-3.5" viewBox="0 0 20 20" fill="currentColor">
@@ -160,7 +211,7 @@
                                         </div>
                                     </div>
                                 </div>
-                            </a>
+                            </div>
                         @empty
                             <div class="bg-white/70 dark:bg-slate-800/70 backdrop-blur-xl rounded-2xl border border-slate-200/60 dark:border-slate-700/60 p-12 text-center">
                                 <svg class="h-16 w-16 text-slate-300 dark:text-slate-600 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
