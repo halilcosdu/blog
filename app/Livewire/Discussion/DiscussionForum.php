@@ -12,8 +12,11 @@ class DiscussionForum extends Component
     use WithPagination;
 
     public string $search = '';
+
     public string $status = 'all'; // all, resolved, unresolved
+
     public array $categoryIds = [];
+
     public string $sortBy = 'latest'; // latest, oldest, popular, most_commented
 
     protected $queryString = [
@@ -68,7 +71,7 @@ class DiscussionForum extends Component
         }
 
         // Category filter
-        if (!empty($this->categoryIds)) {
+        if (! empty($this->categoryIds)) {
             $query->whereIn('category_id', $this->categoryIds);
         }
 
@@ -103,7 +106,7 @@ class DiscussionForum extends Component
                 'seoData' => [
                     'title' => 'Discussion Forum - phpuzem',
                     'description' => 'Ask questions, share knowledge, and connect with the PHP and Laravel community.',
-                ]
+                ],
             ]);
     }
 }
