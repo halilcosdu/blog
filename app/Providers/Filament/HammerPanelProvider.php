@@ -30,6 +30,7 @@ class HammerPanelProvider extends PanelProvider
             ->brandName('phpuzem')
             ->path('/dashboard')
             ->login()
+            ->profile()
             ->registration()
             ->colors([
                 'primary' => Color::Indigo,

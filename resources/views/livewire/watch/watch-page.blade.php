@@ -114,14 +114,14 @@
                         </div>
 
                         <!-- Scroll Indicators -->
-                        <div class="absolute top-1/2 -translate-y-1/2 -left-2">
+                        <div class="absolute top-1/2 -translate-y-1/2 -left-5">
                             <button @click="scrollContinueLeft()" class="w-8 h-8 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border border-slate-200/60 dark:border-slate-700/60 rounded-full flex items-center justify-center text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-all shadow-lg cursor-pointer">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
                                 </svg>
                             </button>
                         </div>
-                        <div class="absolute top-1/2 -translate-y-1/2 -right-2">
+                        <div class="absolute top-1/2 -translate-y-1/2 -right-5">
                             <button @click="scrollContinueRight()" class="w-8 h-8 bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border border-slate-200/60 dark:border-slate-700/60 rounded-full flex items-center justify-center text-slate-600 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-100 transition-all shadow-lg cursor-pointer">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/>
