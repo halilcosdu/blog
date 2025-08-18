@@ -62,17 +62,17 @@
                     </svg>
                 </button>
 
-                @if (Route::has('filament.customer.auth.login'))
+                @if (Route::has('filament.dashboard.auth.login'))
                     @auth
-                        <a href="{{ url('/customer') }}" class="hidden sm:inline-flex items-center px-4 py-2 rounded-xl bg-slate-100/50 dark:bg-slate-800/50 border border-slate-200/50 dark:border-slate-700/50 text-slate-700 dark:text-slate-300 hover:bg-slate-200/50 dark:hover:bg-slate-700/50 transition-all text-sm font-medium">
+                        <a href="{{ url('/dashboard') }}" class="hidden sm:inline-flex items-center px-4 py-2 rounded-xl bg-slate-100/50 dark:bg-slate-800/50 border border-slate-200/50 dark:border-slate-700/50 text-slate-700 dark:text-slate-300 hover:bg-slate-200/50 dark:hover:bg-slate-700/50 transition-all text-sm font-medium">
                             Dashboard
                         </a>
                     @else
-                        <a href="{{ route('filament.customer.auth.login') }}" class="inline-flex items-center px-4 py-2 rounded-xl bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 text-slate-800 dark:text-slate-200 hover:bg-white/80 dark:hover:bg-slate-800/80 transition-all text-sm font-medium">
+                        <a href="{{ route('filament.dashboard.auth.login') }}" class="inline-flex items-center px-4 py-2 rounded-xl bg-white/50 dark:bg-slate-800/50 backdrop-blur-sm border border-slate-200/50 dark:border-slate-700/50 text-slate-800 dark:text-slate-200 hover:bg-white/80 dark:hover:bg-slate-800/80 transition-all text-sm font-medium">
                             Login
                         </a>
-                        @if (Route::has('filament.customer.auth.register'))
-                            <a href="{{ route('filament.customer.auth.register') }}" class="inline-flex items-center px-4 py-2 rounded-xl bg-gradient-to-r from-red-600 to-orange-500 text-white hover:shadow-lg hover:shadow-red-500/25 transition-all text-sm font-semibold">
+                        @if (Route::has('filament.dashboard.auth.register'))
+                            <a href="{{ route('filament.dashboard.auth.register') }}" class="inline-flex items-center px-4 py-2 rounded-xl bg-gradient-to-r from-red-600 to-orange-500 text-white hover:shadow-lg hover:shadow-red-500/25 transition-all text-sm font-semibold">
                                 Register
                             </a>
                         @endif
