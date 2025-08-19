@@ -10,7 +10,7 @@ use Livewire\WithPagination;
 class DiscussionForum extends Component
 {
     use WithPagination;
-    
+
     protected $paginationView = 'vendor.livewire.tailwind';
 
     public string $search = '';

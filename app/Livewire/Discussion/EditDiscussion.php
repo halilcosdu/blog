@@ -28,7 +28,7 @@ class EditDiscussion extends Component
     public function mount(string $slug): void
     {
         $this->discussion = Discussion::query()->where('slug', $slug)->firstOrFail();
-        
+
         // Check if user can edit this discussion
         if (Auth::id() !== $this->discussion->user_id) {
             abort(403, 'You can only edit your own discussions.');
@@ -51,7 +51,7 @@ class EditDiscussion extends Component
 
         session()->flash('success', 'Discussion updated successfully!');
 
-        $this->redirect(route('discussions.show', $this->discussion->slug), navigate: true);
+        $this->redirectRoute('discussions.show', ['slug' => $this->discussion->slug]);
     }
 
     #[Layout('components.layouts.app')]

@@ -38,10 +38,10 @@ class DiscussionReply extends Model
     {
         // İlk olarak diğer tüm cevapları best answer olmaktan çıkar
         $this->discussion->replies()->update(['is_best_answer' => false]);
-        
+
         // Bu cevabı best answer yap
         $this->update(['is_best_answer' => true]);
-        
+
         // Discussion'ı çözüldü olarak işaretle
         $this->discussion->markAsResolved();
     }
@@ -49,9 +49,9 @@ class DiscussionReply extends Model
     public function removeBestAnswer(): void
     {
         $this->update(['is_best_answer' => false]);
-        
+
         // Eğer başka best answer yoksa discussion'ı çözülmemiş yap
-        if (!$this->discussion->replies()->where('is_best_answer', true)->exists()) {
+        if (! $this->discussion->replies()->where('is_best_answer', true)->exists()) {
             $this->discussion->markAsUnresolved();
         }
     }

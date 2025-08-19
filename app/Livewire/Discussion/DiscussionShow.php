@@ -117,7 +117,7 @@ class DiscussionShow extends Component
             abort(403, 'You must be logged in to reply.');
         }
 
-        $this->validate();
+        $this->validateOnly('replyContent');
 
         DiscussionReply::create([
             'discussion_id' => $this->discussion->id,

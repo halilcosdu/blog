@@ -26,7 +26,7 @@ class CreateDiscussion extends Component
         logger()->info('Discussion content before validation:', [
             'content' => $this->content,
             'content_length' => strlen($this->content),
-            'content_empty' => empty($this->content)
+            'content_empty' => empty($this->content),
         ]);
 
         $this->validate();
@@ -42,7 +42,7 @@ class CreateDiscussion extends Component
 
         session()->flash('success', 'Discussion created successfully!');
 
-        $this->redirect(route('discussions.index'), navigate: true);
+        $this->redirectRoute('discussions.index');
     }
 
     #[Layout('components.layouts.app')]

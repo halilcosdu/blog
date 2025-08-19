@@ -203,7 +203,7 @@ it('does not show edit and delete buttons for non-authors', function () {
     // Since the other user is neither the discussion author nor the reply author,
     // they shouldn't see edit/delete buttons for the reply
     $response = Livewire::test(DiscussionShow::class, ['slug' => $discussion->slug]);
-    
+
     // Check that the wire:click for editing this specific reply is not present
     expect($response->html())->not->toContain('wire:click="startEditingReply('.$reply->id.')');
     expect($response->html())->not->toContain('wire:click="deleteReply('.$reply->id.')');

@@ -164,4 +164,3 @@ it('does not show mark as best answer button to non-authors', function () {
     Livewire::test(DiscussionShow::class, ['slug' => $discussion->slug])
         ->assertDontSee('Mark as Best Answer');
 });
-

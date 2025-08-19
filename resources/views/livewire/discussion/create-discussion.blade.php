@@ -77,93 +77,17 @@
                             Discussion Content *
                         </label>
                         
-                        <!-- Rich Text Editor -->
-                        <div wire:ignore class="rounded-lg border border-slate-200/60 dark:border-slate-600/60 overflow-hidden">
-                            <!-- Quill CSS & JS -->
-                            <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
-                            <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
-                            
-                            <!-- Rich Editor -->
-                            <div 
-                                x-data="{ 
-                                    content: @entangle('content'),
-                                    editor: null,
-                                    init() {
-                                        this.initQuill();
-                                    },
-                                    initQuill() {
-                                        if (this.editor || !this.$refs.editor) {
-                                            return;
-                                        }
-                                        
-                                        try {
-                                            this.editor = new Quill(this.$refs.editor, {
-                                                theme: 'snow',
-                                                placeholder: 'Describe your question or topic in detail...',
-                                                modules: {
-                                                    toolbar: [
-                                                        [{ 'header': [1, 2, 3, false] }],
-                                                        ['bold', 'italic', 'underline', 'strike'],
-                                                        [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                                                        [{ 'indent': '-1'}, { 'indent': '+1' }],
-                                                        ['blockquote', 'code-block'],
-                                                        ['link'],
-                                                        ['clean']
-                                                    ]
-                                                }
-                                            });
-                                            
-                                            // Set initial content
-                                            if (this.content) {
-                                                this.editor.root.innerHTML = this.content;
-                                            }
-                                            
-                                            // Auto-resize editor based on content
-                                            const adjustHeight = () => {
-                                                const editorContainer = this.$refs.editor;
-                                                const editorContent = editorContainer.querySelector('.ql-editor');
-                                                if (editorContent) {
-                                                    const minHeight = 300;
-                                                    const maxHeight = 800;
-                                                    const scrollHeight = editorContent.scrollHeight;
-                                                    const newHeight = Math.min(Math.max(scrollHeight + 50, minHeight), maxHeight);
-                                                    editorContainer.style.height = newHeight + 'px';
-                                                }
-                                            };
-                                            
-                                            // Update content and adjust height
-                                            this.editor.on('text-change', () => {
-                                                const html = this.editor.root.innerHTML;
-                                                this.content = html === '<p><br></p>' ? '' : html;
-                                                setTimeout(adjustHeight, 50);
-                                            });
-                                            
-                                            // Initial height adjustment
-                                            setTimeout(adjustHeight, 100);
-                                            
-                                        } catch (error) {
-                                            console.error('Quill initialization failed:', error);
-                                        }
-                                    }
-                                }"
-                                x-ref="editor" 
-                                style="height: 300px;" 
-                                class="bg-white dark:bg-slate-800"
-                            ></div>
-                        </div>
+                        <textarea
+                            wire:model="content"
+                            id="content"
+                            rows="10"
+                            placeholder="Describe your question or topic in detail..."
+                            class="w-full px-4 py-3 text-sm border border-slate-200/60 dark:border-slate-600/60 rounded-lg bg-white/50 dark:bg-slate-700/50 text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500/50 transition-all resize-y"
+                        ></textarea>
                         
                         @error('content')
                             <p class="mt-2 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
                         @enderror
-                        
-                        <!-- Debug info -->
-                        <div x-data="{ showDebug: false }" class="mt-2">
-                            <button type="button" @click="showDebug = !showDebug" class="text-xs text-gray-500">Toggle Debug</button>
-                            <div x-show="showDebug" class="text-xs text-gray-600 mt-1">
-                                Content length: {{ strlen($content) }}<br>
-                                Content preview: {{ substr(strip_tags($content), 0, 50) }}...
-                            </div>
-                        </div>
                     </div>
 
                     <!-- Form Actions -->

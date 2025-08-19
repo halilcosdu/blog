@@ -1,8 +1,4 @@
 <div class="min-h-screen bg-gradient-to-br from-slate-50 via-white to-slate-100 dark:from-slate-900 dark:via-slate-800 dark:to-slate-900">
-    <!-- Quill CSS & JS -->
-    <link href="https://cdn.quilljs.com/1.3.7/quill.snow.css" rel="stylesheet">
-    <script src="https://cdn.quilljs.com/1.3.7/quill.min.js"></script>
-    
     <x-shared.header current-page="discussion" />
     <x-shared.announcements />
 
@@ -134,118 +130,9 @@
                 </header>
 
                 <!-- Discussion Content -->
-                <div class="quill-content prose prose-slate dark:prose-invert max-w-none prose-headings:text-slate-900 dark:prose-headings:text-white prose-p:text-slate-700 dark:prose-p:text-slate-300 prose-strong:text-slate-900 dark:prose-strong:text-white prose-code:text-red-600 dark:prose-code:text-red-400 prose-code:bg-slate-100 dark:prose-code:bg-slate-800">
-                    {!! $discussion->content !!}
+                <div class="prose prose-slate dark:prose-invert max-w-none prose-headings:text-slate-900 dark:prose-headings:text-white prose-p:text-slate-700 dark:prose-p:text-slate-300 prose-strong:text-slate-900 dark:prose-strong:text-white prose-code:text-red-600 dark:prose-code:text-red-400 prose-code:bg-slate-100 dark:prose-code:bg-slate-800 whitespace-pre-wrap">
+                    {{ $discussion->content }}
                 </div>
-                
-                <!-- Quill Content Styling -->
-                <style>
-                    /* Code blocks */
-                    .ql-syntax {
-                        background: #1e293b !important;
-                        color: #e2e8f0 !important;
-                        padding: 1rem !important;
-                        border-radius: 0.5rem !important;
-                        font-family: 'Monaco', 'Menlo', 'Consolas', 'Courier New', monospace !important;
-                        font-size: 14px !important;
-                        line-height: 1.6 !important;
-                        border: 1px solid #374151 !important;
-                        margin: 1rem 0 !important;
-                        overflow-x: auto !important;
-                    }
-                    
-                    .dark .ql-syntax {
-                        background: #0f172a !important;
-                        border-color: #1e293b !important;
-                    }
-                    
-                    /* Quill formatting */
-                    .quill-content ol {
-                        list-style-type: decimal;
-                        padding-left: 1.5rem;
-                        margin: 1rem 0;
-                    }
-                    
-                    .quill-content ul {
-                        list-style-type: disc;
-                        padding-left: 1.5rem;
-                        margin: 1rem 0;
-                    }
-                    
-                    .quill-content li {
-                        margin: 0.25rem 0;
-                        color: inherit;
-                    }
-                    
-                    .quill-content blockquote {
-                        border-left: 4px solid #e11d48;
-                        padding-left: 1rem;
-                        margin: 1rem 0;
-                        font-style: italic;
-                        background: #f8fafc;
-                        padding: 1rem;
-                        border-radius: 0.5rem;
-                    }
-                    
-                    .dark .quill-content blockquote {
-                        background: #1e293b;
-                        border-left-color: #f43f5e;
-                    }
-                    
-                    .quill-content h1, .quill-content h2, .quill-content h3 {
-                        font-weight: bold;
-                        margin: 1.5rem 0 1rem 0;
-                        line-height: 1.2;
-                    }
-                    
-                    .quill-content h1 {
-                        font-size: 2rem;
-                    }
-                    
-                    .quill-content h2 {
-                        font-size: 1.5rem;
-                    }
-                    
-                    .quill-content h3 {
-                        font-size: 1.25rem;
-                    }
-                    
-                    .quill-content p {
-                        margin: 1rem 0;
-                        line-height: 1.6;
-                    }
-                    
-                    .quill-content strong {
-                        font-weight: bold;
-                    }
-                    
-                    .quill-content em {
-                        font-style: italic;
-                    }
-                    
-                    .quill-content u {
-                        text-decoration: underline;
-                    }
-                    
-                    .quill-content s {
-                        text-decoration: line-through;
-                    }
-                    
-                    .quill-content a {
-                        color: #e11d48;
-                        text-decoration: underline;
-                    }
-                    
-                    .dark .quill-content a {
-                        color: #f43f5e;
-                    }
-                    
-                    .quill-content .ql-indent-1 { margin-left: 2rem; }
-                    .quill-content .ql-indent-2 { margin-left: 4rem; }
-                    .quill-content .ql-indent-3 { margin-left: 6rem; }
-                    .quill-content .ql-indent-4 { margin-left: 8rem; }
-                    .quill-content .ql-indent-5 { margin-left: 10rem; }
-                </style>
             </article>
 
             <!-- Replies Section -->
@@ -261,68 +148,13 @@
                     <div class="bg-white/70 dark:bg-slate-800/70 backdrop-blur-xl rounded-2xl border border-slate-200/60 dark:border-slate-700/60 p-6">
                         <h3 class="text-lg font-semibold text-slate-900 dark:text-white mb-4">Add Your Reply</h3>
                         <form wire:submit="addReply" class="space-y-4">
-                            <div wire:ignore class="rounded-lg border border-slate-200/60 dark:border-slate-600/60 overflow-hidden">
-                                <!-- Rich Editor -->
-                                <div 
-                                    x-data="{ 
-                                        content: @entangle('replyContent'),
-                                        editor: null,
-                                        init() {
-                                            this.initQuill();
-                                            
-                                            // Re-initialize on Livewire updates
-                                            Livewire.on('reply-added', () => {
-                                                if (this.editor) {
-                                                    this.editor.setText('');
-                                                }
-                                            });
-                                        },
-                                        initQuill() {
-                                            if (this.editor || !this.$refs.replyEditor) {
-                                                return;
-                                            }
-                                            
-                                            try {
-                                                this.editor = new Quill(this.$refs.replyEditor, {
-                                                    theme: 'snow',
-                                                    placeholder: 'Share your thoughts or help solve this discussion... (minimum 10 characters)',
-                                                    modules: {
-                                                        toolbar: [
-                                                            [{ 'header': [1, 2, 3, false] }],
-                                                            ['bold', 'italic', 'underline', 'strike'],
-                                                            ['blockquote', 'code-block'],
-                                                            [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                                                            ['link'],
-                                                            ['clean']
-                                                        ]
-                                                    }
-                                                });
-                                                
-                                                // Set initial content
-                                                if (this.content) {
-                                                    this.editor.root.innerHTML = this.content;
-                                                }
-                                                
-                                                // Update Livewire on text change
-                                                this.editor.on('text-change', () => {
-                                                    this.content = this.editor.root.innerHTML;
-                                                });
-                                                
-                                                // Watch for content changes from Livewire
-                                                this.$watch('content', (value) => {
-                                                    if (this.editor && this.editor.root.innerHTML !== value) {
-                                                        this.editor.root.innerHTML = value || '';
-                                                    }
-                                                });
-                                            } catch (error) {
-                                                console.error('Failed to initialize Quill:', error);
-                                            }
-                                        }
-                                    }"
-                                    x-init="init()"
-                                >
-                                    <div x-ref="replyEditor" style="min-height: 150px;"></div>
-                                </div>
+                            <div>
+                                <textarea
+                                    wire:model="replyContent"
+                                    rows="6"
+                                    placeholder="Share your thoughts or help solve this discussion... (minimum 10 characters)"
+                                    class="w-full px-4 py-3 text-sm border border-slate-200/60 dark:border-slate-600/60 rounded-lg bg-white/50 dark:bg-slate-700/50 text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500/50 transition-all resize-y"
+                                ></textarea>
                             </div>
                             @error('replyContent')
                                 <p class="mt-2 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
@@ -440,59 +272,12 @@
                         @if($editingReplyId === $reply->id)
                             <!-- Edit Reply Form -->
                             <div class="space-y-4">
-                                <div wire:ignore class="rounded-lg border border-slate-200/60 dark:border-slate-600/60 overflow-hidden">
-                                    <div 
-                                        x-data="{ 
-                                            editContent: @entangle('editReplyContent'),
-                                            editEditor: null,
-                                            init() {
-                                                this.initEditQuill();
-                                            },
-                                            initEditQuill() {
-                                                if (this.editEditor || !this.$refs.editReplyEditor) {
-                                                    return;
-                                                }
-                                                
-                                                try {
-                                                    this.editEditor = new Quill(this.$refs.editReplyEditor, {
-                                                        theme: 'snow',
-                                                        modules: {
-                                                            toolbar: [
-                                                                [{ 'header': [1, 2, 3, false] }],
-                                                                ['bold', 'italic', 'underline', 'strike'],
-                                                                ['blockquote', 'code-block'],
-                                                                [{ 'list': 'ordered'}, { 'list': 'bullet' }],
-                                                                ['link'],
-                                                                ['clean']
-                                                            ]
-                                                        }
-                                                    });
-                                                    
-                                                    // Set initial content
-                                                    if (this.editContent) {
-                                                        this.editEditor.root.innerHTML = this.editContent;
-                                                    }
-                                                    
-                                                    // Update Livewire on text change
-                                                    this.editEditor.on('text-change', () => {
-                                                        this.editContent = this.editEditor.root.innerHTML;
-                                                    });
-                                                    
-                                                    // Watch for content changes from Livewire
-                                                    this.$watch('editContent', (value) => {
-                                                        if (this.editEditor && this.editEditor.root.innerHTML !== value) {
-                                                            this.editEditor.root.innerHTML = value || '';
-                                                        }
-                                                    });
-                                                } catch (error) {
-                                                    console.error('Failed to initialize edit Quill:', error);
-                                                }
-                                            }
-                                        }"
-                                        x-init="init()"
-                                    >
-                                        <div x-ref="editReplyEditor" style="min-height: 150px;"></div>
-                                    </div>
+                                <div>
+                                    <textarea
+                                        wire:model="editReplyContent"
+                                        rows="6"
+                                        class="w-full px-4 py-3 text-sm border border-slate-200/60 dark:border-slate-600/60 rounded-lg bg-white/50 dark:bg-slate-700/50 text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500/50 transition-all resize-y"
+                                    ></textarea>
                                 </div>
                                 @error('editReplyContent')
                                     <p class="text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
@@ -521,8 +306,8 @@
                                 </div>
                             </div>
                         @else
-                            <div class="prose prose-slate dark:prose-invert max-w-none quill-content">
-                                {!! $reply->content !!}
+                            <div class="prose prose-slate dark:prose-invert max-w-none whitespace-pre-wrap">
+                                {{ $reply->content }}
                             </div>
                         @endif
                     </article>
