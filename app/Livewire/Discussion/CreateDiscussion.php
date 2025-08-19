@@ -11,34 +11,28 @@ use Livewire\Component;
 
 class CreateDiscussion extends Component
 {
-    #[Rule('required|string|max:255')]
+    #[Rule('required|string|min:5|max:255')]
     public string $title = '';
 
-    #[Rule('required|string')]
+    #[Rule('required|string|min:10')]
     public string $content = '';
 
-    #[Rule('required|exists:categories,id')]
+    #[Rule('required|exists:categories,id,is_active,1')]
     public ?int $category_id = null;
 
     public function save(): void
     {
-        // Debug content
-        logger()->info('Discussion content before validation:', [
-            'content' => $this->content,
-            'content_length' => strlen($this->content),
-            'content_empty' => empty($this->content),
-        ]);
-
         $this->validate();
 
-        Discussion::create([
-            'user_id' => Auth::id(),
-            'category_id' => $this->category_id,
-            'title' => $this->title,
-            'content' => $this->content,
-            'is_resolved' => false,
-            'views_count' => 0,
-        ]);
+        Discussion::query()
+            ->create([
+                'user_id' => Auth::id(),
+                'category_id' => $this->category_id,
+                'title' => $this->title,
+                'content' => $this->content,
+                'is_resolved' => false,
+                'views_count' => 0,
+            ]);
 
         session()->flash('success', 'Discussion created successfully!');
 
