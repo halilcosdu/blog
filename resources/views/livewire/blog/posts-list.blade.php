@@ -26,28 +26,54 @@
 
                 <!-- Filter Controls -->
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-12 gap-4 lg:gap-6">
-                    <!-- Search Input -->
+                    <!-- Modern Search Input -->
                     <div class="sm:col-span-2 lg:col-span-6">
-                        <label for="search" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                        <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                             Search Posts
                         </label>
-                        <div class="relative group">
-                            <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                                <svg class="h-5 w-5 text-slate-400 group-focus-within:text-red-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
-                                </svg>
+                        <!-- Modern search component -->
+                        <div class="relative">
+                            <!-- Search Input Container -->
+                            <div class="group relative w-full bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border border-slate-200/60 dark:border-slate-700/60 rounded-2xl hover:bg-white dark:hover:bg-slate-800 transition-all duration-200 focus-within:ring-2 focus-within:ring-red-500/20 focus-within:border-red-500/40">
+                                <div class="flex items-center">
+                                    <div class="flex items-center space-x-3 flex-1">
+                                        <div class="flex-shrink-0 pl-4">
+                                            <div class="w-8 h-8 bg-gradient-to-br from-emerald-500 to-teal-500 rounded-xl flex items-center justify-center shadow-sm">
+                                                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                                                </svg>
+                                            </div>
+                                        </div>
+                                        <div class="flex-1 min-w-0">
+                                            <input wire:model.live.debounce.300ms="search" 
+                                                   type="text" 
+                                                   dusk="search-input"
+                                                   class="block w-full border-0 bg-transparent py-3 pr-4 text-sm text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none focus:ring-0"
+                                                   placeholder="Search by title, content, or tags...">
+                                        </div>
+                                    </div>
+                                    
+                                    <!-- Clear button (only when search has value and not loading) -->
+                                    @if($search)
+                                    <div wire:loading.remove wire:target="search" class="flex-shrink-0 pr-4">
+                                        <button wire:click="$set('search', '')" 
+                                                dusk="clear-search"
+                                                class="p-1.5 rounded-lg bg-slate-100 dark:bg-slate-700 hover:bg-red-100 dark:hover:bg-red-900/30 transition-all duration-200 group">
+                                            <svg class="w-3.5 h-3.5 text-slate-500 dark:text-slate-400 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors" fill="currentColor" viewBox="0 0 20 20">
+                                                <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/>
+                                            </svg>
+                                        </button>
+                                    </div>
+                                    @endif
+                                    
+                                    <!-- Loading indicator (only when searching) -->
+                                    <div wire:loading wire:target="search" class="flex-shrink-0 pr-4">
+                                        <div class="p-1.5">
+                                            <div class="w-3.5 h-3.5 border-2 border-emerald-500 border-t-transparent rounded-full animate-spin"></div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                            <input wire:model.live.debounce.300ms="search" type="search" id="search"
-                                   class="block w-full pl-12 pr-4 py-3 text-sm border border-slate-200/60 dark:border-slate-600/60 rounded-xl bg-white/50 dark:bg-slate-700/50 text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500/50 transition-all"
-                                   placeholder="Search by title, content, or tags...">
-                            <!-- Clear button -->
-                            @if($search)
-                            <button wire:click="$set('search', '')" class="absolute inset-y-0 right-0 pr-4 flex items-center cursor-pointer">
-                                <svg class="h-4 w-4 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300" fill="currentColor" viewBox="0 0 20 20">
-                                    <path fill-rule="evenodd" d="M4.293 4.293a1 1 0 011.414 0L10 8.586l4.293-4.293a1 1 0 111.414 1.414L11.414 10l4.293 4.293a1 1 0 01-1.414 1.414L10 11.414l-4.293 4.293a1 1 0 01-1.414-1.414L8.586 10 4.293 5.707a1 1 0 010-1.414z" clip-rule="evenodd"/>
-                                </svg>
-                            </button>
-                            @endif
                         </div>
                     </div>
 
@@ -204,22 +230,179 @@
 
                     <!-- Sort Options -->
                     <div class="sm:col-span-1 lg:col-span-3">
-                        <label for="sort" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
+                        <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                             Sort By
                         </label>
-                        <div class="relative">
-                            <select wire:model.live="sortBy" id="sort"
-                                    class="block w-full py-3 px-4 pr-10 text-sm border border-slate-200/60 dark:border-slate-600/60 rounded-xl bg-white/50 dark:bg-slate-700/50 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500/50 transition-all appearance-none cursor-pointer">
-                                <option value="latest">Latest First</option>
-                                <option value="popular">Most Popular</option>
-                                <option value="oldest">Oldest First</option>
-                            </select>
-                            <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                                <svg class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                                </svg>
+                        <!-- Modern sort dropdown -->
+                        <div class="relative" x-data="modernSortDropdown()">
+                            <!-- Trigger Button -->
+                            <button type="button" 
+                                    @click="toggle()"
+                                    dusk="sort-dropdown-trigger"
+                                    class="group relative w-full bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border border-slate-200/60 dark:border-slate-700/60 rounded-2xl px-4 py-3 text-left cursor-pointer hover:bg-white dark:hover:bg-slate-800 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500/40">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="flex-shrink-0">
+                                            <div class="w-8 h-8 bg-gradient-to-br from-blue-500 to-purple-500 rounded-xl flex items-center justify-center shadow-sm">
+                                                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4h13M3 8h9m-9 4h6m4 0l4-4m0 0l4 4m-4-4v12"/>
+                                                </svg>
+                                            </div>
+                                        </div>
+                                        <div class="flex-1 min-w-0">
+                                            <div class="text-sm font-medium text-slate-900 dark:text-slate-100">
+                                                @if($sortBy === 'latest')
+                                                    Latest First
+                                                @elseif($sortBy === 'popular')
+                                                    Most Popular
+                                                @elseif($sortBy === 'oldest')
+                                                    Oldest First
+                                                @endif
+                                            </div>
+                                            <div class="text-xs text-slate-500 dark:text-slate-400 truncate">
+                                                Choose sorting order
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="flex-shrink-0 ml-2">
+                                        <svg class="w-5 h-5 text-slate-400 transition-transform duration-200 group-hover:text-slate-600 dark:group-hover:text-slate-300"
+                                             :class="{ 'rotate-180': open }" 
+                                             fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                        </svg>
+                                    </div>
+                                </div>
+                            </button>
+
+                            <!-- Dropdown Panel -->
+                            <div x-show="open" 
+                                 x-transition:enter="transition ease-out duration-200"
+                                 x-transition:enter-start="opacity-0 scale-95 translate-y-1"
+                                 x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+                                 x-transition:leave="transition ease-in duration-150"
+                                 x-transition:leave-start="opacity-100 scale-100 translate-y-0"
+                                 x-transition:leave-end="opacity-0 scale-95 translate-y-1"
+                                 @click.outside="close()"
+                                 dusk="sort-dropdown-panel"
+                                 class="absolute z-50 w-full mt-2 bg-white/95 dark:bg-slate-800/95 backdrop-blur-xl border border-slate-200/60 dark:border-slate-700/60 rounded-2xl shadow-2xl shadow-slate-900/10 dark:shadow-slate-900/40 overflow-hidden">
+                                
+                                <!-- Sort Options List -->
+                                <div class="p-2">
+                                    <!-- Latest First -->
+                                    <div class="group relative">
+                                        <button wire:click="$set('sortBy', 'latest')"
+                                                @click="close()"
+                                                dusk="sort-option-latest"
+                                                class="w-full flex items-center p-3 rounded-xl hover:bg-slate-100/50 dark:hover:bg-slate-700/50 cursor-pointer transition-all duration-200 {{ $sortBy === 'latest' ? 'bg-red-50 dark:bg-red-900/20' : '' }}">
+                                            <div class="flex items-center space-x-3 flex-1">
+                                                <div class="flex-shrink-0">
+                                                    <div class="w-8 h-8 {{ $sortBy === 'latest' ? 'bg-gradient-to-br from-red-500 to-orange-500' : 'bg-slate-200 dark:bg-slate-600' }} rounded-lg flex items-center justify-center">
+                                                        <svg class="w-4 h-4 {{ $sortBy === 'latest' ? 'text-white' : 'text-slate-500 dark:text-slate-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                                        </svg>
+                                                    </div>
+                                                </div>
+                                                <div class="flex-1 min-w-0">
+                                                    <div class="text-sm font-medium {{ $sortBy === 'latest' ? 'text-red-700 dark:text-red-300' : 'text-slate-900 dark:text-slate-100' }} group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors duration-200">
+                                                        Latest First
+                                                    </div>
+                                                    <div class="text-xs text-slate-500 dark:text-slate-400">
+                                                        Newest posts first
+                                                    </div>
+                                                </div>
+                                                @if($sortBy === 'latest')
+                                                <div class="flex-shrink-0">
+                                                    <svg class="w-4 h-4 text-red-600 dark:text-red-400" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                                    </svg>
+                                                </div>
+                                                @endif
+                                            </div>
+                                        </button>
+                                    </div>
+                                    
+                                    <!-- Most Popular -->
+                                    <div class="group relative">
+                                        <button wire:click="$set('sortBy', 'popular')"
+                                                @click="close()"
+                                                dusk="sort-option-popular"
+                                                class="w-full flex items-center p-3 rounded-xl hover:bg-slate-100/50 dark:hover:bg-slate-700/50 cursor-pointer transition-all duration-200 {{ $sortBy === 'popular' ? 'bg-red-50 dark:bg-red-900/20' : '' }}">
+                                            <div class="flex items-center space-x-3 flex-1">
+                                                <div class="flex-shrink-0">
+                                                    <div class="w-8 h-8 {{ $sortBy === 'popular' ? 'bg-gradient-to-br from-red-500 to-orange-500' : 'bg-slate-200 dark:bg-slate-600' }} rounded-lg flex items-center justify-center">
+                                                        <svg class="w-4 h-4 {{ $sortBy === 'popular' ? 'text-white' : 'text-slate-500 dark:text-slate-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"/>
+                                                        </svg>
+                                                    </div>
+                                                </div>
+                                                <div class="flex-1 min-w-0">
+                                                    <div class="text-sm font-medium {{ $sortBy === 'popular' ? 'text-red-700 dark:text-red-300' : 'text-slate-900 dark:text-slate-100' }} group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors duration-200">
+                                                        Most Popular
+                                                    </div>
+                                                    <div class="text-xs text-slate-500 dark:text-slate-400">
+                                                        Most viewed posts
+                                                    </div>
+                                                </div>
+                                                @if($sortBy === 'popular')
+                                                <div class="flex-shrink-0">
+                                                    <svg class="w-4 h-4 text-red-600 dark:text-red-400" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                                    </svg>
+                                                </div>
+                                                @endif
+                                            </div>
+                                        </button>
+                                    </div>
+                                    
+                                    <!-- Oldest First -->
+                                    <div class="group relative">
+                                        <button wire:click="$set('sortBy', 'oldest')"
+                                                @click="close()"
+                                                dusk="sort-option-oldest"
+                                                class="w-full flex items-center p-3 rounded-xl hover:bg-slate-100/50 dark:hover:bg-slate-700/50 cursor-pointer transition-all duration-200 {{ $sortBy === 'oldest' ? 'bg-red-50 dark:bg-red-900/20' : '' }}">
+                                            <div class="flex items-center space-x-3 flex-1">
+                                                <div class="flex-shrink-0">
+                                                    <div class="w-8 h-8 {{ $sortBy === 'oldest' ? 'bg-gradient-to-br from-red-500 to-orange-500' : 'bg-slate-200 dark:bg-slate-600' }} rounded-lg flex items-center justify-center">
+                                                        <svg class="w-4 h-4 {{ $sortBy === 'oldest' ? 'text-white' : 'text-slate-500 dark:text-slate-400' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                                        </svg>
+                                                    </div>
+                                                </div>
+                                                <div class="flex-1 min-w-0">
+                                                    <div class="text-sm font-medium {{ $sortBy === 'oldest' ? 'text-red-700 dark:text-red-300' : 'text-slate-900 dark:text-slate-100' }} group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors duration-200">
+                                                        Oldest First
+                                                    </div>
+                                                    <div class="text-xs text-slate-500 dark:text-slate-400">
+                                                        Oldest posts first
+                                                    </div>
+                                                </div>
+                                                @if($sortBy === 'oldest')
+                                                <div class="flex-shrink-0">
+                                                    <svg class="w-4 h-4 text-red-600 dark:text-red-400" fill="currentColor" viewBox="0 0 20 20">
+                                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                                    </svg>
+                                                </div>
+                                                @endif
+                                            </div>
+                                        </button>
+                                    </div>
+                                </div>
                             </div>
                         </div>
+
+                        <script>
+                        function modernSortDropdown() {
+                            return {
+                                open: false,
+                                toggle() {
+                                    this.open = !this.open;
+                                },
+                                close() {
+                                    this.open = false;
+                                }
+                            }
+                        }
+                        </script>
                     </div>
                 </div>
 
