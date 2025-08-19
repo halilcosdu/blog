@@ -9,10 +9,10 @@
 
 <div class="markdown-editor-wrapper group" x-data="markdownEditor('{{ $wireModel ?? $name }}', @js($value))">
     <!-- Editor Container -->
-    <div class="markdown-editor relative bg-gradient-to-br from-white/90 via-white/95 to-slate-50/90 dark:from-slate-800/90 dark:via-slate-800/95 dark:to-slate-900/90 backdrop-blur-xl border border-slate-200/50 dark:border-slate-700/50 rounded-2xl overflow-hidden shadow-xl shadow-slate-200/20 dark:shadow-slate-900/20 transition-all duration-500 hover:shadow-2xl hover:shadow-slate-200/30 dark:hover:shadow-slate-900/30 focus-within:ring-2 focus-within:ring-gradient-to-r focus-within:ring-red-500/30 focus-within:border-red-500/50 transform hover:scale-[1.01]">
+    <div class="markdown-editor relative bg-gradient-to-br from-white/95 via-white/98 to-slate-50/95 dark:from-slate-900/95 dark:via-slate-800/98 dark:to-slate-950/95 backdrop-blur-xl border border-slate-200/60 dark:border-slate-700/80 rounded-2xl overflow-hidden shadow-xl shadow-slate-200/25 dark:shadow-slate-900/60 transition-all duration-500 hover:shadow-2xl hover:shadow-slate-200/35 dark:hover:shadow-slate-900/70 focus-within:ring-2 focus-within:ring-gradient-to-r focus-within:ring-red-500/30 focus-within:border-red-500/50 transform hover:scale-[1.01]">
         
         <!-- Toolbar -->
-        <div class="editor-toolbar flex items-center justify-between p-4 border-b border-slate-200/30 dark:border-slate-700/30 bg-gradient-to-r from-slate-50/80 via-white/80 to-slate-50/80 dark:from-slate-800/80 dark:via-slate-700/80 dark:to-slate-800/80 backdrop-blur-sm">
+        <div class="editor-toolbar flex items-center justify-between p-4 border-b border-slate-200/40 dark:border-slate-600/60 bg-gradient-to-r from-slate-50/90 via-white/90 to-slate-50/90 dark:from-slate-900/95 dark:via-slate-800/95 dark:to-slate-900/95 backdrop-blur-sm">
             <!-- Left side - Format buttons -->
             <div class="flex items-center gap-1">
             <!-- Bold -->
@@ -94,7 +94,7 @@
         <!-- Editor Content -->
         <div class="editor-content relative">
             <!-- Textarea -->
-            <div x-show="activeTab === 'write'" class="relative">
+            <div x-show="activeTab === 'write'" class="relative bg-gradient-to-br from-slate-50/30 via-white/20 to-slate-100/30 dark:from-slate-900/80 dark:via-slate-800/90 dark:to-slate-950/80 backdrop-blur-sm">
                 <textarea
                     x-ref="textarea"
                     {{ $wireModel ? 'wire:model=' . $wireModel : '' }}
@@ -106,7 +106,8 @@
                     @keydown.tab.prevent="handleTab($event)"
                     @keydown="handleKeydown($event)"
                     @click="if(mentionDropdown.show) mentionDropdown.show = false"
-                    class="w-full p-6 text-sm text-slate-900 dark:text-white placeholder-slate-500/70 dark:placeholder-slate-400/70 bg-gradient-to-br from-transparent via-white/10 to-transparent dark:via-slate-800/10 border-0 resize-y focus:outline-none font-mono leading-7 selection:bg-red-100 dark:selection:bg-red-900/30 selection:text-red-900 dark:selection:text-red-100 transition-all duration-300"
+                    class="w-full p-6 text-base text-slate-900 dark:text-slate-50 placeholder-slate-400/80 dark:placeholder-slate-400/60 bg-gradient-to-br from-transparent via-white/5 to-transparent dark:from-slate-900/60 dark:via-slate-950/80 dark:to-slate-900/60 border-0 resize-y focus:outline-none font-mono leading-7 selection:bg-red-100 dark:selection:bg-red-900/60 selection:text-red-900 dark:selection:text-red-100 transition-all duration-300 caret-red-500 dark:caret-red-400"
+                    x-bind:style="document.documentElement.classList.contains('dark') ? 'text-shadow: 0 1px 3px rgba(0, 0, 0, 0.3);' : 'text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);'"
                     x-model="content"
                 ></textarea>
 
