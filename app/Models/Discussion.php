@@ -36,15 +36,40 @@ class Discussion extends Model
 
         static::creating(function (Discussion $discussion): void {
             if (empty($discussion->slug)) {
-                $discussion->slug = Str::slug($discussion->title);
+                $discussion->slug = static::generateUniqueSlug($discussion->title);
             }
         });
 
         static::updating(function (Discussion $discussion): void {
             if ($discussion->isDirty('title')) {
-                $discussion->slug = Str::slug($discussion->title);
+                $discussion->slug = static::generateUniqueSlug($discussion->title, $discussion->id);
             }
         });
+    }
+
+    protected static function generateUniqueSlug(string $title, ?int $excludeId = null): string
+    {
+        $slug = Str::slug($title);
+        $originalSlug = $slug;
+        $counter = 1;
+
+        $query = static::where('slug', $slug);
+
+        if ($excludeId) {
+            $query->where('id', '!=', $excludeId);
+        }
+
+        while ($query->exists()) {
+            $slug = $originalSlug.'-'.$counter;
+            $counter++;
+
+            $query = static::where('slug', $slug);
+            if ($excludeId) {
+                $query->where('id', '!=', $excludeId);
+            }
+        }
+
+        return $slug;
     }
 
     public function user(): BelongsTo
