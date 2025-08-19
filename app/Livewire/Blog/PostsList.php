@@ -16,8 +16,6 @@ class PostsList extends Component
 
     public $sortBy = 'latest'; // latest, popular, oldest
 
-
-
     protected $queryString = [
         'search' => ['except' => ''],
         'categoryIds' => ['except' => []],
@@ -66,7 +64,7 @@ class PostsList extends Component
         } else {
             $this->categoryIds[] = $categoryId;
         }
-        
+
         $this->resetPage();
     }
 

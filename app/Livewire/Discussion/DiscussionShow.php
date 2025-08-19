@@ -5,6 +5,7 @@ namespace App\Livewire\Discussion;
 use App\Models\Discussion;
 use App\Models\DiscussionReply;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\On;
 use Livewire\Attributes\Rule;
 use Livewire\Component;
 
@@ -109,6 +110,16 @@ class DiscussionShow extends Component
         // Refresh discussion with replies
         $this->discussion->load('replies.user');
         $this->discussion->refresh();
+    }
+
+    #[On('content-updated')]
+    public function updateContent($name, $content): void
+    {
+        if ($name === 'replyContent') {
+            $this->replyContent = $content;
+        } elseif ($name === 'editReplyContent') {
+            $this->editReplyContent = $content;
+        }
     }
 
     public function addReply(): void

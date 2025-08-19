@@ -113,7 +113,7 @@
             </article>
 
             <!-- Replies Section -->
-            <section class="space-y-6">
+            <section class="space-y-8">
                 <div class="flex items-center justify-between">
                     <h2 class="text-xl font-bold text-slate-900 dark:text-white">
                         Replies ({{ $discussion->replies->count() }})
@@ -122,37 +122,50 @@
 
                 <!-- Reply Form -->
                 @auth
-                    <div class="bg-white/70 dark:bg-slate-800/70 backdrop-blur-xl rounded-2xl border border-slate-200/60 dark:border-slate-700/60 p-6">
-                        <h3 class="text-lg font-semibold text-slate-900 dark:text-white mb-4">Add Your Reply</h3>
-                        <form wire:submit="addReply" class="space-y-4">
-                            <div>
-                                <textarea
-                                    wire:model="replyContent"
-                                    rows="6"
-                                    placeholder="Share your thoughts or help solve this discussion... (minimum 10 characters)"
-                                    class="w-full px-4 py-3 text-sm border border-slate-200/60 dark:border-slate-600/60 rounded-lg bg-white/50 dark:bg-slate-700/50 text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500/50 transition-all resize-y"
-                                ></textarea>
+                    <div class="bg-white/70 dark:bg-slate-800/70 backdrop-blur-xl rounded-2xl border border-slate-200/60 dark:border-slate-700/60 overflow-hidden mb-8">
+                        <div class="p-6 border-b border-slate-200/60 dark:border-slate-700/60">
+                            <h3 class="text-lg font-semibold text-slate-900 dark:text-white">Add Your Reply</h3>
+                        </div>
+                        
+                        <form wire:submit="addReply" class="space-y-0">
+                            <div class="relative">
+                                @livewire('simple-markdown-editor', [
+                                    'name' => 'replyContent',
+                                    'value' => $replyContent,
+                                    'placeholder' => 'Share your thoughts or help solve this discussion... (minimum 10 characters)',
+                                    'rows' => 6,
+                                    'required' => true
+                                ], key('reply-editor'))
+                                
+                                @error('replyContent')
+                                    <div class="px-4 py-2 bg-red-50 dark:bg-red-900/20 border-t border-red-200 dark:border-red-800">
+                                        <p class="text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
+                                    </div>
+                                @enderror
                             </div>
-                            @error('replyContent')
-                                <p class="mt-2 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
-                            @enderror
                             
-                            <button 
-                                type="submit" 
-                                wire:loading.attr="disabled"
-                                class="flex items-center gap-2 px-6 py-3 bg-gradient-to-r from-red-600 to-orange-500 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-red-500/25 transform hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
-                            >
-                                <svg wire:loading.remove class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"/>
-                                </svg>
-                                <div wire:loading class="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                                <span wire:loading.remove>Post Reply</span>
-                                <span wire:loading>Posting...</span>
-                            </button>
+                            <div class="p-4 bg-slate-50/50 dark:bg-slate-900/50 border-t border-slate-200/60 dark:border-slate-700/60 flex items-center justify-between">
+                                <div class="text-xs text-slate-500 dark:text-slate-400">
+                                    You can use Markdown to format your reply
+                                </div>
+                                
+                                <button 
+                                    type="submit" 
+                                    wire:loading.attr="disabled"
+                                    class="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-red-600 to-orange-500 text-white font-medium rounded-lg hover:shadow-lg hover:shadow-red-500/25 transform hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
+                                >
+                                    <svg wire:loading.remove class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"/>
+                                    </svg>
+                                    <div wire:loading class="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                                    <span wire:loading.remove>Post Reply</span>
+                                    <span wire:loading>Posting...</span>
+                                </button>
+                            </div>
                         </form>
                     </div>
                 @else
-                    <div class="bg-white/70 dark:bg-slate-800/70 backdrop-blur-xl rounded-2xl border border-slate-200/60 dark:border-slate-700/60 p-6 text-center">
+                    <div class="bg-white/70 dark:bg-slate-800/70 backdrop-blur-xl rounded-2xl border border-slate-200/60 dark:border-slate-700/60 p-6 text-center mb-8">
                         <p class="text-slate-600 dark:text-slate-400 mb-4">
                             You need to be logged in to reply to this discussion.
                         </p>
@@ -166,6 +179,7 @@
                 @endauth
 
                 <!-- Replies List -->
+                <div class="space-y-6">
                 @forelse($discussion->replies as $reply)
                     <article class="bg-white/70 dark:bg-slate-800/70 backdrop-blur-xl rounded-2xl border border-slate-200/60 dark:border-slate-700/60 p-6">
                         <header class="flex items-start justify-between mb-4">
@@ -250,11 +264,13 @@
                             <!-- Edit Reply Form -->
                             <div class="space-y-4">
                                 <div>
-                                    <textarea
-                                        wire:model="editReplyContent"
-                                        rows="6"
-                                        class="w-full px-4 py-3 text-sm border border-slate-200/60 dark:border-slate-600/60 rounded-lg bg-white/50 dark:bg-slate-700/50 text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500/50 transition-all resize-y"
-                                    ></textarea>
+                                    @livewire('simple-markdown-editor', [
+                                        'name' => 'editReplyContent',
+                                        'value' => $editReplyContent,
+                                        'placeholder' => 'Edit your reply...',
+                                        'rows' => 6,
+                                        'required' => true
+                                    ], key('edit-reply-' . $reply->id))
                                 </div>
                                 @error('editReplyContent')
                                     <p class="text-sm text-red-600 dark:text-red-400">{{ $message }}</p>
@@ -302,6 +318,7 @@
                         </p>
                     </div>
                 @endforelse
+                </div>
             </section>
         </div>
     </main>

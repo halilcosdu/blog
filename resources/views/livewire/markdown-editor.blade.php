@@ -143,10 +143,10 @@
                 ></textarea>
 
                 <!-- Mention Dropdown -->
-                @if($mentionDropdown['show'])
+                @if($showMentionDropdown)
                 <div 
                     class="absolute bg-gradient-to-br from-white/95 via-white/98 to-slate-50/95 dark:from-slate-800/95 dark:via-slate-800/98 dark:to-slate-900/95 backdrop-blur-xl border border-slate-200/30 dark:border-slate-600/30 rounded-2xl shadow-2xl shadow-slate-900/10 dark:shadow-slate-900/40 max-h-80 overflow-y-auto min-w-[280px] ring-1 ring-slate-200/20 dark:ring-slate-700/20"
-                    style="z-index: 9999; top: {{ $mentionDropdown['top'] }}px; left: {{ $mentionDropdown['left'] }}px;"
+                    style="z-index: 9999; top: 50px; left: 50px;"
                     wire:transition.opacity
                 >
 
@@ -162,11 +162,11 @@
 
                     <!-- User List -->
                     <div class="py-2">
-                        @forelse($mentionDropdown['users'] as $index => $user)
+                        @forelse($mentionUsers as $index => $user)
                             <div wire:click="selectMentionByIndex({{ $index }})" @class([
                                 'group flex items-center gap-4 px-5 py-3.5 mx-2 rounded-xl cursor-pointer transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]',
-                                'bg-gradient-to-r from-red-50 via-red-50/80 to-orange-50 dark:from-red-900/20 dark:via-red-900/15 dark:to-orange-900/20 border-l-3 border-red-500 shadow-sm' => $index === $mentionDropdown['selectedIndex'],
-                                'hover:bg-gradient-to-r hover:from-slate-50/50 hover:to-slate-100/50 dark:hover:from-slate-700/30 dark:hover:to-slate-600/30' => $index !== $mentionDropdown['selectedIndex']
+                                'bg-gradient-to-r from-red-50 via-red-50/80 to-orange-50 dark:from-red-900/20 dark:via-red-900/15 dark:to-orange-900/20 border-l-3 border-red-500 shadow-sm' => $index === $mentionSelectedIndex,
+                                'hover:bg-gradient-to-r hover:from-slate-50/50 hover:to-slate-100/50 dark:hover:from-slate-700/30 dark:hover:to-slate-600/30' => $index !== $mentionSelectedIndex
                             ])>
                                 <div class="relative w-10 h-10 rounded-2xl bg-gradient-to-br from-red-500 via-red-600 to-orange-500 flex items-center justify-center text-white font-bold text-sm shadow-lg shadow-red-500/25 ring-2 ring-white/20 dark:ring-slate-800/20 group-hover:shadow-xl group-hover:shadow-red-500/30 transition-all duration-200">
                                     {{ strtoupper(substr($user['name'], 0, 2)) }}
@@ -177,7 +177,7 @@
                                         <span>@</span><span>{{ $user['username'] }}</span>
                                     </div>
                                 </div>
-                                @if($index === $mentionDropdown['selectedIndex'])
+                                @if($index === $mentionSelectedIndex)
                                 <div class="text-red-500">
                                     <div class="w-8 h-8 bg-red-100 dark:bg-red-900/30 rounded-full flex items-center justify-center">
                                         <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
@@ -326,7 +326,7 @@
             textarea.value = textarea.value.substring(0, start) + replacement + textarea.value.substring(end);
             
             // Update Livewire component
-            $wire.set('content', textarea.value);
+            $wire.updateContent(textarea.value);
             
             // Set cursor position
             const newPos = start + before.length + selectedText.length + after.length;
@@ -347,7 +347,7 @@
             const codeBlock = '\n```\n' + (selectedText || 'Your code here') + '\n```\n';
 
             textarea.value = textarea.value.substring(0, start) + codeBlock + textarea.value.substring(textarea.selectionEnd);
-            $wire.set('content', textarea.value);
+            $wire.updateContent(textarea.value);
 
             setTimeout(() => {
                 textarea.focus();
@@ -368,7 +368,7 @@
             const replacement = `[${linkText}](https://example.com)`;
 
             textarea.value = textarea.value.substring(0, start) + replacement + textarea.value.substring(end);
-            $wire.set('content', textarea.value);
+            $wire.updateContent(textarea.value);
 
             setTimeout(() => {
                 textarea.focus();
@@ -406,7 +406,7 @@
             // Insert mention at current cursor position (simplified)
             const start = textarea.selectionStart;
             textarea.value = textarea.value.substring(0, start) + mention + textarea.value.substring(start);
-            $wire.set('content', textarea.value);
+            $wire.updateContent(textarea.value);
 
             debouncePreview();
         });
@@ -418,6 +418,26 @@
         document.addEventListener('livewire:updated', () => {
             if ($wire.get('activeTab') === 'preview') {
                 debouncePreview();
+            }
+        });
+
+        // Add input listener for live updates
+        const textarea = document.getElementById('markdown-textarea-' + componentId);
+        if (textarea) {
+            textarea.addEventListener('input', function() {
+                $wire.updateContent(this.value);
+                debouncePreview();
+            });
+        }
+
+        // Listen for reset event
+        $wire.on('reset-markdown-editor', (event) => {
+            if (event.name === componentId) {
+                const textarea = document.getElementById('markdown-textarea-' + componentId);
+                if (textarea) {
+                    textarea.value = '';
+                    debouncePreview();
+                }
             }
         });
     </script>

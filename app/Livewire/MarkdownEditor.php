@@ -2,7 +2,6 @@
 
 namespace App\Livewire;
 
-use Livewire\Attributes\Locked;
 use Livewire\Component;
 
 class MarkdownEditor extends Component
@@ -19,16 +18,11 @@ class MarkdownEditor extends Component
 
     public string $activeTab = 'write';
 
-    #[Locked]
-    public array $mentionDropdown = [
-        'show' => false,
-        'users' => [],
-        'selectedIndex' => 0,
-        'top' => 0,
-        'left' => 0,
-        'query' => '',
-        'startPos' => 0,
-    ];
+    public bool $showMentionDropdown = false;
+
+    public array $mentionUsers = [];
+
+    public int $mentionSelectedIndex = 0;
 
     public function mount(
         string $name = 'content',
@@ -72,17 +66,21 @@ class MarkdownEditor extends Component
         $this->content = $content;
     }
 
-    public function showMentionDropdown(array $data): void
+    public function getContentProperty(): string
     {
-        $this->mentionDropdown = array_merge($this->mentionDropdown, $data);
-        $this->mentionDropdown['show'] = true;
-        $this->searchUsers($this->mentionDropdown['query'] ?? '');
+        return $this->content;
+    }
+
+    public function showMentions(): void
+    {
+        $this->showMentionDropdown = true;
+        $this->searchUsers();
     }
 
     public function hideMentionDropdown(): void
     {
-        $this->mentionDropdown['show'] = false;
-        $this->mentionDropdown['users'] = [];
+        $this->showMentionDropdown = false;
+        $this->mentionUsers = [];
     }
 
     public function selectMention(array $user): void
@@ -93,8 +91,8 @@ class MarkdownEditor extends Component
 
     public function selectMentionByIndex(int $index): void
     {
-        if (isset($this->mentionDropdown['users'][$index])) {
-            $user = $this->mentionDropdown['users'][$index];
+        if (isset($this->mentionUsers[$index])) {
+            $user = $this->mentionUsers[$index];
             $this->selectMention($user);
         }
     }
@@ -116,7 +114,7 @@ class MarkdownEditor extends Component
             });
         }
 
-        $this->mentionDropdown['users'] = array_values(array_slice($users, 0, 8));
+        $this->mentionUsers = array_values(array_slice($users, 0, 8));
     }
 
     public function render()
