@@ -13,6 +13,25 @@ Route::get('/test-editor', function () {
     return view('test-editor');
 })->name('test.editor');
 
+// API endpoint for user search (for @mentions)
+Route::get('/api/users/search', function () {
+    $query = request('q', '');
+    $users = \App\Models\User::query()
+        ->when($query, function ($queryBuilder) use ($query) {
+            return $queryBuilder->where(function ($subQuery) use ($query) {
+                // Use LIKE for SQLite compatibility, ILIKE for PostgreSQL
+                $likeOperator = config('database.default') === 'pgsql' ? 'ILIKE' : 'LIKE';
+                $subQuery->where('name', $likeOperator, "%{$query}%")
+                    ->orWhere('username', $likeOperator, "%{$query}%");
+            });
+        })
+        ->select('id', 'name', 'username')
+        ->limit(8)
+        ->get();
+
+    return response()->json($users);
+})->name('api.users.search');
+
 // Discussion routes
 Route::get('/discussions', App\Livewire\Discussion\DiscussionForum::class)->name('discussions.index');
 
