@@ -52,54 +52,154 @@
                     </div>
 
                     <!-- Category Filter -->
-                    <div class="sm:col-span-1 lg:col-span-3 relative">
+                    <div class="sm:col-span-1 lg:col-span-3">
                         <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                             Categories
                         </label>
-                        <div class="relative">
-                            <!-- Dropdown Toggle -->
-                            <button type="button" wire:click="toggleCategoryDropdown"
-                                    dusk="category-dropdown-button"
-                                    class="block w-full py-3 px-4 pr-10 text-sm border border-slate-200/60 dark:border-slate-600/60 rounded-xl bg-white/50 dark:bg-slate-700/50 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500/50 transition-all text-left cursor-pointer">
-                                <span class="block truncate">
-                                    @if(empty($categoryIds))
-                                        All Categories
-                                    @else
-                                        {{ count($categoryIds) }} {{ count($categoryIds) === 1 ? 'category' : 'categories' }} selected
-                                    @endif
-                                </span>
-                                <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                                    <svg class="h-4 w-4 text-slate-400 transition-transform {{ $categoryDropdownOpen ? 'rotate-180' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
-                                    </svg>
+                        <!-- Modern dropdown will be placed here -->
+                        <div class="relative" x-data="modernDropdown()">
+                            <!-- Trigger Button -->
+                            <button type="button" 
+                                    @click="toggle()"
+                                    dusk="category-dropdown-trigger"
+                                    class="group relative w-full bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm border border-slate-200/60 dark:border-slate-700/60 rounded-2xl px-4 py-3 text-left cursor-pointer hover:bg-white dark:hover:bg-slate-800 transition-all duration-200 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500/40">
+                                <div class="flex items-center justify-between">
+                                    <div class="flex items-center space-x-3">
+                                        <div class="flex-shrink-0">
+                                            <div class="w-8 h-8 bg-gradient-to-br from-red-500 to-orange-500 rounded-xl flex items-center justify-center shadow-sm">
+                                                <svg class="w-4 h-4 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 7h.01M7 3h5c.512 0 1.024.195 1.414.586l7 7a2 2 0 010 2.828l-7 7a2 2 0 01-2.828 0l-7-7A1.994 1.994 0 013 12V7a4 4 0 014-4z"/>
+                                                </svg>
+                                            </div>
+                                        </div>
+                                        <div class="flex-1 min-w-0">
+                                            <div class="text-sm font-medium text-slate-900 dark:text-slate-100">
+                                                @if(empty($categoryIds))
+                                                    All Categories
+                                                @else
+                                                    {{ count($categoryIds) }} selected
+                                                @endif
+                                            </div>
+                                            <div class="text-xs text-slate-500 dark:text-slate-400 truncate">
+                                                @if(empty($categoryIds))
+                                                    Choose categories to filter
+                                                @else
+                                                    {{ implode(', ', $categories->whereIn('id', $categoryIds)->pluck('name')->toArray()) }}
+                                                @endif
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="flex-shrink-0 ml-2">
+                                        <svg class="w-5 h-5 text-slate-400 transition-transform duration-200 group-hover:text-slate-600 dark:group-hover:text-slate-300"
+                                             :class="{ 'rotate-180': open }" 
+                                             fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                        </svg>
+                                    </div>
                                 </div>
                             </button>
 
-                            <!-- Dropdown Menu -->
-                            @if($categoryDropdownOpen)
-                            <div wire:click.outside="closeCategoryDropdown" 
-                                 dusk="category-dropdown-menu" 
-                                 class="absolute top-full left-0 right-0 mt-1 bg-white/95 dark:bg-slate-800/95 backdrop-blur-sm border border-slate-200/60 dark:border-slate-700/60 rounded-xl shadow-2xl max-h-60 overflow-y-auto z-50">
-                                <div class="p-2 space-y-1">
-                                    @foreach($categories as $category)
-                                    <label class="flex items-center gap-2 p-2 rounded-lg hover:bg-slate-100/50 dark:hover:bg-slate-700/50 cursor-pointer transition-colors">
-                                        <input type="checkbox"
-                                               dusk="category-checkbox-{{ $category->id }}"
-                                               wire:click="toggleCategory({{ $category->id }})"
-                                               {{ in_array($category->id, $categoryIds) ? 'checked' : '' }}
-                                               class="w-4 h-4 text-red-600 bg-white dark:bg-slate-700 border-slate-300 dark:border-slate-600 rounded focus:ring-red-500 focus:ring-2 cursor-pointer">
-                                        <span class="text-sm text-slate-700 dark:text-slate-300 flex-1">
-                                            {{ $category->name }}
-                                        </span>
-                                        <span class="text-xs text-slate-500 dark:text-slate-400">
-                                            {{ $category->posts_count }}
-                                        </span>
-                                    </label>
-                                    @endforeach
+                            <!-- Dropdown Panel -->
+                            <div x-show="open" 
+                                 x-transition:enter="transition ease-out duration-200"
+                                 x-transition:enter-start="opacity-0 scale-95 translate-y-1"
+                                 x-transition:enter-end="opacity-100 scale-100 translate-y-0"
+                                 x-transition:leave="transition ease-in duration-150"
+                                 x-transition:leave-start="opacity-100 scale-100 translate-y-0"
+                                 x-transition:leave-end="opacity-0 scale-95 translate-y-1"
+                                 @click.outside="close()"
+                                 dusk="category-dropdown-panel"
+                                 class="absolute z-50 w-full mt-2 bg-white/95 dark:bg-slate-800/95 backdrop-blur-xl border border-slate-200/60 dark:border-slate-700/60 rounded-2xl shadow-2xl shadow-slate-900/10 dark:shadow-slate-900/40 max-h-72 overflow-hidden">
+                                
+                                <!-- Search Box -->
+                                <div class="p-4 border-b border-slate-200/60 dark:border-slate-700/60">
+                                    <div class="relative">
+                                        <input type="text"
+                                               x-model="search"
+                                               placeholder="Search categories..."
+                                               dusk="category-search"
+                                               class="w-full pl-10 pr-4 py-2 text-sm border border-slate-200 dark:border-slate-600 rounded-xl bg-slate-50 dark:bg-slate-700 text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500/40">
+                                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                            <svg class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/>
+                                            </svg>
+                                        </div>
+                                    </div>
                                 </div>
+
+                                <!-- Categories List -->
+                                <div class="max-h-60 overflow-y-auto overscroll-contain">
+                                    <div class="p-2">
+                                        @foreach($categories as $category)
+                                        <div x-show="search === '' || '{{ strtolower($category->name) }}'.includes(search.toLowerCase())"
+                                             class="group relative">
+                                            <label class="flex items-center p-3 rounded-xl hover:bg-slate-100/50 dark:hover:bg-slate-700/50 cursor-pointer transition-all duration-200">
+                                                <div class="flex items-center space-x-3 flex-1">
+                                                    <div class="relative">
+                                                        <input type="checkbox"
+                                                               wire:click="selectCategory({{ $category->id }})"
+                                                               {{ in_array($category->id, $categoryIds) ? 'checked' : '' }}
+                                                               dusk="category-option-{{ $category->id }}"
+                                                               class="w-4 h-4 text-red-600 border-2 border-slate-300 dark:border-slate-600 rounded focus:ring-red-500 focus:ring-2 focus:ring-offset-0 bg-white dark:bg-slate-700 transition-all duration-200 relative z-10">
+                                                    </div>
+                                                    
+                                                    <div class="flex-1 min-w-0">
+                                                        <div class="flex items-center justify-between">
+                                                            <div>
+                                                                <div class="text-sm font-medium text-slate-900 dark:text-slate-100 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors duration-200">
+                                                                    {{ $category->name }}
+                                                                </div>
+                                                            </div>
+                                                            <div class="text-xs font-semibold px-2 py-1 bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-400 rounded-full group-hover:bg-red-50 dark:group-hover:bg-red-900/20 group-hover:text-red-600 dark:group-hover:text-red-400 transition-all duration-200">
+                                                                {{ $category->posts_count }}
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </label>
+                                        </div>
+                                        @endforeach
+                                    </div>
+                                </div>
+
+                                <!-- Footer -->
+                                @if(!empty($categoryIds))
+                                <div class="p-4 border-t border-slate-200/60 dark:border-slate-700/60 bg-slate-50/50 dark:bg-slate-900/50">
+                                    <div class="flex items-center justify-between">
+                                        <div class="text-xs text-slate-500 dark:text-slate-400">
+                                            {{ count($categoryIds) }} {{ count($categoryIds) === 1 ? 'category' : 'categories' }} selected
+                                        </div>
+                                        <button wire:click="clearCategories" 
+                                                dusk="clear-categories"
+                                                class="text-xs text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 font-medium transition-colors duration-200">
+                                            Clear all
+                                        </button>
+                                    </div>
+                                </div>
+                                @endif
                             </div>
-                            @endif
                         </div>
+
+                        <script>
+                        function modernDropdown() {
+                            return {
+                                open: false,
+                                search: '',
+                                toggle() {
+                                    this.open = !this.open;
+                                    if (this.open) {
+                                        this.$nextTick(() => {
+                                            this.$refs.search?.focus();
+                                        });
+                                    }
+                                },
+                                close() {
+                                    this.open = false;
+                                    this.search = '';
+                                }
+                            }
+                        }
+                        </script>
                     </div>
 
                     <!-- Sort Options -->

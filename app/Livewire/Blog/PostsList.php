@@ -16,7 +16,6 @@ class PostsList extends Component
 
     public $sortBy = 'latest'; // latest, popular, oldest
 
-    public $categoryDropdownOpen = false;
 
 
     protected $queryString = [
@@ -60,7 +59,7 @@ class PostsList extends Component
         $this->resetPage();
     }
 
-    public function toggleCategory($categoryId): void
+    public function selectCategory($categoryId): void
     {
         if (in_array($categoryId, $this->categoryIds)) {
             $this->categoryIds = array_values(array_diff($this->categoryIds, [$categoryId]));
@@ -68,18 +67,13 @@ class PostsList extends Component
             $this->categoryIds[] = $categoryId;
         }
         
-        // resetPage yerine setPage kullan
-        $this->setPage(1);
+        $this->resetPage();
     }
 
-    public function toggleCategoryDropdown(): void
+    public function clearCategories(): void
     {
-        $this->categoryDropdownOpen = !$this->categoryDropdownOpen;
-    }
-
-    public function closeCategoryDropdown(): void
-    {
-        $this->categoryDropdownOpen = false;
+        $this->categoryIds = [];
+        $this->resetPage();
     }
 
     public function getQueryString(): array
