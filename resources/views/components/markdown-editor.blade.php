@@ -9,7 +9,7 @@
 
 <div class="markdown-editor-wrapper group" x-data="markdownEditor('{{ $wireModel ?? $name }}', @js($value))">
     <!-- Editor Container -->
-    <div class="markdown-editor relative bg-gradient-to-br from-white/95 via-white/98 to-slate-50/95 dark:from-slate-900/95 dark:via-slate-800/98 dark:to-slate-950/95 backdrop-blur-xl border border-slate-200/60 dark:border-slate-700/80 rounded-2xl overflow-hidden shadow-xl shadow-slate-200/25 dark:shadow-slate-900/60 transition-all duration-500 hover:shadow-2xl hover:shadow-slate-200/35 dark:hover:shadow-slate-900/70 focus-within:ring-2 focus-within:ring-gradient-to-r focus-within:ring-red-500/30 focus-within:border-red-500/50 transform hover:scale-[1.01]">
+    <div class="markdown-editor relative bg-gradient-to-br from-white/95 via-white/98 to-slate-50/95 dark:from-slate-900/95 dark:via-slate-800/98 dark:to-slate-950/95 backdrop-blur-xl border border-slate-200/60 dark:border-slate-700/80 rounded-t-2xl overflow-hidden shadow-xl shadow-slate-200/25 dark:shadow-slate-900/60 transition-all duration-500 hover:shadow-2xl hover:shadow-slate-200/35 dark:hover:shadow-slate-900/70 focus-within:ring-2 focus-within:ring-gradient-to-r focus-within:ring-red-500/30 focus-within:border-red-500/50 transform hover:scale-[1.01]">
 
         <!-- Toolbar -->
         <div class="editor-toolbar flex items-center justify-between p-4 border-b border-slate-200/40 dark:border-slate-600/60 bg-gradient-to-r from-slate-50/90 via-white/90 to-slate-50/90 dark:from-slate-900/95 dark:via-slate-800/95 dark:to-slate-900/95 backdrop-blur-sm">
