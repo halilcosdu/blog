@@ -2,6 +2,7 @@
 
 namespace App\Livewire;
 
+use Livewire\Attributes\On;
 use Livewire\Component;
 
 class SimpleMarkdownEditor extends Component
@@ -55,6 +56,14 @@ class SimpleMarkdownEditor extends Component
     public function updatedContent(): void
     {
         $this->dispatch('content-updated', name: $this->name, content: $this->content);
+    }
+
+    #[On('clear-editor-content')]
+    public function clearContent(): void
+    {
+        $this->content = '';
+        $this->activeTab = 'write';
+        $this->dispatch('content-updated', name: $this->name, content: '');
     }
 
     public function render()

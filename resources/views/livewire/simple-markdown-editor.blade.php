@@ -190,6 +190,15 @@
         $wire.on('insert-link', () => {
             insertLinkAtCursor();
         });
+
+        // Clear editor content when requested
+        $wire.on('clear-editor-content', () => {
+            const textarea = document.getElementById('markdown-textarea-' + componentId);
+            if (textarea) {
+                textarea.value = '';
+                textarea.dispatchEvent(new Event('input', { bubbles: true }));
+            }
+        });
     </script>
     @endscript
 </div>

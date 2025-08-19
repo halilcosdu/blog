@@ -138,12 +138,14 @@ class DiscussionShow extends Component
 
         // Reset form
         $this->replyContent = '';
+
+        // Dispatch events
         $this->dispatch('reply-added');
+        $this->dispatch('clear-editor-content');
+        $this->dispatch('show-notification', ['type' => 'success', 'message' => 'Reply added successfully!']);
 
         // Refresh discussion with replies
         $this->discussion->load('replies.user');
-
-        session()->flash('success', 'Reply added successfully!');
     }
 
     public function startEditingReply(int $replyId): void
@@ -182,7 +184,7 @@ class DiscussionShow extends Component
         // Refresh discussion with replies
         $this->discussion->load('replies.user');
 
-        session()->flash('success', 'Reply updated successfully!');
+        $this->dispatch('show-notification', ['type' => 'success', 'message' => 'Reply updated successfully!']);
     }
 
     public function cancelEditingReply(): void
@@ -210,7 +212,7 @@ class DiscussionShow extends Component
         // Refresh discussion with replies
         $this->discussion->load('replies.user');
 
-        session()->flash('success', 'Reply deleted successfully!');
+        $this->dispatch('show-notification', ['type' => 'success', 'message' => 'Reply deleted successfully!']);
     }
 
     #[Layout('components.layouts.app')]

@@ -118,7 +118,9 @@
     {{ $slot }}
     
     <!-- Notifications -->
-    <livewire:notification-manager />
+    <div class="fixed top-4 right-4 z-50 max-w-sm">
+        <livewire:notification-manager />
+    </div>
     
         @livewireScripts
         @stack('scripts')
