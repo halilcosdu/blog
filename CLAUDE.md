@@ -22,7 +22,9 @@ This application is a Laravel application and its main Laravel ecosystems packag
 - You must follow all existing code conventions used in this application. When creating or editing a file, check sibling files for the correct structure, approach, naming.
 - Use descriptive names for variables and methods. For example, `isRegisteredForDiscounts`, not `discount()`.
 - Check for existing components to reuse before writing a new one.
-- You have to use livewire in frontend, do not use alpine or another js
+- You must use livewire in frontend, do not use alpine or another js.
+- You must follow Laravel 12 conventions and structure.
+- System uses Herd so it's always live on https://blog.test/ you don't need start server.
 
 ## Verification Scripts
 - Do not create verification scripts or tinker when tests cover that functionality and prove it works. Unit and feature tests are more important.
