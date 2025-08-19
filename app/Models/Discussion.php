@@ -84,7 +84,7 @@ class Discussion extends Model
 
     public function replies(): HasMany
     {
-        return $this->hasMany(DiscussionReply::class);
+        return $this->hasMany(DiscussionReply::class)->orderBy('created_at', 'desc');
     }
 
     public function incrementViewCount(): void

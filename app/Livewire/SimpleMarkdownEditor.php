@@ -19,6 +19,17 @@ class SimpleMarkdownEditor extends Component
 
     public string $activeTab = 'write';
 
+    // Mention functionality
+    public bool $showMentionDropdown = false;
+
+    public array $mentionUsers = [];
+
+    public int $mentionSelectedIndex = 0;
+
+    public string $mentionQuery = '';
+
+    public int $mentionStartPos = 0;
+
     public function mount(
         string $name = 'content',
         string $value = '',
@@ -63,7 +74,70 @@ class SimpleMarkdownEditor extends Component
     {
         $this->content = '';
         $this->activeTab = 'write';
+        $this->hideMentionDropdown();
         $this->dispatch('content-updated', name: $this->name, content: '');
+    }
+
+    // Mention functionality methods
+    public function showMentions(): void
+    {
+        $this->showMentionDropdown = true;
+        $this->mentionSelectedIndex = 0;
+        $this->searchUsers();
+    }
+
+    public function hideMentionDropdown(): void
+    {
+        $this->showMentionDropdown = false;
+        $this->mentionUsers = [];
+        $this->mentionQuery = '';
+    }
+
+    public function searchUsers(string $query = ''): void
+    {
+        $this->mentionQuery = $query;
+
+        // Mock user data for now - in production you'd fetch from API or database
+        $allUsers = [
+            ['id' => 1, 'name' => 'John Doe', 'username' => 'john.doe'],
+            ['id' => 2, 'name' => 'Jane Smith', 'username' => 'jane.smith'],
+            ['id' => 3, 'name' => 'Alice Johnson', 'username' => 'alice.johnson'],
+            ['id' => 4, 'name' => 'Bob Wilson', 'username' => 'bob_wilson'],
+            ['id' => 5, 'name' => 'Admin User', 'username' => 'admin'],
+        ];
+
+        if ($query) {
+            $users = array_filter($allUsers, function ($user) use ($query) {
+                return stripos($user['name'], $query) !== false ||
+                       stripos($user['username'], $query) !== false;
+            });
+        } else {
+            $users = $allUsers;
+        }
+
+        $this->mentionUsers = array_values(array_slice($users, 0, 5));
+    }
+
+    public function selectMention(array $user): void
+    {
+        $this->dispatch('select-mention', user: $user, startPos: $this->mentionStartPos);
+        $this->hideMentionDropdown();
+    }
+
+    public function selectMentionByIndex(int $index): void
+    {
+        if (isset($this->mentionUsers[$index])) {
+            $this->selectMention($this->mentionUsers[$index]);
+        }
+    }
+
+    public function navigateMention(string $direction): void
+    {
+        if ($direction === 'up') {
+            $this->mentionSelectedIndex = max(0, $this->mentionSelectedIndex - 1);
+        } else {
+            $this->mentionSelectedIndex = min(count($this->mentionUsers) - 1, $this->mentionSelectedIndex + 1);
+        }
     }
 
     public function render()

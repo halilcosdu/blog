@@ -105,10 +105,16 @@
 
                 <!-- Discussion Content -->
                 <div class="prose prose-slate dark:prose-invert max-w-none prose-headings:text-slate-900 dark:prose-headings:text-white prose-p:text-slate-700 dark:prose-p:text-slate-300 prose-strong:text-slate-900 dark:prose-strong:text-white prose-code:text-red-600 dark:prose-code:text-red-400 prose-code:bg-slate-100 dark:prose-code:bg-slate-800 prose-pre:bg-slate-100 dark:prose-pre:bg-slate-800 prose-pre:text-slate-900 dark:prose-pre:text-slate-100">
-                    {!! Str::markdown($discussion->content, [
-                        'html_input' => 'strip',
-                        'allow_unsafe_links' => false,
-                    ]) !!}
+                    {!! 
+                        preg_replace(
+                            '/@([a-zA-Z0-9._-]+)/',
+                            '<span class="mention inline-flex items-center gap-1 px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded-full text-sm font-semibold">@$1</span>',
+                            Str::markdown($discussion->content, [
+                                'html_input' => 'strip',
+                                'allow_unsafe_links' => false,
+                            ])
+                        )
+                    !!}
                 </div>
             </article>
 
@@ -300,10 +306,16 @@
                             </div>
                         @else
                             <div class="prose prose-slate dark:prose-invert max-w-none prose-headings:text-slate-900 dark:prose-headings:text-white prose-p:text-slate-700 dark:prose-p:text-slate-300 prose-strong:text-slate-900 dark:prose-strong:text-white prose-code:text-red-600 dark:prose-code:text-red-400 prose-code:bg-slate-100 dark:prose-code:bg-slate-800 prose-pre:bg-slate-100 dark:prose-pre:bg-slate-800 prose-pre:text-slate-900 dark:prose-pre:text-slate-100">
-                                {!! Str::markdown($reply->content, [
-                                    'html_input' => 'strip',
-                                    'allow_unsafe_links' => false,
-                                ]) !!}
+                                {!! 
+                                    preg_replace(
+                                        '/@([a-zA-Z0-9._-]+)/',
+                                        '<span class="mention inline-flex items-center gap-1 px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded-full text-sm font-semibold">@$1</span>',
+                                        Str::markdown($reply->content, [
+                                            'html_input' => 'strip',
+                                            'allow_unsafe_links' => false,
+                                        ])
+                                    )
+                                !!}
                             </div>
                         @endif
                     </article>
