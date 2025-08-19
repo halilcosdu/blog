@@ -104,8 +104,11 @@
                 </header>
 
                 <!-- Discussion Content -->
-                <div class="prose prose-slate dark:prose-invert max-w-none prose-headings:text-slate-900 dark:prose-headings:text-white prose-p:text-slate-700 dark:prose-p:text-slate-300 prose-strong:text-slate-900 dark:prose-strong:text-white prose-code:text-red-600 dark:prose-code:text-red-400 prose-code:bg-slate-100 dark:prose-code:bg-slate-800 whitespace-pre-line">
-                    {{ $discussion->content }}
+                <div class="prose prose-slate dark:prose-invert max-w-none prose-headings:text-slate-900 dark:prose-headings:text-white prose-p:text-slate-700 dark:prose-p:text-slate-300 prose-strong:text-slate-900 dark:prose-strong:text-white prose-code:text-red-600 dark:prose-code:text-red-400 prose-code:bg-slate-100 dark:prose-code:bg-slate-800 prose-pre:bg-slate-100 dark:prose-pre:bg-slate-800 prose-pre:text-slate-900 dark:prose-pre:text-slate-100">
+                    {!! Str::markdown($discussion->content, [
+                        'html_input' => 'strip',
+                        'allow_unsafe_links' => false,
+                    ]) !!}
                 </div>
             </article>
 
@@ -280,8 +283,11 @@
                                 </div>
                             </div>
                         @else
-                            <div class="prose prose-slate dark:prose-invert max-w-none whitespace-pre-line">
-                                {{ $reply->content }}
+                            <div class="prose prose-slate dark:prose-invert max-w-none prose-headings:text-slate-900 dark:prose-headings:text-white prose-p:text-slate-700 dark:prose-p:text-slate-300 prose-strong:text-slate-900 dark:prose-strong:text-white prose-code:text-red-600 dark:prose-code:text-red-400 prose-code:bg-slate-100 dark:prose-code:bg-slate-800 prose-pre:bg-slate-100 dark:prose-pre:bg-slate-800 prose-pre:text-slate-900 dark:prose-pre:text-slate-100">
+                                {!! Str::markdown($reply->content, [
+                                    'html_input' => 'strip',
+                                    'allow_unsafe_links' => false,
+                                ]) !!}
                             </div>
                         @endif
                     </article>
