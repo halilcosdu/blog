@@ -158,14 +158,15 @@
                                 <button 
                                     type="submit" 
                                     wire:loading.attr="disabled"
+                                    wire:target="addReply"
                                     class="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-red-600 to-orange-500 text-white font-medium rounded-lg hover:shadow-lg hover:shadow-red-500/25 transform hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
                                 >
-                                    <svg wire:loading.remove class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                    <svg wire:loading.remove wire:target="addReply" class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                                         <path d="M10.894 2.553a1 1 0 00-1.788 0l-7 14a1 1 0 001.169 1.409l5-1.429A1 1 0 009 15.571V11a1 1 0 112 0v4.571a1 1 0 00.725.962l5 1.428a1 1 0 001.17-1.408l-7-14z"/>
                                     </svg>
-                                    <div wire:loading class="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                                    <span wire:loading.remove>Post Reply</span>
-                                    <span wire:loading>Posting...</span>
+                                    <div wire:loading wire:target="addReply" class="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                                    <span wire:loading.remove wire:target="addReply">Post Reply</span>
+                                    <span wire:loading wire:target="addReply">Posting...</span>
                                 </button>
                             </div>
                         </form>
@@ -286,14 +287,15 @@
                                     <button 
                                         wire:click="updateReply"
                                         wire:loading.attr="disabled"
+                                        wire:target="updateReply"
                                         class="flex items-center gap-2 px-4 py-2 bg-gradient-to-r from-blue-600 to-blue-500 text-white font-semibold rounded-lg hover:shadow-lg hover:shadow-blue-500/25 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                                     >
-                                        <svg wire:loading.remove class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <svg wire:loading.remove wire:target="updateReply" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"/>
                                         </svg>
-                                        <div wire:loading class="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
-                                        <span wire:loading.remove>Update Reply</span>
-                                        <span wire:loading>Updating...</span>
+                                        <div wire:loading wire:target="updateReply" class="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                                        <span wire:loading.remove wire:target="updateReply">Update Reply</span>
+                                        <span wire:loading wire:target="updateReply">Updating...</span>
                                     </button>
                                     <button 
                                         wire:click="cancelEditingReply"

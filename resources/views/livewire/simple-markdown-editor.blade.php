@@ -167,18 +167,95 @@
             @if($activeTab === 'preview')
             <!-- Preview -->
             <div class="p-4">
-                <div id="preview-content-{{ $name }}" class="prose prose-slate dark:prose-invert max-w-none">
+                <div id="preview-content-{{ $name }}" class="prose prose-slate dark:prose-invert max-w-none prose-headings:text-slate-900 dark:prose-headings:text-white prose-p:text-slate-700 dark:prose-p:text-slate-300 prose-strong:text-slate-900 dark:prose-strong:text-white prose-code:text-red-600 dark:prose-code:text-red-400 prose-code:bg-slate-100 dark:prose-code:bg-slate-800 prose-pre:bg-slate-100 dark:prose-pre:bg-slate-800 prose-pre:text-slate-900 dark:prose-pre:text-slate-100">
                     @if($content)
-                        {!! 
-                            preg_replace(
-                                '/@([a-zA-Z0-9._-]+)/',
-                                '<span class="mention inline-flex items-center gap-1 px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded-full text-sm font-semibold">@$1</span>',
-                                Str::markdown($content, [
-                                    'html_input' => 'strip',
-                                    'allow_unsafe_links' => false,
-                                ])
-                            )
-                        !!}
+                        <div x-data="{ 
+                            content: @js($content),
+                            init() {
+                                this.renderMarkdown();
+                            },
+                            renderMarkdown() {
+                                // Load highlight.js if not already loaded
+                                if (typeof hljs === 'undefined') {
+                                    const hljsScript = document.createElement('script');
+                                    hljsScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js';
+                                    hljsScript.onload = () => this.processContent();
+                                    document.head.appendChild(hljsScript);
+                                    
+                                    const hljsCSS = document.createElement('link');
+                                    hljsCSS.rel = 'stylesheet';
+                                    hljsCSS.href = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css';
+                                    document.head.appendChild(hljsCSS);
+                                } else {
+                                    this.processContent();
+                                }
+                            },
+                            processContent() {
+                                const markdown = @js(Str::markdown($content, ['html_input' => 'strip', 'allow_unsafe_links' => false]));
+                                
+                                // Process code blocks with proper copy buttons and language detection
+                                const processedMarkdown = markdown.replace(
+                                    /<pre><code class=\"language-(\w+)\">(.*?)<\/code><\/pre>/gs, 
+                                    (match, language, code) => {
+                                        const decodedCode = he.decode ? he.decode(code) : code.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
+                                        const highlightedCode = (typeof hljs !== 'undefined' && hljs.getLanguage(language)) ? 
+                                            hljs.highlight(decodedCode, { language }).value : decodedCode;
+                                        
+                                        return `<div class=\"code-block-wrapper relative group mb-4\">
+                                            <div class=\"code-header flex items-center justify-between bg-slate-800 dark:bg-slate-900 text-slate-300 px-4 py-2 text-sm font-mono rounded-t-lg\">
+                                                <span class=\"text-slate-400\">${language}</span>
+                                                <button type=\"button\" class=\"copy-btn opacity-0 group-hover:opacity-100 transition-opacity hover:bg-slate-700 p-1 rounded\" onclick=\"copyCodeToClipboard(event)\">
+                                                    <svg class=\"copy-icon w-4 h-4\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\">
+                                                        <path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z\"/>
+                                                    </svg>
+                                                    <svg class=\"check-icon w-4 h-4 hidden\" fill=\"currentColor\" viewBox=\"0 0 20 20\">
+                                                        <path fill-rule=\"evenodd\" d=\"M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z\" clip-rule=\"evenodd\"/>
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                            <pre class=\"bg-slate-900 dark:bg-slate-950 text-slate-100 p-4 rounded-b-lg overflow-x-auto\"><code class=\"hljs language-${language}\">${highlightedCode}</code></pre>
+                                        </div>`;
+                                    }
+                                ).replace(
+                                    /<pre><code>(.*?)<\/code><\/pre>/gs,
+                                    (match, code) => {
+                                        const decodedCode = he.decode ? he.decode(code) : code.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
+                                        
+                                        return `<div class=\"code-block-wrapper relative group mb-4\">
+                                            <div class=\"code-header flex items-center justify-between bg-slate-800 dark:bg-slate-900 text-slate-300 px-4 py-2 text-sm font-mono rounded-t-lg\">
+                                                <span class=\"text-slate-400\">text</span>
+                                                <button type=\"button\" class=\"copy-btn opacity-0 group-hover:opacity-100 transition-opacity hover:bg-slate-700 p-1 rounded\" onclick=\"copyCodeToClipboard(event)\">
+                                                    <svg class=\"copy-icon w-4 h-4\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\">
+                                                        <path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z\"/>
+                                                    </svg>
+                                                    <svg class=\"check-icon w-4 h-4 hidden\" fill=\"currentColor\" viewBox=\"0 0 20 20\">
+                                                        <path fill-rule=\"evenodd\" d=\"M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z\" clip-rule=\"evenodd\"/>
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                            <pre class=\"bg-slate-900 dark:bg-slate-950 text-slate-100 p-4 rounded-b-lg overflow-x-auto\"><code>${decodedCode}</code></pre>
+                                        </div>`;
+                                    }
+                                );
+                                
+                                // Add mention processing
+                                const finalContent = processedMarkdown.replace(
+                                    /@([a-zA-Z0-9._-]+)/g,
+                                    '<span class=\"mention inline-flex items-center gap-1 px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded-full text-sm font-semibold\">@$1</span>'
+                                );
+                                
+                                this.$el.innerHTML = finalContent;
+                                
+                                // Apply syntax highlighting
+                                if (typeof hljs !== 'undefined') {
+                                    this.$el.querySelectorAll('pre code:not(.hljs)').forEach((block) => {
+                                        hljs.highlightElement(block);
+                                    });
+                                }
+                            }
+                        }" x-init="init()">
+                            Loading preview...
+                        </div>
                     @else
                         <div class="text-center py-8 text-slate-500 dark:text-slate-400">
                             <p>Nothing to preview yet. Start writing in the editor!</p>
@@ -189,6 +266,52 @@
             @endif
         </div>
     </div>
+
+    <!-- Global copy function for code blocks -->
+    <script>
+    window.copyCodeToClipboard = async function(event) {
+        // Prevent event from bubbling up and triggering form submission
+        event.preventDefault();
+        event.stopPropagation();
+        
+        const button = event.currentTarget;
+        const codeBlock = button.closest('.code-block-wrapper').querySelector('code');
+        const copyIcon = button.querySelector('.copy-icon');
+        const checkIcon = button.querySelector('.check-icon');
+
+        if (!codeBlock) {
+            console.error('Code block not found');
+            return;
+        }
+
+        try {
+            await navigator.clipboard.writeText(codeBlock.textContent);
+            copyIcon.classList.add('hidden');
+            checkIcon.classList.remove('hidden');
+
+            setTimeout(() => {
+                copyIcon.classList.remove('hidden');
+                checkIcon.classList.add('hidden');
+            }, 2000);
+        } catch (err) {
+            console.error('Failed to copy code:', err);
+            // Fallback for older browsers
+            const textArea = document.createElement('textarea');
+            textArea.value = codeBlock.textContent;
+            document.body.appendChild(textArea);
+            textArea.select();
+            document.execCommand('copy');
+            document.body.removeChild(textArea);
+
+            copyIcon.classList.add('hidden');
+            checkIcon.classList.remove('hidden');
+            setTimeout(() => {
+                copyIcon.classList.remove('hidden');
+                checkIcon.classList.add('hidden');
+            }, 2000);
+        }
+    };
+    </script>
 
     <!-- JavaScript -->
     @script
