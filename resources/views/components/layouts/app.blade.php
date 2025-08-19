@@ -81,10 +81,44 @@
         .copy-button:hover {
             background-color: #2d3748;
         }
+        
+        /* Notification positioning fix */
+        #notifications-container {
+            position: fixed !important;
+            top: 1rem !important;
+            right: 1rem !important;
+            z-index: 9999 !important;
+            pointer-events: none !important;
+            max-width: 320px !important;
+            width: 100% !important;
+        }
+        
+        #notifications-container > * {
+            pointer-events: auto !important;
+        }
+        
+        #notifications-container .notification-content {
+            word-wrap: break-word !important;
+            overflow-wrap: break-word !important;
+            hyphens: auto !important;
+            max-width: 100% !important;
+        }
+        
+        @media (max-width: 640px) {
+            #notifications-container {
+                left: 1rem !important;
+                right: 1rem !important;
+                max-width: none !important;
+                width: auto !important;
+            }
+        }
     </style>
 </head>
 <body class="bg-white dark:bg-gray-900 text-gray-900 dark:text-gray-100">
     {{ $slot }}
+    
+    <!-- Notifications -->
+    <livewire:notification-manager />
     
         @livewireScripts
         @stack('scripts')
@@ -133,6 +167,19 @@
                         });
                     });
                 });
+            });
+        </script>
+
+        <!-- Global notification API -->
+        <script>
+            // Global notification function
+            window.showNotification = function(type, message) {
+                Livewire.dispatch('show-notification', { type: type, message: message });
+            };
+
+            // Listen for custom notification events
+            window.addEventListener('notification', function(event) {
+                window.showNotification(event.detail.type || 'info', event.detail.message);
             });
         </script>
 

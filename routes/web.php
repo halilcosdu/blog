@@ -41,6 +41,9 @@ Route::middleware('auth')->group(function () {
     Route::get('/discussions/{slug}/edit', App\Livewire\Discussion\EditDiscussion::class)->name('discussions.edit');
 });
 
+// Development/Demo routes
+Route::get('/demo/notifications', App\Livewire\NotificationDemo::class)->name('demo.notifications');
+
 // Discussion detail (must be last to avoid conflicts)
 Route::get('/discussions/{slug}', App\Livewire\Discussion\DiscussionShow::class)->name('discussions.show');
 

@@ -22,21 +22,29 @@ class CreateDiscussion extends Component
 
     public function save(): void
     {
-        $this->validate();
+        try {
+            $this->validate();
 
-        Discussion::query()
-            ->create([
-                'user_id' => Auth::id(),
-                'category_id' => $this->category_id,
-                'title' => $this->title,
-                'content' => $this->content,
-                'is_resolved' => false,
-                'views_count' => 0,
-            ]);
+            Discussion::query()
+                ->create([
+                    'user_id' => Auth::id(),
+                    'category_id' => $this->category_id,
+                    'title' => $this->title,
+                    'content' => $this->content,
+                    'is_resolved' => false,
+                    'views_count' => 0,
+                ]);
 
-        session()->flash('success', 'Discussion created successfully!');
+            session()->flash('success', 'Discussion created successfully!');
 
-        $this->redirectRoute('discussions.index');
+            $this->redirectRoute('discussions.index');
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            // Let validation errors be handled normally by Livewire
+            throw $e;
+        } catch (\Exception $e) {
+            logger()->error('Error creating discussion: '.$e->getMessage());
+            session()->flash('error', 'An error occurred while creating the discussion. Please try again.');
+        }
     }
 
     #[Layout('components.layouts.app')]
