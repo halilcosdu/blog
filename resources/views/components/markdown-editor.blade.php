@@ -187,7 +187,7 @@
                      x-transition:enter="transition ease-out duration-300"
                      x-transition:enter-start="opacity-0 translate-y-4"
                      x-transition:enter-end="opacity-100 translate-y-0"
-                     class="prose prose-slate dark:prose-invert max-w-none prose-headings:text-slate-900 dark:prose-headings:text-slate-100 prose-p:text-slate-700 dark:prose-p:text-slate-300 prose-strong:text-slate-900 dark:prose-strong:text-slate-100 prose-code:text-red-600 dark:prose-code:text-red-400 prose-code:bg-red-50 dark:prose-code:bg-red-900/20 prose-code:px-2 prose-code:py-1 prose-code:rounded-md prose-pre:bg-slate-900 dark:prose-pre:bg-slate-950 prose-pre:border prose-pre:border-slate-200 dark:prose-pre:border-slate-800"
+                     class="prose prose-slate dark:prose-invert max-w-none prose-headings:text-slate-900 dark:prose-headings:text-slate-100 prose-p:text-slate-700 dark:prose-p:text-slate-300 prose-strong:text-slate-900 dark:prose-strong:text-slate-100 prose-code:text-red-600 dark:prose-code:text-red-400 prose-code:bg-red-50 dark:prose-code:bg-red-900/20 prose-code:px-2 prose-code:py-1 prose-code:rounded-md prose-pre:bg-slate-900 dark:prose-pre:bg-slate-950 prose-pre:border prose-pre:border-slate-200 dark:prose-pre:border-slate-800 prose-pre:my-0 prose-pre:p-0"
                      x-html="previewContent"></div>
                 <div x-show="!previewContent"
                      class="flex flex-col items-center justify-center py-16 text-center">
@@ -482,47 +482,17 @@ document.addEventListener('alpine:init', () => {
                     const validLang = language && hljs?.getLanguage(language) ? language : 'plaintext';
                     const highlightedCode = hljs?.highlight(code, { language: validLang })?.value || code;
 
-                    return `
-                        <div class="code-block-wrapper relative group mb-4">
-                            <div class="code-header flex items-center justify-between bg-slate-800 dark:bg-slate-900 text-slate-300 px-4 py-2 text-sm font-mono rounded-t-lg">
-                                <span class="text-slate-400">${language || 'text'}</span>
-                                <button class="copy-btn opacity-0 group-hover:opacity-100 transition-opacity hover:bg-slate-700 p-1 rounded" onclick="copyCodeToClipboard(this)">
-                                    <svg class="copy-icon w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
-                                    </svg>
-                                    <svg class="check-icon w-4 h-4 hidden" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
-                                    </svg>
-                                </button>
-                            </div>
-                            <pre class="bg-slate-900 dark:bg-slate-950 text-slate-100 p-4 rounded-b-lg overflow-x-auto"><code class="hljs language-${validLang}">${highlightedCode}</code></pre>
-                        </div>
-                    `;
+                    return `<div class="code-block-wrapper relative group mb-4"><div class="code-header flex items-center justify-between bg-slate-800 dark:bg-slate-900 text-slate-300 px-4 py-2 text-sm font-mono rounded-t-lg"><span class="text-slate-400">${language || 'text'}</span><button class="copy-btn opacity-0 group-hover:opacity-100 transition-opacity hover:bg-slate-700 p-1 rounded" onclick="copyCodeToClipboard(this)"><svg class="copy-icon w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg><svg class="check-icon w-4 h-4 hidden" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg></button></div><pre class="bg-slate-900 dark:bg-slate-950 text-slate-100 p-4 rounded-b-lg overflow-x-auto"><code class="hljs language-${validLang}">${highlightedCode}</code></pre></div>`;
                 };
 
                 // Custom blockquote renderer
                 renderer.blockquote = function(quote) {
-                    return `
-                        <blockquote class="border-l-4 border-red-500 pl-4 py-2 my-4 bg-slate-50 dark:bg-slate-800/50 rounded-r-lg">
-                            ${quote}
-                        </blockquote>
-                    `;
+                    return `<blockquote class="border-l-4 border-red-500 pl-4 py-2 my-4 bg-slate-50 dark:bg-slate-800/50 rounded-r-lg">${quote}</blockquote>`;
                 };
 
                 // Custom table renderer
                 renderer.table = function(header, body) {
-                    return `
-                        <div class="overflow-x-auto my-4">
-                            <table class="min-w-full border border-slate-200 dark:border-slate-700 rounded-lg">
-                                <thead class="bg-slate-50 dark:bg-slate-800">
-                                    ${header}
-                                </thead>
-                                <tbody>
-                                    ${body}
-                                </tbody>
-                            </table>
-                        </div>
-                    `;
+                    return `<div class="overflow-x-auto my-4"><table class="min-w-full border border-slate-200 dark:border-slate-700 rounded-lg"><thead class="bg-slate-50 dark:bg-slate-800">${header}</thead><tbody>${body}</tbody></table></div>`;
                 };
 
                 marked.setOptions({

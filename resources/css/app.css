@@ -24,6 +24,43 @@
     }
 }
 
+/* Markdown Editor Prose Overrides */
+@layer components {
+    .prose .code-block-wrapper {
+        margin: 0;
+    }
+
+    .prose .code-block-wrapper pre {
+        margin: 0 !important;
+        padding: 0 !important;
+        background: transparent !important;
+        border: none !important;
+        border-radius: 0 !important;
+    }
+
+    /* Override Tailwind prose code element border radius specifically */
+    .prose .code-block-wrapper code {
+        border-radius: 0 !important;
+    }
+
+    /* Prevent typography plugin from adding border radius to inline code in code blocks */
+    .prose .code-block-wrapper pre code {
+        border-radius: 0 !important;
+    }
+
+    /* Ensure our custom code blocks keep their styling */
+    .prose .code-block-wrapper .code-header {
+        border-top-left-radius: 0.5rem !important;
+        border-top-right-radius: 0.5rem !important;
+    }
+
+    .prose .code-block-wrapper pre.bg-slate-900,
+    .prose .code-block-wrapper pre.dark\:bg-slate-950 {
+        border-bottom-left-radius: 0.5rem !important;
+        border-bottom-right-radius: 0.5rem !important;
+    }
+}
+
 @theme {
     --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif, 'Apple Color Emoji', 'Segoe UI Emoji',
         'Segoe UI Symbol', 'Noto Color Emoji';
