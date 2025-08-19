@@ -78,3 +78,15 @@ test('markdown editor component includes typography plugin styles', function () 
         ->assertSee('prose prose-slate')  // Check that prose classes are used
         ->assertSee('prose-headings:text-slate-900'); // Check that heading styles are applied
 });
+
+test('copy button function is properly defined', function () {
+    $user = User::factory()->create();
+
+    $this->actingAs($user);
+    $response = $this->get('/discussions/create');
+
+    $response->assertStatus(200)
+        ->assertSee('copyCodeToClipboard')  // Check that copy function exists
+        ->assertSee('event.preventDefault()')  // Check for proper event handling
+        ->assertSee('event.stopPropagation()'); // Check for proper event propagation control
+});

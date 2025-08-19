@@ -241,10 +241,20 @@
     </div>
 <!-- Global copy function for code blocks -->
 <script>
-window.copyCodeToClipboard = async function(button) {
+window.copyCodeToClipboard = async function(event) {
+    // Prevent event from bubbling up and triggering form submission
+    event.preventDefault();
+    event.stopPropagation();
+    
+    const button = event.currentTarget;
     const codeBlock = button.closest('.code-block-wrapper').querySelector('code');
     const copyIcon = button.querySelector('.copy-icon');
     const checkIcon = button.querySelector('.check-icon');
+
+    if (!codeBlock) {
+        console.error('Code block not found');
+        return;
+    }
 
     try {
         await navigator.clipboard.writeText(codeBlock.textContent);
@@ -518,7 +528,7 @@ document.addEventListener('alpine:init', () => {
                     const validLang = language && hljs?.getLanguage(language) ? language : 'plaintext';
                     const highlightedCode = hljs?.highlight(code, { language: validLang })?.value || code;
 
-                    return `<div class="code-block-wrapper relative group mb-4"><div class="code-header flex items-center justify-between bg-slate-800 dark:bg-slate-900 text-slate-300 px-4 py-2 text-sm font-mono rounded-t-lg"><span class="text-slate-400">${language || 'text'}</span><button class="copy-btn opacity-0 group-hover:opacity-100 transition-opacity hover:bg-slate-700 p-1 rounded" onclick="copyCodeToClipboard(this)"><svg class="copy-icon w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg><svg class="check-icon w-4 h-4 hidden" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg></button></div><pre class="bg-slate-900 dark:bg-slate-950 text-slate-100 p-4 rounded-b-lg overflow-x-auto"><code class="hljs language-${validLang}">${highlightedCode}</code></pre></div>`;
+                    return `<div class="code-block-wrapper relative group mb-4"><div class="code-header flex items-center justify-between bg-slate-800 dark:bg-slate-900 text-slate-300 px-4 py-2 text-sm font-mono rounded-t-lg"><span class="text-slate-400">${language || 'text'}</span><button type="button" class="copy-btn opacity-0 group-hover:opacity-100 transition-opacity hover:bg-slate-700 p-1 rounded" onclick="copyCodeToClipboard(event)"><svg class="copy-icon w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/></svg><svg class="check-icon w-4 h-4 hidden" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg></button></div><pre class="bg-slate-900 dark:bg-slate-950 text-slate-100 p-4 rounded-b-lg overflow-x-auto"><code class="hljs language-${validLang}">${highlightedCode}</code></pre></div>`;
                 };
 
                 // Custom blockquote renderer
