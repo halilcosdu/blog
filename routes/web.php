@@ -8,6 +8,11 @@ Route::get('/posts', App\Livewire\Blog\PostsList::class)->name('posts.index');
 Route::get('/posts/{slug}', App\Livewire\Blog\PostShow::class)->name('posts.show');
 Route::get('/watch', App\Livewire\Watch\WatchPage::class)->name('watch');
 
+// Test route for markdown editor
+Route::get('/test-editor', function () {
+    return view('test-editor');
+})->name('test.editor');
+
 // Discussion routes
 Route::get('/discussions', App\Livewire\Discussion\DiscussionForum::class)->name('discussions.index');
 
