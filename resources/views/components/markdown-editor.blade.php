@@ -16,43 +16,79 @@
             <!-- Left side - Format buttons -->
             <div class="flex items-center gap-1">
             <!-- Bold -->
-            <button type="button" @click="insertText('**', '**')" class="group/btn relative p-2.5 bg-white/50 dark:bg-slate-700/50 hover:bg-gradient-to-r hover:from-red-50 hover:to-orange-50 dark:hover:from-red-900/20 dark:hover:to-orange-900/20 rounded-xl shadow-sm hover:shadow-md border border-slate-200/50 dark:border-slate-600/50 hover:border-red-300/50 dark:hover:border-red-600/50 transition-all duration-300 hover:scale-105 active:scale-95" title="Bold">
-                <svg class="w-4 h-4 text-slate-600 dark:text-slate-400 group-hover/btn:text-red-600 dark:group-hover/btn:text-red-400 transition-colors" fill="currentColor" viewBox="0 0 20 20">
+            <button type="button" @click="insertText('**', '**')" :disabled="activeTab === 'preview'" :class="{
+                'opacity-50 cursor-not-allowed pointer-events-none': activeTab === 'preview',
+                'hover:bg-gradient-to-r hover:from-red-50 hover:to-orange-50 dark:hover:from-red-900/20 dark:hover:to-orange-900/20 hover:border-red-300/50 dark:hover:border-red-600/50 hover:scale-105 active:scale-95': activeTab === 'write'
+            }" class="group/btn relative p-2.5 bg-white/50 dark:bg-slate-700/50 rounded-xl shadow-sm hover:shadow-md border border-slate-200/50 dark:border-slate-600/50 transition-all duration-300" title="Bold">
+                <svg :class="{
+                    'text-slate-300 dark:text-slate-600': activeTab === 'preview',
+                    'text-slate-600 dark:text-slate-400 group-hover/btn:text-red-600 dark:group-hover/btn:text-red-400': activeTab === 'write'
+                }" class="w-4 h-4 transition-colors" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M6 2a1 1 0 000 2h1v12H6a1 1 0 000 2h8a1 1 0 100-2h-1V4h1a1 1 0 100-2H6z"/>
                 </svg>
             </button>
 
             <!-- Italic -->
-            <button type="button" @click="insertText('*', '*')" class="group/btn relative p-2.5 bg-white/50 dark:bg-slate-700/50 hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 dark:hover:from-blue-900/20 dark:hover:to-indigo-900/20 rounded-xl shadow-sm hover:shadow-md border border-slate-200/50 dark:border-slate-600/50 hover:border-blue-300/50 dark:hover:border-blue-600/50 transition-all duration-300 hover:scale-105 active:scale-95" title="Italic">
-                <svg class="w-4 h-4 text-slate-600 dark:text-slate-400 group-hover/btn:text-blue-600 dark:group-hover/btn:text-blue-400 transition-colors" fill="currentColor" viewBox="0 0 20 20">
+            <button type="button" @click="insertText('*', '*')" :disabled="activeTab === 'preview'" :class="{
+                'opacity-50 cursor-not-allowed pointer-events-none': activeTab === 'preview',
+                'hover:bg-gradient-to-r hover:from-blue-50 hover:to-indigo-50 dark:hover:from-blue-900/20 dark:hover:to-indigo-900/20 hover:border-blue-300/50 dark:hover:border-blue-600/50 hover:scale-105 active:scale-95': activeTab === 'write'
+            }" class="group/btn relative p-2.5 bg-white/50 dark:bg-slate-700/50 rounded-xl shadow-sm hover:shadow-md border border-slate-200/50 dark:border-slate-600/50 transition-all duration-300" title="Italic">
+                <svg :class="{
+                    'text-slate-300 dark:text-slate-600': activeTab === 'preview',
+                    'text-slate-600 dark:text-slate-400 group-hover/btn:text-blue-600 dark:group-hover/btn:text-blue-400': activeTab === 'write'
+                }" class="w-4 h-4 transition-colors" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M8 2a1 1 0 000 2h1.5l-3 12H6a1 1 0 000 2h4a1 1 0 100-2h-1.5l3-12H12a1 1 0 100-2H8z"/>
                 </svg>
             </button>
 
             <!-- Heading -->
-            <button type="button" @click="insertText('## ', '')" class="group/btn relative p-2.5 bg-white/50 dark:bg-slate-700/50 hover:bg-gradient-to-r hover:from-purple-50 hover:to-pink-50 dark:hover:from-purple-900/20 dark:hover:to-pink-900/20 rounded-xl shadow-sm hover:shadow-md border border-slate-200/50 dark:border-slate-600/50 hover:border-purple-300/50 dark:hover:border-purple-600/50 transition-all duration-300 hover:scale-105 active:scale-95" title="Heading">
-                <svg class="w-4 h-4 text-slate-600 dark:text-slate-400 group-hover/btn:text-purple-600 dark:group-hover/btn:text-purple-400 transition-colors" fill="currentColor" viewBox="0 0 20 20">
+            <button type="button" @click="insertText('## ', '')" :disabled="activeTab === 'preview'" :class="{
+                'opacity-50 cursor-not-allowed pointer-events-none': activeTab === 'preview',
+                'hover:bg-gradient-to-r hover:from-purple-50 hover:to-pink-50 dark:hover:from-purple-900/20 dark:hover:to-pink-900/20 hover:border-purple-300/50 dark:hover:border-purple-600/50 hover:scale-105 active:scale-95': activeTab === 'write'
+            }" class="group/btn relative p-2.5 bg-white/50 dark:bg-slate-700/50 rounded-xl shadow-sm hover:shadow-md border border-slate-200/50 dark:border-slate-600/50 transition-all duration-300" title="Heading">
+                <svg :class="{
+                    'text-slate-300 dark:text-slate-600': activeTab === 'preview',
+                    'text-slate-600 dark:text-slate-400 group-hover/btn:text-purple-600 dark:group-hover/btn:text-purple-400': activeTab === 'write'
+                }" class="w-4 h-4 transition-colors" fill="currentColor" viewBox="0 0 20 20">
                     <path d="M3 4a1 1 0 011-1h2a1 1 0 011 1v4h6V4a1 1 0 011-1h2a1 1 0 011 1v12a1 1 0 11-2 0v-4H7v4a1 1 0 11-2 0V4z"/>
                 </svg>
             </button>
 
             <!-- Code -->
-            <button type="button" @click="insertText('`', '`')" class="group/btn relative p-2.5 bg-white/50 dark:bg-slate-700/50 hover:bg-gradient-to-r hover:from-green-50 hover:to-emerald-50 dark:hover:from-green-900/20 dark:hover:to-emerald-900/20 rounded-xl shadow-sm hover:shadow-md border border-slate-200/50 dark:border-slate-600/50 hover:border-green-300/50 dark:hover:border-green-600/50 transition-all duration-300 hover:scale-105 active:scale-95" title="Inline Code">
-                <svg class="w-4 h-4 text-slate-600 dark:text-slate-400 group-hover/btn:text-green-600 dark:group-hover/btn:text-green-400 transition-colors" fill="currentColor" viewBox="0 0 20 20">
+            <button type="button" @click="insertText('`', '`')" :disabled="activeTab === 'preview'" :class="{
+                'opacity-50 cursor-not-allowed pointer-events-none': activeTab === 'preview',
+                'hover:bg-gradient-to-r hover:from-green-50 hover:to-emerald-50 dark:hover:from-green-900/20 dark:hover:to-emerald-900/20 hover:border-green-300/50 dark:hover:border-green-600/50 hover:scale-105 active:scale-95': activeTab === 'write'
+            }" class="group/btn relative p-2.5 bg-white/50 dark:bg-slate-700/50 rounded-xl shadow-sm hover:shadow-md border border-slate-200/50 dark:border-slate-600/50 transition-all duration-300" title="Inline Code">
+                <svg :class="{
+                    'text-slate-300 dark:text-slate-600': activeTab === 'preview',
+                    'text-slate-600 dark:text-slate-400 group-hover/btn:text-green-600 dark:group-hover/btn:text-green-400': activeTab === 'write'
+                }" class="w-4 h-4 transition-colors" fill="currentColor" viewBox="0 0 20 20">
                     <path fill-rule="evenodd" d="M12.316 3.051a1 1 0 01.633 1.265l-4 12a1 1 0 11-1.898-.632l4-12a1 1 0 011.265-.633zM5.707 6.293a1 1 0 010 1.414L3.414 10l2.293 2.293a1 1 0 11-1.414 1.414l-3-3a1 1 0 010-1.414l3-3a1 1 0 011.414 0zm8.586 0a1 1 0 011.414 0l3 3a1 1 0 010 1.414l-3 3a1 1 0 11-1.414-1.414L16.586 10l-2.293-2.293a1 1 0 010-1.414z" clip-rule="evenodd"/>
                 </svg>
             </button>
 
             <!-- Code Block -->
-            <button type="button" @click="insertCodeBlock()" class="group/btn relative p-2.5 bg-white/50 dark:bg-slate-700/50 hover:bg-gradient-to-r hover:from-yellow-50 hover:to-amber-50 dark:hover:from-yellow-900/20 dark:hover:to-amber-900/20 rounded-xl shadow-sm hover:shadow-md border border-slate-200/50 dark:border-slate-600/50 hover:border-yellow-300/50 dark:hover:border-yellow-600/50 transition-all duration-300 hover:scale-105 active:scale-95" title="Code Block">
-                <svg class="w-4 h-4 text-slate-600 dark:text-slate-400 group-hover/btn:text-yellow-600 dark:group-hover/btn:text-yellow-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <button type="button" @click="insertCodeBlock()" :disabled="activeTab === 'preview'" :class="{
+                'opacity-50 cursor-not-allowed pointer-events-none': activeTab === 'preview',
+                'hover:bg-gradient-to-r hover:from-yellow-50 hover:to-amber-50 dark:hover:from-yellow-900/20 dark:hover:to-amber-900/20 hover:border-yellow-300/50 dark:hover:border-yellow-600/50 hover:scale-105 active:scale-95': activeTab === 'write'
+            }" class="group/btn relative p-2.5 bg-white/50 dark:bg-slate-700/50 rounded-xl shadow-sm hover:shadow-md border border-slate-200/50 dark:border-slate-600/50 transition-all duration-300" title="Code Block">
+                <svg :class="{
+                    'text-slate-300 dark:text-slate-600': activeTab === 'preview',
+                    'text-slate-600 dark:text-slate-400 group-hover/btn:text-yellow-600 dark:group-hover/btn:text-yellow-500': activeTab === 'write'
+                }" class="w-4 h-4 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
                 </svg>
             </button>
 
             <!-- Link -->
-            <button type="button" @click="insertLink()" class="group/btn relative p-2.5 bg-white/50 dark:bg-slate-700/50 hover:bg-gradient-to-r hover:from-cyan-50 hover:to-blue-50 dark:hover:from-cyan-900/20 dark:hover:to-blue-900/20 rounded-xl shadow-sm hover:shadow-md border border-slate-200/50 dark:border-slate-600/50 hover:border-cyan-300/50 dark:hover:border-cyan-600/50 transition-all duration-300 hover:scale-105 active:scale-95" title="Link">
-                <svg class="w-4 h-4 text-slate-600 dark:text-slate-400 group-hover/btn:text-cyan-600 dark:group-hover/btn:text-cyan-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <button type="button" @click="insertLink()" :disabled="activeTab === 'preview'" :class="{
+                'opacity-50 cursor-not-allowed pointer-events-none': activeTab === 'preview',
+                'hover:bg-gradient-to-r hover:from-cyan-50 hover:to-blue-50 dark:hover:from-cyan-900/20 dark:hover:to-blue-900/20 hover:border-cyan-300/50 dark:hover:border-cyan-600/50 hover:scale-105 active:scale-95': activeTab === 'write'
+            }" class="group/btn relative p-2.5 bg-white/50 dark:bg-slate-700/50 rounded-xl shadow-sm hover:shadow-md border border-slate-200/50 dark:border-slate-600/50 transition-all duration-300" title="Link">
+                <svg :class="{
+                    'text-slate-300 dark:text-slate-600': activeTab === 'preview',
+                    'text-slate-600 dark:text-slate-400 group-hover/btn:text-cyan-600 dark:group-hover/btn:text-cyan-400': activeTab === 'write'
+                }" class="w-4 h-4 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
                 </svg>
             </button>
