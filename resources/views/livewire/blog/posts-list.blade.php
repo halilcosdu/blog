@@ -52,13 +52,14 @@
                     </div>
 
                     <!-- Category Filter -->
-                    <div class="sm:col-span-1 lg:col-span-3 relative z-50">
+                    <div class="sm:col-span-1 lg:col-span-3 relative">
                         <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
                             Categories
                         </label>
-                        <div class="relative z-50" x-data="{ open: false }" @click.away="open = false">
+                        <div class="relative">
                             <!-- Dropdown Toggle -->
-                            <button type="button" @click="open = !open"
+                            <button type="button" wire:click="toggleCategoryDropdown"
+                                    dusk="category-dropdown-button"
                                     class="block w-full py-3 px-4 pr-10 text-sm border border-slate-200/60 dark:border-slate-600/60 rounded-xl bg-white/50 dark:bg-slate-700/50 text-slate-900 dark:text-white focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500/50 transition-all text-left cursor-pointer">
                                 <span class="block truncate">
                                     @if(empty($categoryIds))
@@ -68,19 +69,22 @@
                                     @endif
                                 </span>
                                 <div class="absolute inset-y-0 right-0 flex items-center pr-3 pointer-events-none">
-                                    <svg class="h-4 w-4 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <svg class="h-4 w-4 text-slate-400 transition-transform {{ $categoryDropdownOpen ? 'rotate-180' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
                                     </svg>
                                 </div>
                             </button>
 
                             <!-- Dropdown Menu -->
-                            <div x-show="open" x-transition:enter="transition ease-out duration-200" x-transition:enter-start="opacity-0 scale-95" x-transition:enter-end="opacity-100 scale-100" x-transition:leave="transition ease-in duration-150" x-transition:leave-start="opacity-100 scale-100" x-transition:leave-end="opacity-0 scale-95"
-                                 class="absolute top-full left-0 right-0 mt-1 bg-white/95 dark:bg-slate-800/95 backdrop-blur-sm border border-slate-200/60 dark:border-slate-700/60 rounded-xl shadow-2xl max-h-60 overflow-y-auto z-[999999]">
+                            @if($categoryDropdownOpen)
+                            <div wire:click.outside="closeCategoryDropdown" 
+                                 dusk="category-dropdown-menu" 
+                                 class="absolute top-full left-0 right-0 mt-1 bg-white/95 dark:bg-slate-800/95 backdrop-blur-sm border border-slate-200/60 dark:border-slate-700/60 rounded-xl shadow-2xl max-h-60 overflow-y-auto z-50">
                                 <div class="p-2 space-y-1">
                                     @foreach($categories as $category)
                                     <label class="flex items-center gap-2 p-2 rounded-lg hover:bg-slate-100/50 dark:hover:bg-slate-700/50 cursor-pointer transition-colors">
                                         <input type="checkbox"
+                                               dusk="category-checkbox-{{ $category->id }}"
                                                wire:click="toggleCategory({{ $category->id }})"
                                                {{ in_array($category->id, $categoryIds) ? 'checked' : '' }}
                                                class="w-4 h-4 text-red-600 bg-white dark:bg-slate-700 border-slate-300 dark:border-slate-600 rounded focus:ring-red-500 focus:ring-2 cursor-pointer">
@@ -94,6 +98,7 @@
                                     @endforeach
                                 </div>
                             </div>
+                            @endif
                         </div>
                     </div>
 
