@@ -47,7 +47,7 @@ class SimpleMarkdownEditor extends Component
     public function setActiveTab(string $tab): void
     {
         $this->activeTab = $tab;
-        
+
         // Dispatch event to JavaScript when switching tabs
         if ($tab === 'preview') {
             $this->dispatch('preview-tab-activated');

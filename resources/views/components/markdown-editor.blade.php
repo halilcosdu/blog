@@ -307,7 +307,18 @@ document.addEventListener('alpine:init', () => {
             // Listen for content changes and dispatch to Livewire
             if (wireModel) {
                 this.$watch('content', (newValue) => {
-                    this.$dispatch('content-updated', wireModel, newValue);
+                    // Try different ways to update Livewire component
+                    if (window.Livewire) {
+                        // Find the parent Livewire component
+                        const parentComponent = this.$el.closest('[wire\\:id]');
+                        if (parentComponent) {
+                            const componentId = parentComponent.getAttribute('wire:id');
+                            const component = window.Livewire.find(componentId);
+                            if (component && wireModel === 'content') {
+                                component.set('content', newValue);
+                            }
+                        }
+                    }
                 });
             }
         },

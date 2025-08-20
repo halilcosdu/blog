@@ -202,7 +202,7 @@ describe('Discussion Edit Functionality', function () {
             ->assertHasErrors(['category_id']);
     });
 
-    it('handles content update events from markdown editor', function () {
+    it('allows direct content updates from markdown editor', function () {
         $user = User::factory()->create();
         $category = Category::factory()->create();
         $discussion = Discussion::factory()->create([
@@ -213,25 +213,12 @@ describe('Discussion Edit Functionality', function () {
 
         $this->actingAs($user);
 
-        Livewire::test(EditDiscussion::class, ['slug' => $discussion->slug])
-            ->call('updateContent', 'content', 'Updated content from markdown editor')
-            ->assertSet('content', 'Updated content from markdown editor');
-    });
+        $component = Livewire::test(EditDiscussion::class, ['slug' => $discussion->slug]);
 
-    it('ignores content update events for other fields', function () {
-        $user = User::factory()->create();
-        $category = Category::factory()->create();
-        $discussion = Discussion::factory()->create([
-            'user_id' => $user->id,
-            'category_id' => $category->id,
-            'content' => 'Original content',
-        ]);
+        // Directly set content as markdown editor would do
+        $component->set('content', 'Updated content from markdown editor');
 
-        $this->actingAs($user);
-
-        Livewire::test(EditDiscussion::class, ['slug' => $discussion->slug])
-            ->call('updateContent', 'other_field', 'Should not update')
-            ->assertSet('content', 'Original content'); // Should remain unchanged
+        $component->assertSet('content', 'Updated content from markdown editor');
     });
 
     it('redirects to discussion show page after successful update', function () {

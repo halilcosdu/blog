@@ -7,7 +7,6 @@ use App\Models\Discussion;
 use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
-use Livewire\Attributes\On;
 use Livewire\Attributes\Rule;
 use Livewire\Component;
 
@@ -38,14 +37,6 @@ class EditDiscussion extends Component
         $this->title = $this->discussion->title;
         $this->content = $this->discussion->content;
         $this->category_id = $this->discussion->category_id;
-    }
-
-    #[On('content-updated')]
-    public function updateContent($name, $content): void
-    {
-        if ($name === 'content') {
-            $this->content = $content;
-        }
     }
 
     public function save(): void

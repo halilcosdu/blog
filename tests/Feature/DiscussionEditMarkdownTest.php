@@ -23,7 +23,7 @@ describe('Discussion Edit Markdown Editor Integration', function () {
 
         $response = $this->get("/discussions/{$discussion->slug}/edit");
         $response->assertSuccessful();
-        
+
         // Check for markdown editor specific elements (rendered HTML)
         $response->assertSee('markdown-editor-wrapper');
         $response->assertSee('You can use **bold**, *italic*, @mentions, and ```code blocks```!');
@@ -31,7 +31,7 @@ describe('Discussion Edit Markdown Editor Integration', function () {
         $response->assertSee('editor-toolbar');
         $response->assertSee('Write');
         $response->assertSee('Preview');
-        
+
         // Check that existing content is passed to the component
         $response->assertSee('This is **existing** content that should be displayed in the editor.');
     });
@@ -168,7 +168,7 @@ describe('Discussion Edit Markdown Editor Integration', function () {
 
         $this->actingAs($user);
 
-        $complexContent = <<<MARKDOWN
+        $complexContent = <<<'MARKDOWN'
 # Main Question
 
 I'm having trouble with **Laravel Eloquent** relationships. Here's my current setup:
@@ -180,7 +180,7 @@ class User extends Model
 {
     public function posts()
     {
-        return \$this->hasMany(Post::class);
+        return $this->hasMany(Post::class);
     }
 }
 ```
@@ -210,7 +210,7 @@ MARKDOWN;
         expect($discussion->fresh()->content)->toBe($complexContent);
     });
 
-    it('updates content through content-updated event', function () {
+    it('updates content through direct property setting', function () {
         $user = User::factory()->create();
         $category = Category::factory()->create();
         $discussion = Discussion::factory()->create([
@@ -223,30 +223,13 @@ MARKDOWN;
 
         $newContent = 'Updated content with **markdown** and @mentions!';
 
-        Livewire::test(EditDiscussion::class, ['slug' => $discussion->slug])
-            ->call('updateContent', 'content', $newContent)
-            ->assertSet('content', $newContent)
+        $component = Livewire::test(EditDiscussion::class, ['slug' => $discussion->slug]);
+        $component->set('content', $newContent);
+        $component->assertSet('content', $newContent)
             ->call('save')
             ->assertHasNoErrors();
 
         expect($discussion->fresh()->content)->toBe($newContent);
-    });
-
-    it('ignores content updates for incorrect field names', function () {
-        $user = User::factory()->create();
-        $category = Category::factory()->create();
-        $discussion = Discussion::factory()->create([
-            'user_id' => $user->id,
-            'category_id' => $category->id,
-            'content' => 'Original content',
-        ]);
-
-        $this->actingAs($user);
-
-        Livewire::test(EditDiscussion::class, ['slug' => $discussion->slug])
-            ->call('updateContent', 'title', 'This should not update content')
-            ->call('updateContent', 'other_field', 'Neither should this')
-            ->assertSet('content', 'Original content'); // Should remain unchanged
     });
 
     it('handles empty content updates gracefully', function () {
@@ -261,8 +244,7 @@ MARKDOWN;
         $this->actingAs($user);
 
         Livewire::test(EditDiscussion::class, ['slug' => $discussion->slug])
-            ->call('updateContent', 'content', '')
-            ->assertSet('content', '')
+            ->set('content', '')
             ->call('save')
             ->assertHasErrors(['content']); // Should validate as required
     });
@@ -318,7 +300,7 @@ MARKDOWN;
         $this->actingAs($user);
 
         Livewire::test(EditDiscussion::class, ['slug' => $discussion->slug])
-            ->call('updateContent', 'content', '')
+            ->set('content', '')
             ->call('save')
             ->assertHasErrors(['content']);
     });
