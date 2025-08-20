@@ -77,12 +77,12 @@
                             Discussion Content *
                         </label>
                         
-                        <x-markdown-editor
+                        <livewire:simple-markdown-editor
                             name="content"
-                            wireModel="content"
+                            value=""
                             placeholder="Describe your question or topic in detail... You can use **bold**, *italic*, @mentions, and ```code blocks```!"
-                            rows="12"
-                            required
+                            :rows="12"
+                            :required="true"
                         />
                         
                         @error('content')
@@ -96,13 +96,14 @@
                             type="submit"
                             class="flex items-center justify-center gap-2 px-6 py-3 bg-gradient-to-r from-red-600 to-orange-500 text-white font-semibold rounded-xl hover:shadow-lg hover:shadow-red-500/25 transform hover:scale-105 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
                             wire:loading.attr="disabled"
+                            wire:target="create"
                         >
-                            <svg wire:loading.remove class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+                            <svg wire:loading.remove wire:target="create" class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                                 <path fill-rule="evenodd" d="M10 3a1 1 0 011 1v5h5a1 1 0 110 2h-5v5a1 1 0 11-2 0v-5H4a1 1 0 110-2h5V4a1 1 0 011-1z" clip-rule="evenodd"/>
                             </svg>
-                            <div wire:loading class="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
-                            <span wire:loading.remove>Create Discussion</span>
-                            <span wire:loading>Creating...</span>
+                            <div wire:loading wire:target="create" class="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                            <span wire:loading.remove wire:target="create">Create Discussion</span>
+                            <span wire:loading wire:target="create">Creating...</span>
                         </button>
                         <a
                             href="{{ route('discussions.index') }}"

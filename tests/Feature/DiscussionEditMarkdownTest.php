@@ -49,9 +49,12 @@ describe('Discussion Edit Markdown Editor Integration', function () {
 
         $contentWithMentions = 'Hello @testuser123, what do you think about this **important** topic?';
 
-        Livewire::test(EditDiscussion::class, ['slug' => $discussion->slug])
-            ->set('content', $contentWithMentions)
-            ->call('save')
+        $component = Livewire::test(EditDiscussion::class, ['slug' => $discussion->slug]);
+
+        // Simulate the SimpleMarkdownEditor updating the content
+        $component->dispatch('content-updated', name: 'content', content: $contentWithMentions);
+
+        $component->call('save')
             ->assertHasNoErrors();
 
         expect($discussion->fresh()->content)->toBe($contentWithMentions);
@@ -69,10 +72,9 @@ describe('Discussion Edit Markdown Editor Integration', function () {
 
         $codeBlockContent = "Here's a Laravel example:\n\n```php\n<?php\n\nclass UserController extends Controller\n{\n    public function index()\n    {\n        return User::all();\n    }\n}\n```\n\nWhat do you think?";
 
-        Livewire::test(EditDiscussion::class, ['slug' => $discussion->slug])
-            ->set('content', $codeBlockContent)
-            ->call('save')
-            ->assertHasNoErrors();
+        $component = Livewire::test(EditDiscussion::class, ['slug' => $discussion->slug]);
+        $component->dispatch('content-updated', name: 'content', content: $codeBlockContent);
+        $component->call('save')->assertHasNoErrors();
 
         expect($discussion->fresh()->content)->toBe($codeBlockContent);
     });
@@ -89,10 +91,9 @@ describe('Discussion Edit Markdown Editor Integration', function () {
 
         $styledContent = 'This is **very important** and this is *emphasized*. Also ***bold and italic***.';
 
-        Livewire::test(EditDiscussion::class, ['slug' => $discussion->slug])
-            ->set('content', $styledContent)
-            ->call('save')
-            ->assertHasNoErrors();
+        $component = Livewire::test(EditDiscussion::class, ['slug' => $discussion->slug]);
+        $component->dispatch('content-updated', name: 'content', content: $styledContent);
+        $component->call('save')->assertHasNoErrors();
 
         expect($discussion->fresh()->content)->toBe($styledContent);
     });
@@ -109,10 +110,9 @@ describe('Discussion Edit Markdown Editor Integration', function () {
 
         $listContent = "Here are the main points:\n\n- First item\n- Second item with **bold**\n- Third item with @mention\n\nAnd numbered list:\n\n1. Step one\n2. Step two\n3. Step three";
 
-        Livewire::test(EditDiscussion::class, ['slug' => $discussion->slug])
-            ->set('content', $listContent)
-            ->call('save')
-            ->assertHasNoErrors();
+        $component = Livewire::test(EditDiscussion::class, ['slug' => $discussion->slug]);
+        $component->dispatch('content-updated', name: 'content', content: $listContent);
+        $component->call('save')->assertHasNoErrors();
 
         expect($discussion->fresh()->content)->toBe($listContent);
     });
@@ -129,10 +129,9 @@ describe('Discussion Edit Markdown Editor Integration', function () {
 
         $linkContent = 'Check out [Laravel Documentation](https://laravel.com/docs) and also [this discussion](https://example.com/discussion).';
 
-        Livewire::test(EditDiscussion::class, ['slug' => $discussion->slug])
-            ->set('content', $linkContent)
-            ->call('save')
-            ->assertHasNoErrors();
+        $component = Livewire::test(EditDiscussion::class, ['slug' => $discussion->slug]);
+        $component->dispatch('content-updated', name: 'content', content: $linkContent);
+        $component->call('save')->assertHasNoErrors();
 
         expect($discussion->fresh()->content)->toBe($linkContent);
     });
@@ -149,10 +148,9 @@ describe('Discussion Edit Markdown Editor Integration', function () {
 
         $quoteContent = "As someone once said:\n\n> This is a quoted text\n> that spans multiple lines\n> and has **formatting**\n\nWhat are your thoughts?";
 
-        Livewire::test(EditDiscussion::class, ['slug' => $discussion->slug])
-            ->set('content', $quoteContent)
-            ->call('save')
-            ->assertHasNoErrors();
+        $component = Livewire::test(EditDiscussion::class, ['slug' => $discussion->slug]);
+        $component->dispatch('content-updated', name: 'content', content: $quoteContent);
+        $component->call('save')->assertHasNoErrors();
 
         expect($discussion->fresh()->content)->toBe($quoteContent);
     });
@@ -202,10 +200,9 @@ Here are some useful links:
 ***Thanks in advance!***
 MARKDOWN;
 
-        Livewire::test(EditDiscussion::class, ['slug' => $discussion->slug])
-            ->set('content', $complexContent)
-            ->call('save')
-            ->assertHasNoErrors();
+        $component = Livewire::test(EditDiscussion::class, ['slug' => $discussion->slug]);
+        $component->dispatch('content-updated', name: 'content', content: $complexContent);
+        $component->call('save')->assertHasNoErrors();
 
         expect($discussion->fresh()->content)->toBe($complexContent);
     });
@@ -224,10 +221,8 @@ MARKDOWN;
         $newContent = 'Updated content with **markdown** and @mentions!';
 
         $component = Livewire::test(EditDiscussion::class, ['slug' => $discussion->slug]);
-        $component->set('content', $newContent);
-        $component->assertSet('content', $newContent)
-            ->call('save')
-            ->assertHasNoErrors();
+        $component->dispatch('content-updated', name: 'content', content: $newContent);
+        $component->call('save')->assertHasNoErrors();
 
         expect($discussion->fresh()->content)->toBe($newContent);
     });
@@ -243,10 +238,9 @@ MARKDOWN;
 
         $this->actingAs($user);
 
-        Livewire::test(EditDiscussion::class, ['slug' => $discussion->slug])
-            ->set('content', '')
-            ->call('save')
-            ->assertHasErrors(['content']); // Should validate as required
+        $component = Livewire::test(EditDiscussion::class, ['slug' => $discussion->slug]);
+        $component->dispatch('content-updated', name: 'content', content: '');
+        $component->call('save')->assertHasErrors(['content']); // Should validate as required
     });
 
     it('preserves special characters in markdown content', function () {
@@ -261,10 +255,9 @@ MARKDOWN;
 
         $specialContent = 'Special chars: & < > " \' àáâãäåæç @user123 **bold** `code` [link](url)';
 
-        Livewire::test(EditDiscussion::class, ['slug' => $discussion->slug])
-            ->set('content', $specialContent)
-            ->call('save')
-            ->assertHasNoErrors();
+        $component = Livewire::test(EditDiscussion::class, ['slug' => $discussion->slug]);
+        $component->dispatch('content-updated', name: 'content', content: $specialContent);
+        $component->call('save')->assertHasNoErrors();
 
         expect($discussion->fresh()->content)->toBe($specialContent);
     });
@@ -281,10 +274,9 @@ MARKDOWN;
 
         $paragraphContent = "First paragraph with some text.\n\nSecond paragraph with **bold text**.\n\nThird paragraph with @mention and `code`.\n\n\nFourth paragraph after extra line breaks.";
 
-        Livewire::test(EditDiscussion::class, ['slug' => $discussion->slug])
-            ->set('content', $paragraphContent)
-            ->call('save')
-            ->assertHasNoErrors();
+        $component = Livewire::test(EditDiscussion::class, ['slug' => $discussion->slug]);
+        $component->dispatch('content-updated', name: 'content', content: $paragraphContent);
+        $component->call('save')->assertHasNoErrors();
 
         expect($discussion->fresh()->content)->toBe($paragraphContent);
     });
@@ -299,9 +291,8 @@ MARKDOWN;
 
         $this->actingAs($user);
 
-        Livewire::test(EditDiscussion::class, ['slug' => $discussion->slug])
-            ->set('content', '')
-            ->call('save')
-            ->assertHasErrors(['content']);
+        $component = Livewire::test(EditDiscussion::class, ['slug' => $discussion->slug]);
+        $component->dispatch('content-updated', name: 'content', content: '');
+        $component->call('save')->assertHasErrors(['content']);
     });
 });

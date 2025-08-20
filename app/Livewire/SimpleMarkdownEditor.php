@@ -86,12 +86,6 @@ class SimpleMarkdownEditor extends Component
     }
 
     // Mention functionality methods
-    public function showMentions(): void
-    {
-        $this->showMentionDropdown = true;
-        $this->mentionSelectedIndex = 0;
-        $this->searchUsers();
-    }
 
     public function hideMentionDropdown(): void
     {

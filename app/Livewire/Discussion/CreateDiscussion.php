@@ -6,6 +6,7 @@ use App\Models\Category;
 use App\Models\Discussion;
 use Illuminate\Support\Facades\Auth;
 use Livewire\Attributes\Layout;
+use Livewire\Attributes\On;
 use Livewire\Attributes\Rule;
 use Livewire\Component;
 
@@ -19,6 +20,14 @@ class CreateDiscussion extends Component
 
     #[Rule('required|exists:categories,id,is_active,1')]
     public ?int $category_id = null;
+
+    #[On('content-updated')]
+    public function updateContent(string $name, string $content): void
+    {
+        if ($name === 'content') {
+            $this->content = $content;
+        }
+    }
 
     public function save(): void
     {

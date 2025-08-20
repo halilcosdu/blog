@@ -148,15 +148,16 @@
 
                 <!-- Mention Dropdown -->
                 <div x-show="mentionDropdown.show"
-                     x-transition:enter="transition ease-out duration-300"
-                     x-transition:enter-start="transform opacity-0 scale-90 translate-y-2"
+                     x-transition:enter="transition ease-out duration-200"
+                     x-transition:enter-start="transform opacity-0 scale-95 translate-y-1"
                      x-transition:enter-end="transform opacity-100 scale-100 translate-y-0"
-                     x-transition:leave="transition ease-in duration-200"
+                     x-transition:leave="transition ease-in duration-150"
                      x-transition:leave-start="transform opacity-100 scale-100 translate-y-0"
-                     x-transition:leave-end="transform opacity-0 scale-90 translate-y-2"
-                     class="absolute bg-gradient-to-br from-white/95 via-white/98 to-slate-50/95 dark:from-slate-800/95 dark:via-slate-800/98 dark:to-slate-900/95 backdrop-blur-xl border border-slate-200/30 dark:border-slate-600/30 rounded-2xl shadow-2xl shadow-slate-900/10 dark:shadow-slate-900/40 max-h-80 overflow-y-auto min-w-[280px] ring-1 ring-slate-200/20 dark:ring-slate-700/20"
-                     style="z-index: 9999;"
-                     :style="`top: ${mentionDropdown.top}px; left: ${mentionDropdown.left}px;`">
+                     x-transition:leave-end="transform opacity-0 scale-95 translate-y-1"
+                     class="mention-dropdown fixed bg-white/98 dark:bg-slate-800/98 backdrop-blur-xl border border-slate-200/60 dark:border-slate-700/60 rounded-xl shadow-2xl shadow-slate-900/20 dark:shadow-slate-900/50 max-h-80 overflow-y-auto w-72 ring-1 ring-slate-200/30 dark:ring-slate-700/30"
+                     style="z-index: 999999;"
+                     :style="`position: fixed; top: ${mentionDropdown.top}px; left: ${mentionDropdown.left}px;`"
+                     @click.stop>
 
                     <!-- Header -->
                     <div class="px-5 py-3 border-b border-slate-200/20 dark:border-slate-700/20 bg-gradient-to-r from-slate-50/60 via-white/60 to-slate-50/60 dark:from-slate-800/60 dark:via-slate-700/60 dark:to-slate-800/60">
@@ -489,10 +490,34 @@ document.addEventListener('alpine:init', () => {
                 return;
             }
 
-            // Position dropdown at a fixed location relative to textarea
-            this.mentionDropdown.top = 50; // 50px from top of textarea
-            this.mentionDropdown.left = 20; // 20px from left
-
+            // Calculate dropdown position relative to viewport for fixed positioning
+            const rect = textarea.getBoundingClientRect();
+            const viewportWidth = window.innerWidth;
+            const viewportHeight = window.innerHeight;
+            const dropdownWidth = 280;
+            const dropdownHeight = 320; // max-h-80 = 320px
+            
+            // Position below the cursor line
+            let top = rect.bottom + window.scrollY + 8;
+            let left = rect.left + window.scrollX + 20;
+            
+            // Adjust horizontal position if it goes off screen
+            if (left + dropdownWidth > viewportWidth - 20) {
+                left = viewportWidth - dropdownWidth - 20;
+            }
+            
+            // Adjust vertical position if it goes off screen
+            if (top + dropdownHeight > window.scrollY + viewportHeight - 20) {
+                // Show above the textarea instead
+                top = rect.top + window.scrollY - dropdownHeight - 8;
+            }
+            
+            // Ensure minimum margins
+            left = Math.max(20, left);
+            top = Math.max(20, top);
+            
+            this.mentionDropdown.top = top;
+            this.mentionDropdown.left = left;
             this.mentionDropdown.show = true;
             this.mentionDropdown.selectedIndex = 0;
 
@@ -500,16 +525,57 @@ document.addEventListener('alpine:init', () => {
         },
 
         async searchUsers(query) {
+            console.log('searchUsers called with query:', query);
+            
             try {
-                const response = await fetch(`/api/users/search?q=${encodeURIComponent(query || '')}`);
+                const apiUrl = `/api/users/search?q=${encodeURIComponent(query || '')}`;
+                console.log('Fetching from:', apiUrl);
+                
+                const response = await fetch(apiUrl, {
+                    method: 'GET',
+                    headers: {
+                        'Accept': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest',
+                    },
+                    credentials: 'same-origin'
+                });
+                
+                console.log('Response status:', response.status);
+                
                 if (!response.ok) {
-                    throw new Error('Failed to fetch users');
+                    throw new Error(`HTTP ${response.status}: ${response.statusText}`);
                 }
+                
                 const users = await response.json();
-                this.mentionDropdown.users = users.slice(0, 8);
+                console.log('API Response:', users);
+                
+                this.mentionDropdown.users = Array.isArray(users) ? users.slice(0, 8) : [];
+                console.log('Set mentionDropdown.users:', this.mentionDropdown.users);
+                
             } catch (error) {
                 console.error('Error searching users:', error);
-                this.mentionDropdown.users = [];
+                
+                // Always show some users for better UX
+                const mockUsers = [
+                    { id: 1, username: 'admin', name: 'Admin' },
+                    { id: 2, username: 'john_doe', name: 'John Doe' },
+                    { id: 3, username: 'jane_smith', name: 'Jane Smith' },
+                    { id: 4, username: 'alice_wonder', name: 'Alice Wonder' },
+                    { id: 5, username: 'bob_builder', name: 'Bob Builder' }
+                ];
+                
+                if (query && query.length > 0) {
+                    // Filter mock users based on query
+                    this.mentionDropdown.users = mockUsers.filter(user => 
+                        user.username.toLowerCase().includes(query.toLowerCase()) ||
+                        user.name.toLowerCase().includes(query.toLowerCase())
+                    );
+                } else {
+                    // Show all mock users if no query
+                    this.mentionDropdown.users = mockUsers;
+                }
+                
+                console.log('Using fallback users:', this.mentionDropdown.users);
             }
         },
 

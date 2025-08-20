@@ -91,11 +91,9 @@ describe('Discussion Edit Functionality', function () {
 
         $this->actingAs($user);
 
-        Livewire::test(EditDiscussion::class, ['slug' => $discussion->slug])
-            ->set('content', 'Updated content')
-            ->call('save')
-            ->assertHasNoErrors()
-            ->assertRedirect();
+        $component = Livewire::test(EditDiscussion::class, ['slug' => $discussion->slug]);
+        $component->dispatch('content-updated', name: 'content', content: 'Updated content');
+        $component->call('save')->assertHasNoErrors()->assertRedirect();
 
         // Verify database was updated
         expect($discussion->fresh()->content)->toBe('Updated content');
@@ -148,10 +146,9 @@ describe('Discussion Edit Functionality', function () {
 
         $this->actingAs($user);
 
-        Livewire::test(EditDiscussion::class, ['slug' => $discussion->slug])
-            ->set('content', '')
-            ->call('save')
-            ->assertHasErrors(['content']);
+        $component = Livewire::test(EditDiscussion::class, ['slug' => $discussion->slug]);
+        $component->dispatch('content-updated', name: 'content', content: '');
+        $component->call('save')->assertHasErrors(['content']);
     });
 
     it('validates required category field', function () {
