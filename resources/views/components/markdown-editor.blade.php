@@ -133,7 +133,6 @@
             <div x-show="activeTab === 'write'" class="relative bg-gradient-to-br from-slate-50/30 via-white/20 to-slate-100/30 dark:from-slate-900/80 dark:via-slate-800/90 dark:to-slate-950/80 backdrop-blur-sm">
                 <textarea
                     x-ref="textarea"
-                    {{ $wireModel ? 'wire:model=' . $wireModel : '' }}
                     name="{{ $name }}"
                     rows="{{ $rows }}"
                     placeholder="{{ $placeholder }}"
@@ -304,6 +303,13 @@ document.addEventListener('alpine:init', () => {
 
         init() {
             this.loadMarkdownLibraries();
+            
+            // Listen for content changes and dispatch to Livewire
+            if (wireModel) {
+                this.$watch('content', (newValue) => {
+                    this.$dispatch('content-updated', wireModel, newValue);
+                });
+            }
         },
 
         loadMarkdownLibraries() {

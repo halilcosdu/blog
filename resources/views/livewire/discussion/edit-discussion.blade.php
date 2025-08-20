@@ -83,13 +83,14 @@
                             Discussion Content *
                         </label>
                         
-                        <textarea
-                            wire:model="content"
-                            id="content"
-                            rows="10"
-                            placeholder="Describe your question or topic in detail..."
-                            class="w-full px-4 py-3 text-sm border border-slate-200/60 dark:border-slate-600/60 rounded-lg bg-white/50 dark:bg-slate-700/50 text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-red-500/50 focus:border-red-500/50 transition-all resize-y"
-                        ></textarea>
+                        <x-markdown-editor
+                            name="content"
+                            wireModel="content"
+                            :value="$content"
+                            placeholder="Describe your question or topic in detail... You can use **bold**, *italic*, @mentions, and ```code blocks```!"
+                            rows="12"
+                            required
+                        />
                         
                         @error('content')
                             <p class="mt-2 text-sm text-red-600 dark:text-red-400">{{ $message }}</p>

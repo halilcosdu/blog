@@ -169,92 +169,11 @@
             <div class="p-4">
                 <div id="preview-content-{{ $name }}" class="prose prose-slate dark:prose-invert max-w-none prose-headings:text-slate-900 dark:prose-headings:text-white prose-p:text-slate-700 dark:prose-p:text-slate-300 prose-strong:text-slate-900 dark:prose-strong:text-white prose-code:text-red-600 dark:prose-code:text-red-400 prose-code:bg-slate-100 dark:prose-code:bg-slate-800 prose-pre:bg-slate-100 dark:prose-pre:bg-slate-800 prose-pre:text-slate-900 dark:prose-pre:text-slate-100">
                     @if($content)
-                        <div x-data="{ 
-                            content: @js($content),
-                            init() {
-                                this.renderMarkdown();
-                            },
-                            renderMarkdown() {
-                                // Load highlight.js if not already loaded
-                                if (typeof hljs === 'undefined') {
-                                    const hljsScript = document.createElement('script');
-                                    hljsScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js';
-                                    hljsScript.onload = () => this.processContent();
-                                    document.head.appendChild(hljsScript);
-                                    
-                                    const hljsCSS = document.createElement('link');
-                                    hljsCSS.rel = 'stylesheet';
-                                    hljsCSS.href = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css';
-                                    document.head.appendChild(hljsCSS);
-                                } else {
-                                    this.processContent();
-                                }
-                            },
-                            processContent() {
-                                const markdown = @js(Str::markdown($content, ['html_input' => 'strip', 'allow_unsafe_links' => false]));
-                                
-                                // Process code blocks with proper copy buttons and language detection
-                                const processedMarkdown = markdown.replace(
-                                    /<pre><code class=\"language-(\w+)\">(.*?)<\/code><\/pre>/gs, 
-                                    (match, language, code) => {
-                                        const decodedCode = he.decode ? he.decode(code) : code.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
-                                        const highlightedCode = (typeof hljs !== 'undefined' && hljs.getLanguage(language)) ? 
-                                            hljs.highlight(decodedCode, { language }).value : decodedCode;
-                                        
-                                        return `<div class=\"code-block-wrapper relative group mb-4\">
-                                            <div class=\"code-header flex items-center justify-between bg-slate-800 dark:bg-slate-900 text-slate-300 px-4 py-2 text-sm font-mono rounded-t-lg\">
-                                                <span class=\"text-slate-400\">${language}</span>
-                                                <button type=\"button\" class=\"copy-btn opacity-0 group-hover:opacity-100 transition-opacity hover:bg-slate-700 p-1 rounded\" onclick=\"copyCodeToClipboard(event)\">
-                                                    <svg class=\"copy-icon w-4 h-4\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\">
-                                                        <path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z\"/>
-                                                    </svg>
-                                                    <svg class=\"check-icon w-4 h-4 hidden\" fill=\"currentColor\" viewBox=\"0 0 20 20\">
-                                                        <path fill-rule=\"evenodd\" d=\"M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z\" clip-rule=\"evenodd\"/>
-                                                    </svg>
-                                                </button>
-                                            </div>
-                                            <pre class=\"bg-slate-900 dark:bg-slate-950 text-slate-100 p-4 rounded-b-lg overflow-x-auto\"><code class=\"hljs language-${language}\">${highlightedCode}</code></pre>
-                                        </div>`;
-                                    }
-                                ).replace(
-                                    /<pre><code>(.*?)<\/code><\/pre>/gs,
-                                    (match, code) => {
-                                        const decodedCode = he.decode ? he.decode(code) : code.replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&');
-                                        
-                                        return `<div class=\"code-block-wrapper relative group mb-4\">
-                                            <div class=\"code-header flex items-center justify-between bg-slate-800 dark:bg-slate-900 text-slate-300 px-4 py-2 text-sm font-mono rounded-t-lg\">
-                                                <span class=\"text-slate-400\">text</span>
-                                                <button type=\"button\" class=\"copy-btn opacity-0 group-hover:opacity-100 transition-opacity hover:bg-slate-700 p-1 rounded\" onclick=\"copyCodeToClipboard(event)\">
-                                                    <svg class=\"copy-icon w-4 h-4\" fill=\"none\" stroke=\"currentColor\" viewBox=\"0 0 24 24\">
-                                                        <path stroke-linecap=\"round\" stroke-linejoin=\"round\" stroke-width=\"2\" d=\"M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z\"/>
-                                                    </svg>
-                                                    <svg class=\"check-icon w-4 h-4 hidden\" fill=\"currentColor\" viewBox=\"0 0 20 20\">
-                                                        <path fill-rule=\"evenodd\" d=\"M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z\" clip-rule=\"evenodd\"/>
-                                                    </svg>
-                                                </button>
-                                            </div>
-                                            <pre class=\"bg-slate-900 dark:bg-slate-950 text-slate-100 p-4 rounded-b-lg overflow-x-auto\"><code>${decodedCode}</code></pre>
-                                        </div>`;
-                                    }
-                                );
-                                
-                                // Add mention processing
-                                const finalContent = processedMarkdown.replace(
-                                    /@([a-zA-Z0-9._-]+)/g,
-                                    '<span class=\"mention inline-flex items-center gap-1 px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded-full text-sm font-semibold\">@$1</span>'
-                                );
-                                
-                                this.$el.innerHTML = finalContent;
-                                
-                                // Apply syntax highlighting
-                                if (typeof hljs !== 'undefined') {
-                                    this.$el.querySelectorAll('pre code:not(.hljs)').forEach((block) => {
-                                        hljs.highlightElement(block);
-                                    });
-                                }
-                            }
-                        }" x-init="init()">
-                            Loading preview...
+                        <div id="markdown-preview-{{ $name }}">
+                            <!-- Preview content will be rendered here -->
+                            <div class="text-center py-4 text-slate-500 dark:text-slate-400">
+                                <p>Loading preview...</p>
+                            </div>
                         </div>
                     @else
                         <div class="text-center py-8 text-slate-500 dark:text-slate-400">
@@ -318,14 +237,23 @@
     <script>
         const componentId = '{{ $name }}';
         
-        // Initialize mention detection - use a more reliable approach
+        // Initialize mention detection - more robust approach
         function initializeMentionDetection() {
             const textarea = document.getElementById('markdown-textarea-' + componentId);
-            if (textarea && !textarea.hasAttribute('data-mention-initialized')) {
+            if (textarea) {
+                // Remove existing listeners to avoid duplicates
+                textarea.removeEventListener('input', handleMentionDetection);
+                textarea.removeEventListener('keydown', handleMentionKeydown);
+                textarea.removeEventListener('focus', initializeMentionDetection);
+                
+                // Add fresh listeners
                 textarea.addEventListener('input', handleMentionDetection);
                 textarea.addEventListener('keydown', handleMentionKeydown);
-                textarea.setAttribute('data-mention-initialized', 'true');
-                console.log('Mention detection initialized for', componentId);
+                textarea.addEventListener('focus', initializeMentionDetection);
+                
+                console.log('Mention detection (re)initialized for', componentId, 'textarea found:', !!textarea);
+            } else {
+                console.log('Textarea not found for component:', componentId);
             }
         }
 
@@ -335,15 +263,125 @@
         
         // Also initialize after Livewire updates
         document.addEventListener('livewire:updated', function() {
-            initializeMentionDetection();
-            // Update dropdown position if it's visible
-            if ($wire.get('showMentionDropdown')) {
-                const textarea = document.getElementById('markdown-textarea-' + componentId);
-                if (textarea) {
-                    updateDropdownPosition(textarea);
+            // Small delay to ensure DOM is fully updated
+            setTimeout(() => {
+                initializeMentionDetection();
+                
+                // Update dropdown position if it's visible
+                if ($wire.get('showMentionDropdown')) {
+                    const textarea = document.getElementById('markdown-textarea-' + componentId);
+                    if (textarea) {
+                        updateDropdownPosition(textarea);
+                    }
                 }
-            }
+                
+                // Update preview if in preview mode
+                if ($wire.get('activeTab') === 'preview') {
+                    updateMarkdownPreview();
+                }
+            }, 50);
         });
+
+        // Load markdown libraries
+        function loadMarkdownLibraries() {
+            return new Promise((resolve) => {
+                if (typeof marked !== 'undefined') {
+                    resolve();
+                    return;
+                }
+
+                const markedScript = document.createElement('script');
+                markedScript.src = 'https://cdn.jsdelivr.net/npm/marked@9.1.6/marked.min.js';
+                markedScript.onload = () => {
+                    // Load highlight.js
+                    if (typeof hljs === 'undefined') {
+                        const hljsScript = document.createElement('script');
+                        hljsScript.src = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js';
+                        hljsScript.onload = resolve;
+                        document.head.appendChild(hljsScript);
+
+                        const hljsCSS = document.createElement('link');
+                        hljsCSS.rel = 'stylesheet';
+                        hljsCSS.href = 'https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css';
+                        document.head.appendChild(hljsCSS);
+                    } else {
+                        resolve();
+                    }
+                };
+                document.head.appendChild(markedScript);
+            });
+        }
+
+        // Update markdown preview
+        async function updateMarkdownPreview() {
+            const previewContainer = document.getElementById('markdown-preview-' + componentId);
+            if (!previewContainer) return;
+
+            const content = $wire.get('content');
+            if (!content) {
+                previewContainer.innerHTML = '<div class="text-center py-8 text-slate-500 dark:text-slate-400"><p>Nothing to preview yet. Start writing in the editor!</p></div>';
+                return;
+            }
+
+            // Show loading
+            previewContainer.innerHTML = '<div class="text-center py-4 text-slate-500 dark:text-slate-400"><p>Loading preview...</p></div>';
+
+            try {
+                await loadMarkdownLibraries();
+
+                // Configure marked
+                const renderer = new marked.Renderer();
+                
+                // Custom code block renderer
+                renderer.code = function(code, language) {
+                    const validLang = language && hljs?.getLanguage(language) ? language : 'plaintext';
+                    const highlightedCode = hljs?.highlight(code, { language: validLang })?.value || code;
+
+                    return `<div class="code-block-wrapper relative group mb-4">
+                        <div class="code-header flex items-center justify-between bg-slate-800 dark:bg-slate-900 text-slate-300 px-4 py-2 text-sm font-mono rounded-t-lg">
+                            <span class="text-slate-400">${language || 'text'}</span>
+                            <button type="button" class="copy-btn opacity-0 group-hover:opacity-100 transition-opacity hover:bg-slate-700 p-1 rounded" onclick="copyCodeToClipboard(event)">
+                                <svg class="copy-icon w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z"/>
+                                </svg>
+                                <svg class="check-icon w-4 h-4 hidden" fill="currentColor" viewBox="0 0 20 20">
+                                    <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                </svg>
+                            </button>
+                        </div>
+                        <pre class="bg-slate-900 dark:bg-slate-950 text-slate-100 p-4 rounded-b-lg overflow-x-auto"><code class="hljs language-${validLang}">${highlightedCode}</code></pre>
+                    </div>`;
+                };
+
+                marked.setOptions({
+                    renderer: renderer,
+                    breaks: true,
+                    gfm: true,
+                });
+
+                // Parse markdown
+                let htmlContent = marked.parse(content);
+
+                // Process mentions
+                htmlContent = htmlContent.replace(
+                    /@([a-zA-Z0-9._-]+)/g,
+                    '<span class="mention inline-flex items-center gap-1 px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 rounded-full text-sm font-semibold">@$1</span>'
+                );
+
+                previewContainer.innerHTML = htmlContent;
+
+                // Apply syntax highlighting
+                if (typeof hljs !== 'undefined') {
+                    previewContainer.querySelectorAll('pre code:not(.hljs)').forEach((block) => {
+                        hljs.highlightElement(block);
+                    });
+                }
+
+            } catch (error) {
+                console.error('Error rendering markdown preview:', error);
+                previewContainer.innerHTML = '<div class="text-center py-4 text-red-500"><p>Error loading preview</p></div>';
+            }
+        }
         
         function insertTextAtCursor(before, after = '') {
             const textarea = document.getElementById('markdown-textarea-' + componentId);
@@ -426,19 +464,43 @@
             }
         });
 
+        // Listen for preview tab activation
+        $wire.on('preview-tab-activated', () => {
+            // Small delay to ensure DOM is updated
+            setTimeout(updateMarkdownPreview, 100);
+        });
+
+        // Listen for write tab activation - reinitialize mention detection
+        $wire.on('write-tab-activated', () => {
+            console.log('Write tab activated, reinitializing mention detection');
+            setTimeout(initializeMentionDetection, 100);
+        });
+
+        // Listen for tab changes to reinitialize mention detection
+        $wire.on('$refresh', () => {
+            setTimeout(initializeMentionDetection, 50);
+        });
+
+        // Also listen for content changes while in preview mode
+        document.addEventListener('livewire:updated', function(event) {
+            if ($wire.get('activeTab') === 'preview') {
+                updateMarkdownPreview();
+            }
+        });
+
         // Mention functionality
         function handleMentionDetection(event) {
             const textarea = event.target;
             const cursorPos = textarea.selectionStart;
             const textBeforeCursor = textarea.value.substring(0, cursorPos);
             
-            console.log('Input detected:', textBeforeCursor.slice(-10)); // Debug log
+            console.log('Mention detection triggered for:', componentId, 'Input:', textBeforeCursor.slice(-10));
             
             // Check if we're typing after an @ symbol
             const mentionMatch = textBeforeCursor.match(/@([a-zA-Z0-9._-]*)$/);
             
             if (mentionMatch) {
-                console.log('Mention detected:', mentionMatch[1]); // Debug log
+                console.log('Mention pattern found:', mentionMatch[1]); 
                 const query = mentionMatch[1];
                 const startPos = cursorPos - mentionMatch[0].length + 1;
                 
@@ -452,10 +514,12 @@
                 // Show dropdown if not already shown
                 if (!$wire.get('showMentionDropdown')) {
                     $wire.set('showMentionDropdown', true);
+                    console.log('Mention dropdown should be visible now');
                 }
             } else {
                 // Hide dropdown if showing and no mention pattern
                 if ($wire.get('showMentionDropdown')) {
+                    console.log('Hiding mention dropdown');
                     $wire.call('hideMentionDropdown');
                 }
             }
