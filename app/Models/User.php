@@ -55,6 +55,16 @@ class User extends Authenticatable implements FilamentUser
         return $this->hasMany(Post::class);
     }
 
+    public function discussions(): HasMany
+    {
+        return $this->hasMany(Discussion::class);
+    }
+
+    public function discussionReplies(): HasMany
+    {
+        return $this->hasMany(DiscussionReply::class);
+    }
+
     public function canAccessPanel(Panel $panel): bool
     {
         return true;
