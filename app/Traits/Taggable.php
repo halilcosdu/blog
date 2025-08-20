@@ -19,11 +19,11 @@ trait Taggable
         if (is_string($tag)) {
             $tag = Tag::query()->firstOrCreate([
                 'name' => trim($tag),
-                'slug' => Str::slug(trim($tag))
+                'slug' => Str::slug(trim($tag)),
             ]);
         }
 
-        if (!$this->tags->contains($tag)) {
+        if (! $this->tags->contains($tag)) {
             $this->tags()->attach($tag);
             $tag->incrementUsage();
         }
@@ -46,10 +46,10 @@ trait Taggable
         $tagIds = [];
 
         foreach ($tags as $tagName) {
-            if (is_string($tagName) && !empty(trim($tagName))) {
+            if (is_string($tagName) && ! empty(trim($tagName))) {
                 $tag = Tag::query()->firstOrCreate([
                     'name' => trim($tagName),
-                    'slug' => Str::slug(trim($tagName))
+                    'slug' => Str::slug(trim($tagName)),
                 ]);
                 $tagIds[] = $tag->id;
             }
@@ -65,11 +65,11 @@ trait Taggable
         $addedTags = array_diff($tagIds, $currentTagIds);
         $removedTags = array_diff($currentTagIds, $tagIds);
 
-        if (!empty($addedTags)) {
+        if (! empty($addedTags)) {
             Tag::query()->whereIn('id', $addedTags)->increment('usage_count');
         }
 
-        if (!empty($removedTags)) {
+        if (! empty($removedTags)) {
             Tag::query()->whereIn('id', $removedTags)->decrement('usage_count');
         }
     }

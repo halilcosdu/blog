@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\Discussion;
-use App\Models\Tag;
 use Illuminate\Database\Seeder;
 
 class DiscussionTagSeeder extends Seeder
@@ -12,10 +11,10 @@ class DiscussionTagSeeder extends Seeder
     {
         // Mevcut discussionları al
         $discussions = Discussion::all();
-        
+
         if ($discussions->isEmpty()) {
             $this->command->info('No discussions found. Creating sample discussions with tags...');
-            
+
             // Örnek discussionlar oluştur
             $sampleDiscussions = [
                 [
@@ -24,7 +23,7 @@ class DiscussionTagSeeder extends Seeder
                     'content' => 'Laravel projemde N+1 query problemi yaşıyorum. Bu sorunu nasıl çözebilirim? Önerilerinizi bekliyorum.',
                     'user_id' => 1,
                     'category_id' => 1,
-                    'tags' => ['Laravel', 'Performance', 'PHP', 'Advanced']
+                    'tags' => ['Laravel', 'Performance', 'PHP', 'Advanced'],
                 ],
                 [
                     'title' => 'Vue.js ile Laravel API Entegrasyonu',
@@ -32,7 +31,7 @@ class DiscussionTagSeeder extends Seeder
                     'content' => 'Vue.js frontend\'ini Laravel API\'ye nasıl entegre edebilirim? CORS problemleri yaşıyorum.',
                     'user_id' => 1,
                     'category_id' => 1,
-                    'tags' => ['Vue.js', 'Laravel', 'API', 'JavaScript']
+                    'tags' => ['Vue.js', 'Laravel', 'API', 'JavaScript'],
                 ],
                 [
                     'title' => 'Tailwind CSS Custom Components',
@@ -40,7 +39,7 @@ class DiscussionTagSeeder extends Seeder
                     'content' => 'Tailwind CSS ile kendi component kütüphanemi oluşturmak istiyorum. En iyi yaklaşım nedir?',
                     'user_id' => 1,
                     'category_id' => 1,
-                    'tags' => ['Tailwind CSS', 'Tips', 'Best Practices']
+                    'tags' => ['Tailwind CSS', 'Tips', 'Best Practices'],
                 ],
                 [
                     'title' => 'Livewire vs Inertia.js Karşılaştırması',
@@ -48,7 +47,7 @@ class DiscussionTagSeeder extends Seeder
                     'content' => 'Yeni bir proje için Livewire mi yoksa Inertia.js mi kullanmalıyım? Avantajları ve dezavantajları nelerdir?',
                     'user_id' => 1,
                     'category_id' => 1,
-                    'tags' => ['Livewire', 'Inertia.js', 'Laravel', 'Comparison']
+                    'tags' => ['Livewire', 'Inertia.js', 'Laravel', 'Comparison'],
                 ],
                 [
                     'title' => 'Docker ile Laravel Development Setup',
@@ -56,7 +55,7 @@ class DiscussionTagSeeder extends Seeder
                     'content' => 'Laravel projem için Docker ortamı kurarken bazı sorunlar yaşıyorum. Yardım edebilir misiniz?',
                     'user_id' => 1,
                     'category_id' => 1,
-                    'tags' => ['Docker', 'Laravel', 'DevOps', 'Beginner']
+                    'tags' => ['Docker', 'Laravel', 'DevOps', 'Beginner'],
                 ],
                 [
                     'title' => 'Laravel API Testing Best Practices',
@@ -64,7 +63,7 @@ class DiscussionTagSeeder extends Seeder
                     'content' => 'API testlerimi daha verimli yazmak için hangi stratejileri kullanmalıyım?',
                     'user_id' => 1,
                     'category_id' => 1,
-                    'tags' => ['Laravel', 'Testing', 'API', 'Best Practices']
+                    'tags' => ['Laravel', 'Testing', 'API', 'Best Practices'],
                 ],
                 [
                     'title' => 'PHP 8.3 Yeni Özellikler',
@@ -72,7 +71,7 @@ class DiscussionTagSeeder extends Seeder
                     'content' => 'PHP 8.3 ile gelen yeni özellikler hakkında deneyimlerinizi paylaşabilir misiniz?',
                     'user_id' => 1,
                     'category_id' => 1,
-                    'tags' => ['PHP', 'Advanced', 'Tips']
+                    'tags' => ['PHP', 'Advanced', 'Tips'],
                 ],
                 [
                     'title' => 'Laravel Security Checklist',
@@ -80,21 +79,21 @@ class DiscussionTagSeeder extends Seeder
                     'content' => 'Production\'a çıkmadan önce kontrol etmem gereken güvenlik önlemleri nelerdir?',
                     'user_id' => 1,
                     'category_id' => 1,
-                    'tags' => ['Laravel', 'Security', 'Best Practices', 'PHP']
-                ]
+                    'tags' => ['Laravel', 'Security', 'Best Practices', 'PHP'],
+                ],
             ];
-            
+
             foreach ($sampleDiscussions as $discussionData) {
                 $tags = $discussionData['tags'];
                 unset($discussionData['tags']);
-                
+
                 $discussion = Discussion::create($discussionData);
                 $discussion->syncTags($tags);
             }
         } else {
             // Mevcut discussionlara rastgele taglar ata
             $this->command->info('Assigning tags to existing discussions...');
-            
+
             $tagGroups = [
                 ['Laravel', 'PHP', 'Help'],
                 ['Vue.js', 'JavaScript', 'Beginner'],
@@ -105,9 +104,9 @@ class DiscussionTagSeeder extends Seeder
                 ['Testing', 'PHP', 'Best Practices'],
                 ['Performance', 'Laravel', 'Advanced'],
                 ['Security', 'PHP', 'Important'],
-                ['Docker', 'DevOps', 'Help']
+                ['Docker', 'DevOps', 'Help'],
             ];
-            
+
             foreach ($discussions as $index => $discussion) {
                 $tagGroup = $tagGroups[$index % count($tagGroups)];
                 $discussion->syncTags($tagGroup);

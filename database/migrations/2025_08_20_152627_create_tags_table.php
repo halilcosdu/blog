@@ -17,7 +17,7 @@ return new class extends Migration
             $table->integer('usage_count')->default(0);
             $table->boolean('is_featured')->default(false);
             $table->timestamps();
-            
+
             // Indexes for performance
             $table->index(['name']);
             $table->index(['slug']);

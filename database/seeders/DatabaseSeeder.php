@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
             DiscussionSeeder::class,
             PackageSeeder::class,
         ]);
-        
+
         // Seed tags and assign them to content
         $this->call([
             TagSeeder::class,

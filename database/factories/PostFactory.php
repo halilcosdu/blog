@@ -45,10 +45,7 @@ class PostFactory extends Factory
             'is_featured' => false,
             'published_at' => now()->subDays(mt_rand(0, 30)),
             'views_count' => mt_rand(10, 2000),
-            'read_time' => null, // model hesaplıyor
-            'tags' => $this->faker->randomElements([
-                'laravel', 'php', 'tailwind', 'react', 'vue', 'testing', 'docker', 'mysql',
-            ], mt_rand(2, 5)),
+            'read_time' => null,
         ];
     }
 }

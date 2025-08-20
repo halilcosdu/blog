@@ -11,10 +11,10 @@ class PackageTagSeeder extends Seeder
     {
         // Mevcut packageları al
         $packages = Package::all();
-        
+
         if ($packages->isEmpty()) {
             $this->command->info('No packages found. Creating sample packages with tags...');
-            
+
             // Örnek packagelar oluştur
             $samplePackages = [
                 [
@@ -28,7 +28,7 @@ class PackageTagSeeder extends Seeder
                     'version' => '3.9.2',
                     'is_featured' => true,
                     'is_active' => true,
-                    'tags' => ['Laravel', 'PHP', 'Debugging', 'Development']
+                    'tags' => ['Laravel', 'PHP', 'Debugging', 'Development'],
                 ],
                 [
                     'name' => 'Laravel Horizon',
@@ -41,7 +41,7 @@ class PackageTagSeeder extends Seeder
                     'version' => '5.21.3',
                     'is_featured' => true,
                     'is_active' => true,
-                    'tags' => ['Laravel', 'Queue', 'Redis', 'Monitoring']
+                    'tags' => ['Laravel', 'Queue', 'Redis', 'Monitoring'],
                 ],
                 [
                     'name' => 'Laravel Telescope',
@@ -54,7 +54,7 @@ class PackageTagSeeder extends Seeder
                     'version' => '4.17.0',
                     'is_featured' => true,
                     'is_active' => true,
-                    'tags' => ['Laravel', 'PHP', 'Debugging', 'Monitoring']
+                    'tags' => ['Laravel', 'PHP', 'Debugging', 'Monitoring'],
                 ],
                 [
                     'name' => 'Laravel Sanctum',
@@ -67,7 +67,7 @@ class PackageTagSeeder extends Seeder
                     'version' => '3.3.3',
                     'is_featured' => true,
                     'is_active' => true,
-                    'tags' => ['Laravel', 'API', 'Authentication', 'Security']
+                    'tags' => ['Laravel', 'API', 'Authentication', 'Security'],
                 ],
                 [
                     'name' => 'Spatie Laravel Permission',
@@ -80,7 +80,7 @@ class PackageTagSeeder extends Seeder
                     'version' => '6.4.0',
                     'is_featured' => false,
                     'is_active' => true,
-                    'tags' => ['Laravel', 'Authorization', 'Security', 'PHP']
+                    'tags' => ['Laravel', 'Authorization', 'Security', 'PHP'],
                 ],
                 [
                     'name' => 'Laravel Cashier',
@@ -93,7 +93,7 @@ class PackageTagSeeder extends Seeder
                     'version' => '14.14.0',
                     'is_featured' => false,
                     'is_active' => true,
-                    'tags' => ['Laravel', 'Payment', 'Stripe', 'Billing']
+                    'tags' => ['Laravel', 'Payment', 'Stripe', 'Billing'],
                 ],
                 [
                     'name' => 'Laravel Scout',
@@ -106,7 +106,7 @@ class PackageTagSeeder extends Seeder
                     'version' => '10.6.1',
                     'is_featured' => false,
                     'is_active' => true,
-                    'tags' => ['Laravel', 'Search', 'Elasticsearch', 'PHP']
+                    'tags' => ['Laravel', 'Search', 'Elasticsearch', 'PHP'],
                 ],
                 [
                     'name' => 'Laravel Socialite',
@@ -119,21 +119,21 @@ class PackageTagSeeder extends Seeder
                     'version' => '5.11.0',
                     'is_featured' => false,
                     'is_active' => true,
-                    'tags' => ['Laravel', 'OAuth', 'Authentication', 'Social']
-                ]
+                    'tags' => ['Laravel', 'OAuth', 'Authentication', 'Social'],
+                ],
             ];
-            
+
             foreach ($samplePackages as $packageData) {
                 $tags = $packageData['tags'];
                 unset($packageData['tags']);
-                
+
                 $package = Package::create($packageData);
                 $package->syncTags($tags);
             }
         } else {
             // Mevcut packagelara rastgele taglar ata
             $this->command->info('Assigning tags to existing packages...');
-            
+
             $tagGroups = [
                 ['Laravel', 'PHP', 'Tool'],
                 ['Vue.js', 'JavaScript', 'Library'],
@@ -144,9 +144,9 @@ class PackageTagSeeder extends Seeder
                 ['Security', 'PHP', 'Laravel'],
                 ['Performance', 'Laravel', 'Optimization'],
                 ['Database', 'Laravel', 'MySQL'],
-                ['DevOps', 'Docker', 'Tool']
+                ['DevOps', 'Docker', 'Tool'],
             ];
-            
+
             foreach ($packages as $index => $package) {
                 $tagGroup = $tagGroups[$index % count($tagGroups)];
                 $package->syncTags($tagGroup);

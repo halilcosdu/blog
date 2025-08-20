@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\Post;
-use App\Models\Tag;
 use Illuminate\Database\Seeder;
 
 class PostTagSeeder extends Seeder
@@ -12,10 +11,10 @@ class PostTagSeeder extends Seeder
     {
         // Mevcut postları al
         $posts = Post::all();
-        
+
         if ($posts->isEmpty()) {
             $this->command->info('No posts found. Creating sample posts with tags...');
-            
+
             // Örnek postlar oluştur
             $samplePosts = [
                 [
@@ -27,7 +26,7 @@ class PostTagSeeder extends Seeder
                     'category_id' => 1,
                     'is_published' => true,
                     'published_at' => now(),
-                    'tags' => ['Laravel', 'PHP', 'Tutorial', 'Advanced']
+                    'tags' => ['Laravel', 'PHP', 'Tutorial', 'Advanced'],
                 ],
                 [
                     'title' => 'Vue.js 3 Composition API Rehberi',
@@ -38,7 +37,7 @@ class PostTagSeeder extends Seeder
                     'category_id' => 1,
                     'is_published' => true,
                     'published_at' => now(),
-                    'tags' => ['Vue.js', 'JavaScript', 'Tutorial', 'Beginner']
+                    'tags' => ['Vue.js', 'JavaScript', 'Tutorial', 'Beginner'],
                 ],
                 [
                     'title' => 'Tailwind CSS ile Hızlı UI Geliştirme',
@@ -49,7 +48,7 @@ class PostTagSeeder extends Seeder
                     'category_id' => 1,
                     'is_published' => true,
                     'published_at' => now(),
-                    'tags' => ['Tailwind CSS', 'CSS', 'Tutorial', 'Tips']
+                    'tags' => ['Tailwind CSS', 'CSS', 'Tutorial', 'Tips'],
                 ],
                 [
                     'title' => 'Laravel Livewire ile Reactive Components',
@@ -60,7 +59,7 @@ class PostTagSeeder extends Seeder
                     'category_id' => 1,
                     'is_published' => true,
                     'published_at' => now(),
-                    'tags' => ['Laravel', 'Livewire', 'PHP', 'Tutorial']
+                    'tags' => ['Laravel', 'Livewire', 'PHP', 'Tutorial'],
                 ],
                 [
                     'title' => 'Docker ile Laravel Geliştirme Ortamı',
@@ -71,7 +70,7 @@ class PostTagSeeder extends Seeder
                     'category_id' => 1,
                     'is_published' => true,
                     'published_at' => now(),
-                    'tags' => ['Docker', 'Laravel', 'DevOps', 'Tutorial']
+                    'tags' => ['Docker', 'Laravel', 'DevOps', 'Tutorial'],
                 ],
                 [
                     'title' => 'API Testing ile Laravel',
@@ -82,21 +81,21 @@ class PostTagSeeder extends Seeder
                     'category_id' => 1,
                     'is_published' => true,
                     'published_at' => now(),
-                    'tags' => ['Laravel', 'API', 'Testing', 'Best Practices']
-                ]
+                    'tags' => ['Laravel', 'API', 'Testing', 'Best Practices'],
+                ],
             ];
-            
+
             foreach ($samplePosts as $postData) {
                 $tags = $postData['tags'];
                 unset($postData['tags']);
-                
+
                 $post = Post::create($postData);
                 $post->syncTags($tags);
             }
         } else {
             // Mevcut postlara rastgele taglar ata
             $this->command->info('Assigning tags to existing posts...');
-            
+
             $tagGroups = [
                 ['Laravel', 'PHP', 'Tutorial'],
                 ['Vue.js', 'JavaScript', 'Beginner'],
@@ -107,9 +106,9 @@ class PostTagSeeder extends Seeder
                 ['Testing', 'PHP', 'Advanced'],
                 ['Performance', 'Laravel', 'Tips'],
                 ['Security', 'PHP', 'Best Practices'],
-                ['Docker', 'DevOps', 'Tutorial']
+                ['Docker', 'DevOps', 'Tutorial'],
             ];
-            
+
             foreach ($posts as $index => $post) {
                 $tagGroup = $tagGroups[$index % count($tagGroups)];
                 $post->syncTags($tagGroup);

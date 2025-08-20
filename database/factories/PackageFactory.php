@@ -30,7 +30,6 @@ class PackageFactory extends Factory
             'github_url' => $this->faker->optional()->url(),
             'packagist_url' => $this->faker->optional()->url(),
             'documentation_url' => $this->faker->optional()->url(),
-            'tags' => $this->faker->randomElements(['laravel', 'php', 'vue', 'javascript', 'package'], rand(1, 3)),
             'sort_order' => $this->faker->numberBetween(1, 100),
             'is_featured' => $this->faker->boolean(20), // 20% chance of being featured
             'is_active' => $this->faker->boolean(90), // 90% chance of being active
