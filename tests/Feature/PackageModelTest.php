@@ -116,6 +116,27 @@ describe('Package Model Scopes', function () {
         expect($results)->toHaveCount(1);
         expect($results->first()->id)->toBe($activeFeaturedPackage->id);
     });
+
+    it('has polymorphic relationship with tags', function () {
+        $package = Package::factory()->create();
+
+        // Test morphToMany relationship
+        expect($package->tags())->toBeInstanceOf(\Illuminate\Database\Eloquent\Relations\MorphToMany::class);
+        
+        // Test tag operations
+        $package->attachTag('laravel');
+        $package->attachTag('package');
+        
+        expect($package->tags)->toHaveCount(2);
+        expect($package->hasTag('laravel'))->toBeTrue();
+        expect($package->hasTag('package'))->toBeTrue();
+        
+        // Test detach
+        $package->detachTag('laravel');
+        expect($package->tags()->count())->toBe(1);
+        expect($package->hasTag('laravel'))->toBeFalse();
+        expect($package->hasTag('package'))->toBeTrue();
+    });
 });
 
 describe('Package Model Attributes', function () {
@@ -132,7 +153,6 @@ describe('Package Model Attributes', function () {
             'github_url',
             'packagist_url',
             'documentation_url',
-            'tags',
             'sort_order',
             'is_featured',
             'is_active',
@@ -146,7 +166,6 @@ describe('Package Model Attributes', function () {
         $package = new Package;
 
         expect($package->getCasts())->toMatchArray([
-            'tags' => 'array',
             'is_featured' => 'boolean',
             'is_active' => 'boolean',
             'downloads_count' => 'integer',
@@ -155,13 +174,16 @@ describe('Package Model Attributes', function () {
         ]);
     });
 
-    it('handles tags as array', function () {
-        $package = Package::factory()->create([
-            'tags' => ['laravel', 'package', 'php'],
-        ]);
+    it('handles tags through polymorphic relationship', function () {
+        $package = Package::factory()->create();
 
-        expect($package->tags)->toBeArray();
-        expect($package->tags)->toBe(['laravel', 'package', 'php']);
+        // Test tag attachment using the Taggable trait
+        $package->syncTags(['laravel', 'package', 'php']);
+
+        expect($package->tags)->toHaveCount(3);
+        expect($package->getTagNames())->toBe(['laravel', 'package', 'php']);
+        expect($package->hasTag('laravel'))->toBeTrue();
+        expect($package->hasTag('nonexistent'))->toBeFalse();
     });
 
     it('handles integer counts correctly', function () {
@@ -238,18 +260,23 @@ describe('Package Model Queries', function () {
     });
 
     it('can filter by tags', function () {
-        $laravelPackages = Package::factory(2)->create([
-            'tags' => ['laravel', 'php'],
-        ]);
+        $laravelPackages = Package::factory(2)->create();
+        $vuePackages = Package::factory(1)->create();
 
-        $vuePackages = Package::factory(1)->create([
-            'tags' => ['vue', 'javascript'],
-        ]);
+        // Attach tags using polymorphic relationship
+        $laravelPackages->each(function ($package) {
+            $package->syncTags(['laravel', 'php']);
+        });
 
-        // This would require JSON search in production, simulating with whereJsonContains
-        // For now, we'll test that tags are stored correctly
-        expect($laravelPackages->first()->tags)->toContain('laravel');
-        expect($vuePackages->first()->tags)->toContain('vue');
+        $vuePackages->each(function ($package) {
+            $package->syncTags(['vue', 'javascript']);
+        });
+
+        // Test that tags are properly attached
+        expect($laravelPackages->first()->hasTag('laravel'))->toBeTrue();
+        expect($laravelPackages->first()->hasTag('php'))->toBeTrue();
+        expect($vuePackages->first()->hasTag('vue'))->toBeTrue();
+        expect($vuePackages->first()->hasTag('javascript'))->toBeTrue();
     });
 
     it('can find package by slug', function () {

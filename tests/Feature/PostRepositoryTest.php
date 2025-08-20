@@ -483,21 +483,23 @@ describe('Post Repository Tags Analysis', function () {
             'user_id' => $user->id,
             'category_id' => $category->id,
             'is_published' => true,
-            'tags' => ['laravel', 'php'],
         ]);
+
+        // Attach tags using polymorphic relationship
+        $postsWithTags->each(function ($post) {
+            $post->syncTags(['laravel', 'php']);
+        });
 
         $postsWithoutTags = Post::factory(2)->create([
             'user_id' => $user->id,
             'category_id' => $category->id,
             'is_published' => true,
-            'tags' => null,
         ]);
 
         $postsWithEmptyTags = Post::factory(1)->create([
             'user_id' => $user->id,
             'category_id' => $category->id,
             'is_published' => true,
-            'tags' => [],
         ]);
 
         $post = new Post;
@@ -516,12 +518,16 @@ describe('Post Repository Tags Analysis', function () {
         $user = User::factory()->create();
         $category = Category::factory()->create();
 
-        Post::factory(10)->create([
+        $posts = Post::factory(10)->create([
             'user_id' => $user->id,
             'category_id' => $category->id,
             'is_published' => true,
-            'tags' => ['laravel', 'php'],
         ]);
+
+        // Attach tags using polymorphic relationship
+        $posts->each(function ($post) {
+            $post->syncTags(['laravel', 'php']);
+        });
 
         $post = new Post;
         $repository = new PostRepository($post);
@@ -531,27 +537,32 @@ describe('Post Repository Tags Analysis', function () {
         expect($result)->toHaveCount(5);
     });
 
-    it('returns only tags column for performance', function () {
+    it('returns only specific columns for performance', function () {
         $user = User::factory()->create();
         $category = Category::factory()->create();
 
-        Post::factory()->create([
+        $post = Post::factory()->create([
             'user_id' => $user->id,
             'category_id' => $category->id,
             'is_published' => true,
-            'tags' => ['laravel', 'php'],
             'title' => 'Test Title',
             'content' => 'Test Content',
         ]);
 
-        $post = new Post;
-        $repository = new PostRepository($post);
+        // Attach tags using polymorphic relationship
+        $post->syncTags(['laravel', 'php']);
+
+        $postModel = new Post;
+        $repository = new PostRepository($postModel);
 
         $result = $repository->getRecentWithTags(1);
 
         expect($result->first()->tags)->not->toBeNull();
-        // These should be null because we only selected tags
-        expect($result->first()->title)->toBeNull();
+        // These should be included because they are in the select
+        expect($result->first()->title)->toBe('Test Title');
+        expect($result->first()->slug)->not->toBeNull();
+        expect($result->first()->published_at)->not->toBeNull();
+        // Content should be null because it's not selected
         expect($result->first()->content)->toBeNull();
     });
 });

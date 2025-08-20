@@ -34,6 +34,27 @@ describe('Post Model Relationships', function () {
         expect($post->category)->toBeInstanceOf(Category::class);
         expect($post->category->id)->toBe($category->id);
     });
+
+    it('has polymorphic relationship with tags', function () {
+        $user = User::factory()->create();
+        $category = Category::factory()->create();
+
+        $post = Post::factory()->create([
+            'user_id' => $user->id,
+            'category_id' => $category->id,
+        ]);
+
+        // Test morphToMany relationship
+        expect($post->tags())->toBeInstanceOf(\Illuminate\Database\Eloquent\Relations\MorphToMany::class);
+        
+        // Test tag attachment
+        $post->attachTag('laravel');
+        $post->attachTag('php');
+        
+        expect($post->tags)->toHaveCount(2);
+        expect($post->hasTag('laravel'))->toBeTrue();
+        expect($post->hasTag('php'))->toBeTrue();
+    });
 });
 
 describe('Post Model SEO Features', function () {
@@ -323,7 +344,6 @@ describe('Post Model Attributes', function () {
             'published_at',
             'views_count',
             'read_time',
-            'tags',
         ]);
     });
 
@@ -334,22 +354,25 @@ describe('Post Model Attributes', function () {
             'is_published' => 'boolean',
             'is_featured' => 'boolean',
             'published_at' => 'datetime',
-            'tags' => 'array',
         ]);
     });
 
-    it('handles tags as array', function () {
+    it('handles tags through polymorphic relationship', function () {
         $user = User::factory()->create();
         $category = Category::factory()->create();
 
         $post = Post::factory()->create([
             'user_id' => $user->id,
             'category_id' => $category->id,
-            'tags' => ['laravel', 'php', 'tutorial'],
         ]);
 
-        expect($post->tags)->toBeArray();
-        expect($post->tags)->toBe(['laravel', 'php', 'tutorial']);
+        // Attach tags using the polymorphic relationship
+        $post->syncTags(['laravel', 'php', 'tutorial']);
+
+        expect($post->tags)->toHaveCount(3);
+        expect($post->getTagNames())->toBe(['laravel', 'php', 'tutorial']);
+        expect($post->hasTag('laravel'))->toBeTrue();
+        expect($post->hasTag('nonexistent'))->toBeFalse();
     });
 });
 

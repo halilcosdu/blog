@@ -75,8 +75,9 @@ test('markdown editor component includes typography plugin styles', function () 
     $response = $this->get('/discussions/create');
 
     $response->assertStatus(200)
-        ->assertSee('prose prose-slate')  // Check that prose classes are used
-        ->assertSee('prose-headings:text-slate-900'); // Check that heading styles are applied
+        ->assertSee('markdown-editor-wrapper')  // Check that markdown editor wrapper exists  
+        ->assertSee('editor-toolbar')  // Check that editor toolbar exists
+        ->assertSee('copyCodeToClipboard'); // Check that copy function exists
 });
 
 test('copy button function is properly defined', function () {

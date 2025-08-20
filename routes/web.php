@@ -8,6 +8,7 @@ Route::get('/sponsors', App\Livewire\Sponsors\SponsorsPage::class)->name('sponso
 Route::get('/posts', App\Livewire\Blog\PostsList::class)->name('posts.index');
 Route::get('/posts/{slug}', App\Livewire\Blog\PostShow::class)->name('posts.show');
 Route::get('/watch', App\Livewire\Watch\WatchPage::class)->name('watch');
+Route::get('/watch-modern', App\Livewire\Watch\ModernWatchPage::class)->name('watch.modern');
 
 // Test route for markdown editor
 Route::get('/test-editor', function () {

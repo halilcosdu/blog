@@ -6,7 +6,7 @@ use Illuminate\Foundation\Testing\RefreshDatabase;
 uses(RefreshDatabase::class);
 
 describe('User Search API', function () {
-    it('returns users when no query is provided', function () {
+    it('returns empty array when no query is provided', function () {
         // Create users with sequential unique usernames
         for ($i = 1; $i <= 5; $i++) {
             User::factory()->create([
@@ -18,11 +18,9 @@ describe('User Search API', function () {
         $response = $this->getJson('/api/users/search');
 
         $response->assertStatus(200)
-            ->assertJsonStructure([
-                '*' => ['id', 'username', 'name'],
-            ]);
+            ->assertJson([]);
 
-        expect($response->json())->toHaveCount(5);
+        expect($response->json())->toHaveCount(0);
     });
 
     it('searches users by username', function () {
@@ -81,7 +79,7 @@ describe('User Search API', function () {
         // Skip creating users with null/empty usernames since they violate DB constraints
         // In a real app, these wouldn't exist due to DB constraints
 
-        $response = $this->getJson('/api/users/search');
+        $response = $this->getJson('/api/users/search?q=valid');
 
         $response->assertStatus(200);
 
@@ -149,12 +147,12 @@ describe('User Search API', function () {
         // Empty query
         $response = $this->getJson('/api/users/search?q=');
         $response->assertStatus(200);
-        expect($response->json())->toHaveCount(3);
+        expect($response->json())->toHaveCount(0);
 
-        // Whitespace query
-        $response = $this->getJson('/api/users/search?q=   ');
+        // Whitespace query - URL encode the spaces
+        $response = $this->getJson('/api/users/search?q=' . urlencode('   '));
         $response->assertStatus(200);
-        expect($response->json())->toHaveCount(3);
+        expect($response->json())->toHaveCount(0);
     });
 
     it('returns required user fields only', function () {
@@ -165,7 +163,7 @@ describe('User Search API', function () {
             'email_verified_at' => now(),
         ]);
 
-        $response = $this->getJson('/api/users/search');
+        $response = $this->getJson('/api/users/search?q=fields');
 
         $response->assertStatus(200);
 
