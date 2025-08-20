@@ -12,7 +12,7 @@ describe('Post Model Relationships', function () {
     it('belongs to user', function () {
         $user = User::factory()->create();
         $category = Category::factory()->create();
-        
+
         $post = Post::factory()->create([
             'user_id' => $user->id,
             'category_id' => $category->id,
@@ -25,7 +25,7 @@ describe('Post Model Relationships', function () {
     it('belongs to category', function () {
         $user = User::factory()->create();
         $category = Category::factory()->create();
-        
+
         $post = Post::factory()->create([
             'user_id' => $user->id,
             'category_id' => $category->id,
@@ -40,14 +40,14 @@ describe('Post Model SEO Features', function () {
     it('generates slug from title on creation', function () {
         $user = User::factory()->create();
         $category = Category::factory()->create();
-        
+
         $post = Post::factory()->make([
             'user_id' => $user->id,
             'category_id' => $category->id,
             'title' => 'How to Build Amazing Laravel Apps',
             'slug' => null,
         ]);
-        
+
         $post->save(); // This will trigger the creating event
 
         expect($post->slug)->toBe('how-to-build-amazing-laravel-apps');
@@ -56,7 +56,7 @@ describe('Post Model SEO Features', function () {
     it('uses provided slug if given', function () {
         $user = User::factory()->create();
         $category = Category::factory()->create();
-        
+
         $post = Post::factory()->create([
             'user_id' => $user->id,
             'category_id' => $category->id,
@@ -70,9 +70,9 @@ describe('Post Model SEO Features', function () {
     it('calculates read time based on content', function () {
         $user = User::factory()->create();
         $category = Category::factory()->create();
-        
+
         $content = str_repeat('word ', 400); // 400 words
-        
+
         $post = Post::factory()->create([
             'user_id' => $user->id,
             'category_id' => $category->id,
@@ -86,9 +86,9 @@ describe('Post Model SEO Features', function () {
     it('calculates minimum 1 minute read time', function () {
         $user = User::factory()->create();
         $category = Category::factory()->create();
-        
+
         $content = 'Short content'; // Very short content
-        
+
         $post = Post::factory()->create([
             'user_id' => $user->id,
             'category_id' => $category->id,
@@ -101,13 +101,13 @@ describe('Post Model SEO Features', function () {
     it('formats reading time correctly', function () {
         $user = User::factory()->create();
         $category = Category::factory()->create();
-        
+
         $shortPost = Post::factory()->create([
             'user_id' => $user->id,
             'category_id' => $category->id,
             'read_time' => 1,
         ]);
-        
+
         $longPost = Post::factory()->create([
             'user_id' => $user->id,
             'category_id' => $category->id,
@@ -121,7 +121,7 @@ describe('Post Model SEO Features', function () {
     it('has meta fields for SEO', function () {
         $user = User::factory()->create();
         $category = Category::factory()->create();
-        
+
         $post = Post::factory()->create([
             'user_id' => $user->id,
             'category_id' => $category->id,
@@ -134,8 +134,8 @@ describe('Post Model SEO Features', function () {
     });
 
     it('uses slug as route key', function () {
-        $post = new Post();
-        
+        $post = new Post;
+
         expect($post->getRouteKeyName())->toBe('slug');
     });
 });
@@ -144,7 +144,7 @@ describe('Post Model Business Logic', function () {
     it('sets published_at when is_published is true on creation', function () {
         $user = User::factory()->create();
         $category = Category::factory()->create();
-        
+
         $post = Post::factory()->create([
             'user_id' => $user->id,
             'category_id' => $category->id,
@@ -159,7 +159,7 @@ describe('Post Model Business Logic', function () {
     it('does not set published_at when is_published is false', function () {
         $user = User::factory()->create();
         $category = Category::factory()->create();
-        
+
         $post = Post::factory()->create([
             'user_id' => $user->id,
             'category_id' => $category->id,
@@ -173,7 +173,7 @@ describe('Post Model Business Logic', function () {
     it('sets published_at when changing from unpublished to published', function () {
         $user = User::factory()->create();
         $category = Category::factory()->create();
-        
+
         $post = Post::factory()->create([
             'user_id' => $user->id,
             'category_id' => $category->id,
@@ -188,7 +188,7 @@ describe('Post Model Business Logic', function () {
     it('recalculates read time when content changes', function () {
         $user = User::factory()->create();
         $category = Category::factory()->create();
-        
+
         $post = Post::factory()->create([
             'user_id' => $user->id,
             'category_id' => $category->id,
@@ -205,7 +205,7 @@ describe('Post Model Business Logic', function () {
     it('formats published date correctly', function () {
         $user = User::factory()->create();
         $category = Category::factory()->create();
-        
+
         $post = Post::factory()->create([
             'user_id' => $user->id,
             'category_id' => $category->id,
@@ -218,7 +218,7 @@ describe('Post Model Business Logic', function () {
     it('returns empty string for formatted date when not published', function () {
         $user = User::factory()->create();
         $category = Category::factory()->create();
-        
+
         $post = Post::factory()->make([
             'user_id' => $user->id,
             'category_id' => $category->id,
@@ -238,13 +238,13 @@ describe('Post Model Scopes', function () {
     it('filters published posts', function () {
         $user = User::factory()->create();
         $category = Category::factory()->create();
-        
+
         $publishedPosts = Post::factory(3)->create([
             'user_id' => $user->id,
             'category_id' => $category->id,
             'is_published' => true,
         ]);
-        
+
         $unpublishedPosts = Post::factory(2)->create([
             'user_id' => $user->id,
             'category_id' => $category->id,
@@ -252,7 +252,7 @@ describe('Post Model Scopes', function () {
         ]);
 
         $results = Post::published()->get();
-        
+
         expect($results)->toHaveCount(3);
         $results->each(function ($post) {
             expect($post->is_published)->toBeTrue();
@@ -262,13 +262,13 @@ describe('Post Model Scopes', function () {
     it('filters featured posts', function () {
         $user = User::factory()->create();
         $category = Category::factory()->create();
-        
+
         $featuredPosts = Post::factory(2)->create([
             'user_id' => $user->id,
             'category_id' => $category->id,
             'is_featured' => true,
         ]);
-        
+
         $regularPosts = Post::factory(3)->create([
             'user_id' => $user->id,
             'category_id' => $category->id,
@@ -276,7 +276,7 @@ describe('Post Model Scopes', function () {
         ]);
 
         $results = Post::featured()->get();
-        
+
         expect($results)->toHaveCount(2);
         $results->each(function ($post) {
             expect($post->is_featured)->toBeTrue();
@@ -286,17 +286,17 @@ describe('Post Model Scopes', function () {
     it('orders posts by published date descending with recent scope', function () {
         $user = User::factory()->create();
         $category = Category::factory()->create();
-        
+
         $posts = Post::factory(3)->create([
             'user_id' => $user->id,
             'category_id' => $category->id,
-            'published_at' => fn() => fake()->dateTimeBetween('-1 month', 'now'),
+            'published_at' => fn () => fake()->dateTimeBetween('-1 month', 'now'),
         ]);
 
         $results = Post::recent()->get();
-        
+
         expect($results)->toHaveCount(3);
-        
+
         // Verify they're ordered by published_at desc
         $publishedDates = $results->pluck('published_at')->toArray();
         $sortedDates = collect($publishedDates)->sortDesc()->values()->toArray();
@@ -306,8 +306,8 @@ describe('Post Model Scopes', function () {
 
 describe('Post Model Attributes', function () {
     it('has correct fillable attributes', function () {
-        $post = new Post();
-        
+        $post = new Post;
+
         expect($post->getFillable())->toBe([
             'title',
             'slug',
@@ -328,8 +328,8 @@ describe('Post Model Attributes', function () {
     });
 
     it('casts attributes correctly', function () {
-        $post = new Post();
-        
+        $post = new Post;
+
         expect($post->getCasts())->toMatchArray([
             'is_published' => 'boolean',
             'is_featured' => 'boolean',
@@ -341,7 +341,7 @@ describe('Post Model Attributes', function () {
     it('handles tags as array', function () {
         $user = User::factory()->create();
         $category = Category::factory()->create();
-        
+
         $post = Post::factory()->create([
             'user_id' => $user->id,
             'category_id' => $category->id,
@@ -357,7 +357,7 @@ describe('Post Model Factory', function () {
     it('creates valid post with factory', function () {
         $user = User::factory()->create();
         $category = Category::factory()->create();
-        
+
         $post = Post::factory()->create([
             'user_id' => $user->id,
             'category_id' => $category->id,

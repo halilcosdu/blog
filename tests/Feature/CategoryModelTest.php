@@ -12,7 +12,7 @@ describe('Category Model Relationships', function () {
     it('has many posts', function () {
         $user = User::factory()->create();
         $category = Category::factory()->create();
-        
+
         $posts = Post::factory(3)->create([
             'category_id' => $category->id,
             'user_id' => $user->id,
@@ -26,7 +26,7 @@ describe('Category Model Relationships', function () {
     it('has many discussions', function () {
         $user = User::factory()->create();
         $category = Category::factory()->create();
-        
+
         $discussions = Discussion::factory(2)->create([
             'category_id' => $category->id,
             'user_id' => $user->id,
@@ -40,14 +40,14 @@ describe('Category Model Relationships', function () {
     it('has published posts scope', function () {
         $user = User::factory()->create();
         $category = Category::factory()->create();
-        
+
         // Create published posts
         $publishedPosts = Post::factory(3)->create([
             'category_id' => $category->id,
             'user_id' => $user->id,
             'is_published' => true,
         ]);
-        
+
         // Create unpublished posts
         $unpublishedPosts = Post::factory(2)->create([
             'category_id' => $category->id,
@@ -57,7 +57,7 @@ describe('Category Model Relationships', function () {
 
         expect($category->publishedPosts)->toHaveCount(3);
         expect($category->posts)->toHaveCount(5); // All posts
-        
+
         // Verify all returned posts are published
         $category->publishedPosts->each(function ($post) {
             expect($post->is_published)->toBeTrue();
@@ -131,8 +131,8 @@ describe('Category Model Business Logic', function () {
 
 describe('Category Model Attributes', function () {
     it('has correct fillable attributes', function () {
-        $category = new Category();
-        
+        $category = new Category;
+
         expect($category->getFillable())->toBe([
             'name',
             'slug',
@@ -145,8 +145,8 @@ describe('Category Model Attributes', function () {
     });
 
     it('casts attributes correctly', function () {
-        $category = new Category();
-        
+        $category = new Category;
+
         expect($category->getCasts())->toMatchArray([
             'is_active' => 'boolean',
         ]);
@@ -154,7 +154,7 @@ describe('Category Model Attributes', function () {
 
     it('has default active status', function () {
         $category = Category::factory()->create();
-        
+
         expect($category->is_active)->toBeBool();
     });
 });
@@ -166,7 +166,7 @@ describe('Category Model Scopes and Queries', function () {
         $inactiveCategories = Category::factory(2)->create(['is_active' => false]);
 
         $activeResults = Category::where('is_active', true)->get();
-        
+
         expect($activeResults)->toHaveCount(3);
         $activeResults->each(function ($category) {
             expect($category->is_active)->toBeTrue();
@@ -175,13 +175,13 @@ describe('Category Model Scopes and Queries', function () {
 
     it('can order by sort order', function () {
         $categories = Category::factory(3)->create([
-            'sort_order' => fn() => fake()->numberBetween(1, 100),
+            'sort_order' => fn () => fake()->numberBetween(1, 100),
         ]);
 
         $orderedCategories = Category::orderBy('sort_order')->get();
-        
+
         expect($orderedCategories)->toHaveCount(3);
-        
+
         // Verify they're in ascending order
         $sortOrders = $orderedCategories->pluck('sort_order')->toArray();
         expect($sortOrders)->toBe(collect($sortOrders)->sort()->values()->toArray());
@@ -189,9 +189,9 @@ describe('Category Model Scopes and Queries', function () {
 
     it('can find category by slug', function () {
         $category = Category::factory()->create(['slug' => 'test-category']);
-        
+
         $foundCategory = Category::where('slug', 'test-category')->first();
-        
+
         expect($foundCategory)->not->toBeNull();
         expect($foundCategory->id)->toBe($category->id);
     });
@@ -226,10 +226,10 @@ describe('Category Model Factory', function () {
         $categories = Category::factory(5)->create();
 
         expect($categories)->toHaveCount(5);
-        
+
         $names = $categories->pluck('name')->toArray();
         $slugs = $categories->pluck('slug')->toArray();
-        
+
         expect($names)->toBe(array_unique($names)); // All names should be unique
         expect($slugs)->toBe(array_unique($slugs)); // All slugs should be unique
     });

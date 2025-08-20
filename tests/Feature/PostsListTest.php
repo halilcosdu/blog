@@ -51,7 +51,7 @@ it('can update search query', function () {
 
 it('can filter by categories', function () {
     $category = Category::factory()->create();
-    
+
     Livewire::test(PostsList::class)
         ->set('categoryIds', [$category->id])
         ->assertSet('categoryIds', [$category->id]);

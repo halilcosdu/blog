@@ -24,9 +24,9 @@ This application is a Laravel application and its main Laravel ecosystems packag
 - Check for existing components to reuse before writing a new one.
 - You must use livewire in frontend, do not use alpine or another js.
 - You must follow Laravel 12 conventions and structure.
-- System uses Herd so it's always live on https://blog.test/ you don't need start server.
+- System uses Herd so it's always live on https://blog.test you don't need start server.
 - You must code dusk tests as well as unit tests and feature tests
-- You should not made up results. Only truth.
+- You should not be made up results. Only truth.
 
 ## Verification Scripts
 - Do not create verification scripts or tinker when tests cover that functionality and prove it works. Unit and feature tests are more important.

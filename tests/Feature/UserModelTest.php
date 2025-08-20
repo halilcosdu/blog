@@ -1,10 +1,10 @@
 <?php
 
+use App\Models\Category;
 use App\Models\Discussion;
 use App\Models\DiscussionReply;
 use App\Models\Post;
 use App\Models\User;
-use App\Models\Category;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 
 uses(RefreshDatabase::class);
@@ -13,7 +13,7 @@ describe('User Model Relationships', function () {
     it('has many posts relationship', function () {
         $user = User::factory()->create();
         $category = Category::factory()->create();
-        
+
         $posts = Post::factory(3)->create([
             'user_id' => $user->id,
             'category_id' => $category->id,
@@ -27,7 +27,7 @@ describe('User Model Relationships', function () {
     it('has many discussions relationship', function () {
         $user = User::factory()->create();
         $category = Category::factory()->create();
-        
+
         $discussions = Discussion::factory(2)->create([
             'user_id' => $user->id,
             'category_id' => $category->id,
@@ -41,11 +41,11 @@ describe('User Model Relationships', function () {
     it('has many discussion replies relationship', function () {
         $user = User::factory()->create();
         $category = Category::factory()->create();
-        
+
         $discussion = Discussion::factory()->create([
             'category_id' => $category->id,
         ]);
-        
+
         $replies = DiscussionReply::factory(3)->create([
             'user_id' => $user->id,
             'discussion_id' => $discussion->id,
@@ -64,19 +64,19 @@ describe('User Model Relationships', function () {
     });
 
     it('has correct fillable attributes', function () {
-        $user = new User();
-        
+        $user = new User;
+
         expect($user->getFillable())->toBe([
             'name',
-            'username', 
+            'username',
             'email',
             'password',
         ]);
     });
 
     it('has correct hidden attributes', function () {
-        $user = new User();
-        
+        $user = new User;
+
         expect($user->getHidden())->toBe([
             'password',
             'remember_token',
@@ -84,8 +84,8 @@ describe('User Model Relationships', function () {
     });
 
     it('has correct cast attributes', function () {
-        $user = new User();
-        
+        $user = new User;
+
         expect($user->getCasts())->toMatchArray([
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
@@ -93,8 +93,8 @@ describe('User Model Relationships', function () {
     });
 
     it('implements filament user interface', function () {
-        $user = new User();
-        
+        $user = new User;
+
         expect($user)->toBeInstanceOf(\Filament\Models\Contracts\FilamentUser::class);
     });
 });
@@ -126,7 +126,7 @@ describe('User Model Factory', function () {
         $users = User::factory(3)->create();
 
         expect($users)->toHaveCount(3);
-        
+
         $usernames = $users->pluck('username')->toArray();
         expect($usernames)->toBe(array_unique($usernames)); // All usernames should be unique
     });

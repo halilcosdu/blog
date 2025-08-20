@@ -8,44 +8,44 @@ uses(RefreshDatabase::class);
 describe('Package Model Status Features', function () {
     it('returns correct status color for released status', function () {
         $package = Package::factory()->create(['status' => 'Released']);
-        
+
         expect($package->status_color)->toBe('success');
     });
 
     it('returns correct status color for beta status', function () {
         $package = Package::factory()->create(['status' => 'Beta']);
-        
+
         expect($package->status_color)->toBe('warning');
     });
 
     it('returns correct status color for coming soon status', function () {
         $package = Package::factory()->create(['status' => 'Coming Soon']);
-        
+
         expect($package->status_color)->toBe('info');
     });
 
     it('returns correct status color for in development status', function () {
         $package = Package::factory()->create(['status' => 'In Development']);
-        
+
         expect($package->status_color)->toBe('primary');
     });
 
     it('returns correct status color for planning status', function () {
         $package = Package::factory()->create(['status' => 'Planning']);
-        
+
         expect($package->status_color)->toBe('secondary');
     });
 
     it('returns default status color for unknown status', function () {
         // Test the default case by using an invalid status in the model directly
         $package = new Package(['status' => 'Unknown Status']);
-        
+
         expect($package->status_color)->toBe('secondary');
     });
 
     it('uses slug as route key', function () {
-        $package = new Package();
-        
+        $package = new Package;
+
         expect($package->getRouteKeyName())->toBe('slug');
     });
 });
@@ -56,7 +56,7 @@ describe('Package Model Scopes', function () {
         $inactivePackages = Package::factory(2)->create(['is_active' => false]);
 
         $results = Package::active()->get();
-        
+
         expect($results)->toHaveCount(3);
         $results->each(function ($package) {
             expect($package->is_active)->toBeTrue();
@@ -68,7 +68,7 @@ describe('Package Model Scopes', function () {
         $regularPackages = Package::factory(3)->create(['is_featured' => false]);
 
         $results = Package::featured()->get();
-        
+
         expect($results)->toHaveCount(2);
         $results->each(function ($package) {
             expect($package->is_featured)->toBeTrue();
@@ -77,14 +77,14 @@ describe('Package Model Scopes', function () {
 
     it('orders packages by sort order and name', function () {
         $packages = Package::factory(3)->create([
-            'sort_order' => fn() => fake()->numberBetween(1, 10),
-            'name' => fn() => fake()->word(),
+            'sort_order' => fn () => fake()->numberBetween(1, 10),
+            'name' => fn () => fake()->word(),
         ]);
 
         $results = Package::ordered()->get();
-        
+
         expect($results)->toHaveCount(3);
-        
+
         // Verify they're ordered by sort_order first, then by name
         $sortOrders = $results->pluck('sort_order')->toArray();
         $sortedSortOrders = collect($sortOrders)->sort()->values()->toArray();
@@ -98,13 +98,13 @@ describe('Package Model Scopes', function () {
             'is_featured' => true,
             'sort_order' => 1,
         ]);
-        
+
         $activeRegularPackage = Package::factory()->create([
             'is_active' => true,
             'is_featured' => false,
             'sort_order' => 2,
         ]);
-        
+
         $inactiveFeaturedPackage = Package::factory()->create([
             'is_active' => false,
             'is_featured' => true,
@@ -112,7 +112,7 @@ describe('Package Model Scopes', function () {
         ]);
 
         $results = Package::active()->featured()->ordered()->get();
-        
+
         expect($results)->toHaveCount(1);
         expect($results->first()->id)->toBe($activeFeaturedPackage->id);
     });
@@ -120,8 +120,8 @@ describe('Package Model Scopes', function () {
 
 describe('Package Model Attributes', function () {
     it('has correct fillable attributes', function () {
-        $package = new Package();
-        
+        $package = new Package;
+
         expect($package->getFillable())->toBe([
             'name',
             'slug',
@@ -143,8 +143,8 @@ describe('Package Model Attributes', function () {
     });
 
     it('casts attributes correctly', function () {
-        $package = new Package();
-        
+        $package = new Package;
+
         expect($package->getCasts())->toMatchArray([
             'tags' => 'array',
             'is_featured' => 'boolean',
@@ -183,7 +183,7 @@ describe('Package Model Attributes', function () {
 describe('Package Model Status Business Logic', function () {
     it('supports all defined status values', function () {
         $statuses = ['Released', 'Beta', 'Coming Soon', 'In Development', 'Planning'];
-        
+
         foreach ($statuses as $status) {
             $package = Package::factory()->create(['status' => $status]);
             expect($package->status)->toBe($status);
@@ -205,7 +205,7 @@ describe('Package Model Status Business Logic', function () {
 
     it('supports versioning', function () {
         $package = Package::factory()->create(['version' => '2.1.3']);
-        
+
         expect($package->version)->toBe('2.1.3');
     });
 
@@ -228,10 +228,10 @@ describe('Package Model Queries', function () {
 
         $releasedResults = Package::where('status', 'Released')->get();
         $betaResults = Package::where('status', 'Beta')->get();
-        
+
         expect($releasedResults)->toHaveCount(2);
         expect($betaResults)->toHaveCount(1);
-        
+
         $releasedResults->each(function ($package) {
             expect($package->status)->toBe('Released');
         });
@@ -241,7 +241,7 @@ describe('Package Model Queries', function () {
         $laravelPackages = Package::factory(2)->create([
             'tags' => ['laravel', 'php'],
         ]);
-        
+
         $vuePackages = Package::factory(1)->create([
             'tags' => ['vue', 'javascript'],
         ]);
@@ -254,9 +254,9 @@ describe('Package Model Queries', function () {
 
     it('can find package by slug', function () {
         $package = Package::factory()->create(['slug' => 'awesome-package']);
-        
+
         $foundPackage = Package::where('slug', 'awesome-package')->first();
-        
+
         expect($foundPackage)->not->toBeNull();
         expect($foundPackage->id)->toBe($package->id);
     });
@@ -266,7 +266,7 @@ describe('Package Model Queries', function () {
             'downloads_count' => 10000,
             'stars_count' => 500,
         ]);
-        
+
         $regularPackage = Package::factory()->create([
             'downloads_count' => 1000,
             'stars_count' => 50,
@@ -274,7 +274,7 @@ describe('Package Model Queries', function () {
 
         $byDownloads = Package::orderBy('downloads_count', 'desc')->get();
         $byStars = Package::orderBy('stars_count', 'desc')->get();
-        
+
         expect($byDownloads->first()->id)->toBe($popularPackage->id);
         expect($byStars->first()->id)->toBe($popularPackage->id);
     });
@@ -314,7 +314,7 @@ describe('Package Model Factory', function () {
         $packages = Package::factory(3)->create();
 
         expect($packages)->toHaveCount(3);
-        
+
         $slugs = $packages->pluck('slug')->toArray();
         expect($slugs)->toBe(array_unique($slugs)); // All slugs should be unique
     });

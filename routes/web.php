@@ -17,12 +17,17 @@ Route::get('/test-editor', function () {
 // API endpoint for user search (for @mentions)
 Route::get('/api/users/search', function () {
     $query = request('q', '');
-    
+
     // Return empty array if no query provided for security
     if (empty($query)) {
         return response()->json([]);
     }
-    
+
+    // Minimum 2 characters required for search
+    if (strlen($query) < 2) {
+        return response()->json([]);
+    }
+
     $users = \App\Models\User::query()
         ->where(function ($subQuery) use ($query) {
             // Use LIKE for SQLite compatibility, ILIKE for PostgreSQL
@@ -35,7 +40,7 @@ Route::get('/api/users/search', function () {
         ->get();
 
     return response()->json($users);
-})->name('api.users.search');
+})->middleware('throttle:60,1')->name('api.users.search');
 
 // Discussion routes
 Route::get('/discussions', App\Livewire\Discussion\DiscussionForum::class)->name('discussions.index');

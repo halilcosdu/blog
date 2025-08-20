@@ -56,7 +56,7 @@ it('strips unsafe HTML from markdown content', function () {
     $response->assertSee('Safe Header', false);
     $response->assertSee('Bold text', false);
 
-    // Ensure malicious script content is stripped  
+    // Ensure malicious script content is stripped
     $response->assertDontSee('alert(\'xss\')', false);
     $response->assertDontSee('<script>alert(\'xss\')</script>', false);
 });

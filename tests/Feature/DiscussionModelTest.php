@@ -12,7 +12,7 @@ describe('Discussion Model Relationships', function () {
     it('belongs to user', function () {
         $user = User::factory()->create();
         $category = Category::factory()->create();
-        
+
         $discussion = Discussion::factory()->create([
             'user_id' => $user->id,
             'category_id' => $category->id,
@@ -25,7 +25,7 @@ describe('Discussion Model Relationships', function () {
     it('belongs to category', function () {
         $user = User::factory()->create();
         $category = Category::factory()->create();
-        
+
         $discussion = Discussion::factory()->create([
             'user_id' => $user->id,
             'category_id' => $category->id,
@@ -38,19 +38,19 @@ describe('Discussion Model Relationships', function () {
     it('has many replies ordered by creation date desc', function () {
         $user = User::factory()->create();
         $category = Category::factory()->create();
-        
+
         $discussion = Discussion::factory()->create([
             'user_id' => $user->id,
             'category_id' => $category->id,
         ]);
-        
+
         // Create replies with different timestamps
         $firstReply = DiscussionReply::factory()->create([
             'discussion_id' => $discussion->id,
             'user_id' => $user->id,
             'created_at' => now()->subHours(2),
         ]);
-        
+
         $secondReply = DiscussionReply::factory()->create([
             'discussion_id' => $discussion->id,
             'user_id' => $user->id,
@@ -58,7 +58,7 @@ describe('Discussion Model Relationships', function () {
         ]);
 
         $replies = $discussion->replies;
-        
+
         expect($replies)->toHaveCount(2);
         expect($replies->first()->id)->toBe($secondReply->id); // Most recent first
         expect($replies->last()->id)->toBe($firstReply->id);
@@ -69,7 +69,7 @@ describe('Discussion Model Business Logic', function () {
     it('generates unique slug on creation', function () {
         $user = User::factory()->create();
         $category = Category::factory()->create();
-        
+
         $discussion = Discussion::factory()->create([
             'user_id' => $user->id,
             'category_id' => $category->id,
@@ -83,7 +83,7 @@ describe('Discussion Model Business Logic', function () {
     it('generates unique slug when title has duplicate', function () {
         $user = User::factory()->create();
         $category = Category::factory()->create();
-        
+
         // Create first discussion
         $firstDiscussion = Discussion::factory()->create([
             'user_id' => $user->id,
@@ -107,7 +107,7 @@ describe('Discussion Model Business Logic', function () {
     it('updates slug when title changes', function () {
         $user = User::factory()->create();
         $category = Category::factory()->create();
-        
+
         $discussion = Discussion::factory()->create([
             'user_id' => $user->id,
             'category_id' => $category->id,
@@ -125,7 +125,7 @@ describe('Discussion Model Business Logic', function () {
     it('excludes current record when updating slug', function () {
         $user = User::factory()->create();
         $category = Category::factory()->create();
-        
+
         $discussion = Discussion::factory()->create([
             'user_id' => $user->id,
             'category_id' => $category->id,
@@ -142,7 +142,7 @@ describe('Discussion Model Business Logic', function () {
     it('increments view count', function () {
         $user = User::factory()->create();
         $category = Category::factory()->create();
-        
+
         $discussion = Discussion::factory()->create([
             'user_id' => $user->id,
             'category_id' => $category->id,
@@ -157,7 +157,7 @@ describe('Discussion Model Business Logic', function () {
     it('can be marked as resolved', function () {
         $user = User::factory()->create();
         $category = Category::factory()->create();
-        
+
         $discussion = Discussion::factory()->create([
             'user_id' => $user->id,
             'category_id' => $category->id,
@@ -172,7 +172,7 @@ describe('Discussion Model Business Logic', function () {
     it('can be marked as unresolved', function () {
         $user = User::factory()->create();
         $category = Category::factory()->create();
-        
+
         $discussion = Discussion::factory()->create([
             'user_id' => $user->id,
             'category_id' => $category->id,
@@ -187,8 +187,8 @@ describe('Discussion Model Business Logic', function () {
 
 describe('Discussion Model Attributes', function () {
     it('has correct fillable attributes', function () {
-        $discussion = new Discussion();
-        
+        $discussion = new Discussion;
+
         expect($discussion->getFillable())->toBe([
             'user_id',
             'category_id',
@@ -201,8 +201,8 @@ describe('Discussion Model Attributes', function () {
     });
 
     it('casts attributes correctly', function () {
-        $discussion = new Discussion();
-        
+        $discussion = new Discussion;
+
         expect($discussion->getCasts())->toMatchArray([
             'is_resolved' => 'boolean',
             'views_count' => 'integer',
@@ -214,7 +214,7 @@ describe('Discussion Model Factory', function () {
     it('creates valid discussion with factory', function () {
         $user = User::factory()->create();
         $category = Category::factory()->create();
-        
+
         $discussion = Discussion::factory()->create([
             'user_id' => $user->id,
             'category_id' => $category->id,
@@ -232,7 +232,7 @@ describe('Discussion Model Factory', function () {
     it('generates different slugs for different discussions', function () {
         $user = User::factory()->create();
         $category = Category::factory()->create();
-        
+
         $discussions = Discussion::factory(3)->create([
             'user_id' => $user->id,
             'category_id' => $category->id,

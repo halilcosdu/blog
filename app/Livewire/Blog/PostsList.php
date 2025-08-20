@@ -61,7 +61,7 @@ class PostsList extends Component
 
     public function toggleCategoryDropdown(): void
     {
-        $this->categoryDropdownOpen = !$this->categoryDropdownOpen;
+        $this->categoryDropdownOpen = ! $this->categoryDropdownOpen;
     }
 
     public function closeCategoryDropdown(): void

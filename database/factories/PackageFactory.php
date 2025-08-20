@@ -19,10 +19,10 @@ class PackageFactory extends Factory
     {
         $name = $this->faker->words(2, true);
         $statuses = ['Released', 'Beta', 'Coming Soon', 'In Development', 'Planning'];
-        
+
         return [
             'name' => ucwords($name),
-            'slug' => Str::slug($name) . '-' . $this->faker->unique()->numberBetween(1, 9999),
+            'slug' => Str::slug($name).'-'.$this->faker->unique()->numberBetween(1, 9999),
             'description' => $this->faker->sentence(10),
             'status' => $this->faker->randomElement($statuses),
             'icon' => $this->faker->optional()->word(),
