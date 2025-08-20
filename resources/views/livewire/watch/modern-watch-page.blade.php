@@ -138,6 +138,20 @@
                         >
                             Learning Paths
                         </button>
+                        <button 
+                            wire:click="setActiveTab('watchlist')"
+                            class="py-2 px-1 border-b-2 font-medium text-sm transition-colors relative {{ $activeTab === 'watchlist' ? 'border-purple-500 text-purple-600 dark:text-purple-400' : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 hover:border-slate-300 dark:hover:border-slate-600' }}"
+                        >
+                            <div class="flex items-center gap-2">
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
+                                </svg>
+                                Watchlist
+                                @if($this->watchlistCount > 0)
+                                    <span class="bg-purple-500 text-white text-xs px-1.5 py-0.5 rounded-full">{{ $this->watchlistCount }}</span>
+                                @endif
+                            </div>
+                        </button>
                     </nav>
                 </div>
             </div>
@@ -189,7 +203,7 @@
                         </button>
 
                         {{-- View Mode Toggle --}}
-                        @if($activeTab !== 'pathways')
+                        @if($activeTab !== 'pathways' && $activeTab !== 'watchlist')
                         <button 
                             wire:click="toggleViewMode"
                             class="p-2 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-600 transition-all"
@@ -538,6 +552,135 @@
                 </div>
                 @endforeach
             </div>
+            @elseif($activeTab === 'watchlist')
+            {{-- Watchlist Section --}}
+            @if(count($this->watchlistItems) > 0)
+            <div class="space-y-6">
+                {{-- Watchlist Header --}}
+                <div class="flex items-center justify-between">
+                    <div>
+                        <h2 class="text-2xl font-bold text-slate-900 dark:text-white flex items-center gap-3">
+                            <svg class="w-6 h-6 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
+                            </svg>
+                            My Watchlist
+                            <span class="text-lg text-slate-500 dark:text-slate-400">({{ $this->watchlistCount }})</span>
+                        </h2>
+                        <p class="text-slate-600 dark:text-slate-400 mt-1">Content you've saved to watch later</p>
+                    </div>
+                    @if(count($this->watchlistItems) > 0)
+                    <button 
+                        wire:click="clearWatchlist"
+                        wire:confirm="Are you sure you want to clear your entire watchlist?"
+                        class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors text-sm font-medium"
+                    >
+                        Clear All
+                    </button>
+                    @endif
+                </div>
+
+                {{-- Watchlist Grid --}}
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                    @foreach($this->watchlistItems as $content)
+                    <div class="group bg-white dark:bg-slate-800 rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-slate-200 dark:border-slate-700 relative">
+                        {{-- Remove from watchlist button --}}
+                        <button 
+                            wire:click="removeFromWatchlist({{ $content['id'] }})"
+                            class="absolute top-2 right-2 z-10 w-8 h-8 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-200"
+                            title="Remove from watchlist"
+                        >
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
+                            </svg>
+                        </button>
+
+                        {{-- Content Thumbnail --}}
+                        <div class="aspect-video bg-slate-100 dark:bg-slate-700 relative overflow-hidden">
+                            <img src="{{ $content['thumbnail'] }}" alt="{{ $content['title'] }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                            
+                            {{-- Content Type Badge --}}
+                            <div class="absolute top-2 left-2">
+                                <span class="px-2 py-1 bg-black/70 text-white text-xs font-bold rounded uppercase tracking-wide">
+                                    {{ $content['type'] === 'lesson' ? 'Lesson' : ucfirst($content['type']) }}
+                                </span>
+                            </div>
+
+                            {{-- Duration/Episodes --}}
+                            <div class="absolute bottom-2 right-2">
+                                <span class="px-2 py-1 bg-black/70 text-white text-xs font-medium rounded">
+                                    @if($content['type'] === 'series')
+                                        {{ $content['episodes'] }} episodes
+                                    @else
+                                        {{ $content['duration'] }}
+                                    @endif
+                                </span>
+                            </div>
+
+                            {{-- Play Button --}}
+                            <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300 flex items-center justify-center">
+                                <div class="w-12 h-12 bg-white/90 dark:bg-slate-800/90 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 scale-90 group-hover:scale-100">
+                                    <svg class="w-5 h-5 text-purple-600 ml-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/>
+                                    </svg>
+                                </div>
+                            </div>
+                        </div>
+
+                        {{-- Content Info --}}
+                        <div class="p-4">
+                            <h3 class="font-semibold text-slate-900 dark:text-white mb-2 line-clamp-2 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
+                                {{ $content['title'] }}
+                            </h3>
+                            <p class="text-sm text-slate-600 dark:text-slate-400 mb-3 line-clamp-2">
+                                {{ $content['description'] }}
+                            </p>
+                            
+                            {{-- Meta Info --}}
+                            <div class="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 mb-3">
+                                <span class="capitalize">{{ $content['level'] ?? 'All levels' }}</span>
+                                <div class="flex items-center gap-1">
+                                    <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
+                                        <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/>
+                                    </svg>
+                                    <span>{{ number_format($content['views'] ?? rand(1000, 15000)) }}</span>
+                                </div>
+                            </div>
+
+                            {{-- Added Date --}}
+                            <div class="pt-3 border-t border-slate-200 dark:border-slate-700">
+                                <div class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
+                                    </svg>
+                                    <span>Added {{ $content['added_to_watchlist'] }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    @endforeach
+                </div>
+            </div>
+            @else
+            {{-- Empty Watchlist --}}
+            <div class="text-center py-16">
+                <div class="w-20 h-20 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center mx-auto mb-6">
+                    <svg class="w-10 h-10 text-purple-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
+                    </svg>
+                </div>
+                <h3 class="text-xl font-semibold text-slate-900 dark:text-white mb-2">Your watchlist is empty</h3>
+                <p class="text-slate-600 dark:text-slate-400 mb-6 max-w-md mx-auto">
+                    Start adding series and lessons you want to watch later. Click the bookmark icon on any content to add it to your watchlist.
+                </p>
+                <button 
+                    wire:click="setActiveTab('all')"
+                    class="px-6 py-3 bg-purple-500 hover:bg-purple-600 text-white rounded-lg transition-colors font-medium"
+                >
+                    Browse Content
+                </button>
+            </div>
+            @endif
             @else
             {{-- Regular Content (Series & Lessons) --}}
             @if($viewMode === 'grid')
@@ -569,6 +712,23 @@
                             <span class="px-2 py-1 bg-orange-600 text-white text-xs font-medium rounded-md">POPULAR</span>
                             @endif
                         </div>
+
+                        {{-- Watchlist Button --}}
+                        <button 
+                            wire:click="toggleWatchlist({{ $content['id'] }})"
+                            class="absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200 {{ $this->isInWatchlist($content['id']) ? 'bg-purple-500 text-white' : 'bg-black/50 hover:bg-black/70 text-white' }}"
+                            title="{{ $this->isInWatchlist($content['id']) ? 'Remove from watchlist' : 'Add to watchlist' }}"
+                        >
+                            @if($this->isInWatchlist($content['id']))
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z"/>
+                                </svg>
+                            @else
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
+                                </svg>
+                            @endif
+                        </button>
 
                         {{-- Duration & Rating --}}
                         <div class="absolute bottom-3 right-3 flex gap-2">
@@ -678,6 +838,23 @@
                                     </div>
                                 </div>
                                 <div class="flex flex-col gap-2 ml-4 items-end">
+                                    {{-- Watchlist Button --}}
+                                    <button 
+                                        wire:click="toggleWatchlist({{ $content['id'] }})"
+                                        class="w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200 {{ $this->isInWatchlist($content['id']) ? 'bg-purple-500 text-white' : 'bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-400' }}"
+                                        title="{{ $this->isInWatchlist($content['id']) ? 'Remove from watchlist' : 'Add to watchlist' }}"
+                                    >
+                                        @if($this->isInWatchlist($content['id']))
+                                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                                <path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z"/>
+                                            </svg>
+                                        @else
+                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
+                                            </svg>
+                                        @endif
+                                    </button>
+
                                     @if($content['type'] === 'series')
                                     <span class="px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 text-xs font-medium rounded">SERIES</span>
                                     @endif
@@ -749,4 +926,53 @@
         </div>
     </main>
 </div>
+
+{{-- JavaScript for Watchlist Notifications --}}
+@script
+<script>
+    // Listen for watchlist updates
+    $wire.on('watchlist-updated', (event) => {
+        const { type, message } = event;
+        
+        // Create toast notification
+        const toast = document.createElement('div');
+        toast.className = `fixed top-4 right-4 z-50 px-4 py-3 rounded-lg shadow-lg transition-all duration-300 transform translate-x-full opacity-0`;
+        
+        // Set colors based on type
+        if (type === 'added') {
+            toast.className += ' bg-green-500 text-white';
+        } else if (type === 'removed') {
+            toast.className += ' bg-red-500 text-white';
+        } else if (type === 'cleared') {
+            toast.className += ' bg-orange-500 text-white';
+        }
+        
+        toast.innerHTML = `
+            <div class="flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
+                </svg>
+                <span>${message}</span>
+            </div>
+        `;
+        
+        document.body.appendChild(toast);
+        
+        // Animate in
+        setTimeout(() => {
+            toast.classList.remove('translate-x-full', 'opacity-0');
+        }, 100);
+        
+        // Auto-remove after 3 seconds
+        setTimeout(() => {
+            toast.classList.add('translate-x-full', 'opacity-0');
+            setTimeout(() => {
+                if (toast.parentNode) {
+                    toast.parentNode.removeChild(toast);
+                }
+            }, 300);
+        }, 3000);
+    });
+</script>
+@endscript
 

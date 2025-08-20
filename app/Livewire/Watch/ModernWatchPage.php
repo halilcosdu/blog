@@ -42,7 +42,10 @@ class ModernWatchPage extends Component
 
     public bool $showFilters = true;
 
-    public string $activeTab = 'all'; // all, series, lessons, pathways
+    public string $activeTab = 'all'; // all, series, lessons, pathways, watchlist
+
+    // Watchlist management
+    public array $watchlist = [];
 
     protected $queryString = [
         'search' => ['except' => ''],
@@ -61,6 +64,12 @@ class ModernWatchPage extends Component
     {
         // Set initial state based on user preferences or defaults
         $this->viewMode = session('watch.view_mode', 'grid');
+        
+        // Load watchlist from session (mock data)
+        $this->watchlist = session('watch.watchlist', [
+            // Pre-populated with some mock items
+            1, 6, 12 // IDs of items already in watchlist
+        ]);
     }
 
     public function updatedSearch(): void
@@ -119,6 +128,55 @@ class ModernWatchPage extends Component
     public function toggleFilters(): void
     {
         $this->showFilters = ! $this->showFilters;
+    }
+
+    public function toggleWatchlist(int $contentId): void
+    {
+        if ($this->isInWatchlist($contentId)) {
+            $this->removeFromWatchlist($contentId);
+        } else {
+            $this->addToWatchlist($contentId);
+        }
+    }
+
+    public function addToWatchlist(int $contentId): void
+    {
+        if (! $this->isInWatchlist($contentId)) {
+            $this->watchlist[] = $contentId;
+            session(['watch.watchlist' => $this->watchlist]);
+            
+            $this->dispatch('watchlist-updated', [
+                'type' => 'added',
+                'message' => 'Added to watchlist!'
+            ]);
+        }
+    }
+
+    public function removeFromWatchlist(int $contentId): void
+    {
+        $this->watchlist = array_values(array_filter($this->watchlist, fn($id) => $id !== $contentId));
+        session(['watch.watchlist' => $this->watchlist]);
+        
+        $this->dispatch('watchlist-updated', [
+            'type' => 'removed', 
+            'message' => 'Removed from watchlist!'
+        ]);
+    }
+
+    public function isInWatchlist(int $contentId): bool
+    {
+        return in_array($contentId, $this->watchlist);
+    }
+
+    public function clearWatchlist(): void
+    {
+        $this->watchlist = [];
+        session(['watch.watchlist' => []]);
+        
+        $this->dispatch('watchlist-updated', [
+            'type' => 'cleared',
+            'message' => 'Watchlist cleared!'
+        ]);
     }
 
     #[Computed]
@@ -293,6 +351,42 @@ class ModernWatchPage extends Component
                 'url' => '/watch/series/livewire/episode/12',
             ],
         ];
+    }
+
+    #[Computed]
+    public function watchlistItems(): array
+    {
+        if (empty($this->watchlist)) {
+            return [];
+        }
+
+        // Get all content and filter by watchlist IDs
+        $allContent = $this->getAllContent();
+        
+        return collect($allContent)
+            ->whereIn('id', $this->watchlist)
+            ->map(function ($item) {
+                $item['added_to_watchlist'] = now()->subDays(rand(1, 30))->format('M j, Y');
+                return $item;
+            })
+            ->sortByDesc(function ($item) {
+                // Sort by recently added to watchlist
+                return array_search($item['id'], array_reverse($this->watchlist));
+            })
+            ->values()
+            ->toArray();
+    }
+
+    #[Computed]
+    public function watchlistCount(): int
+    {
+        return count($this->watchlist);
+    }
+
+    private function getAllContent(): array
+    {
+        // Combined content from featuredContent and pathways
+        return array_merge($this->featuredContent, $this->pathways);
     }
 
     #[Computed]
@@ -498,6 +592,9 @@ class ModernWatchPage extends Component
         if ($this->activeTab !== 'all') {
             if ($this->activeTab === 'pathways') {
                 return []; // Pathways are handled separately
+            }
+            if ($this->activeTab === 'watchlist') {
+                return []; // Watchlist is handled separately
             }
             $filtered = $filtered->where('type', $this->activeTab === 'lessons' ? 'lesson' : $this->activeTab);
         }
