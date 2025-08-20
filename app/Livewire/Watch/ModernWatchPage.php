@@ -67,11 +67,11 @@ class ModernWatchPage extends Component
     {
         // Set initial state based on user preferences or defaults
         $this->viewMode = session('watch.view_mode', 'grid');
-        
+
         // Load watchlist from session (mock data)
         $this->watchlist = session('watch.watchlist', [
             // Pre-populated with some mock items
-            1, 6, 12 // IDs of items already in watchlist
+            1, 6, 12, // IDs of items already in watchlist
         ]);
     }
 
@@ -159,22 +159,22 @@ class ModernWatchPage extends Component
         if (! $this->isInWatchlist($contentId)) {
             $this->watchlist[] = $contentId;
             session(['watch.watchlist' => $this->watchlist]);
-            
+
             $this->dispatch('watchlist-updated', [
                 'type' => 'added',
-                'message' => 'Added to watchlist!'
+                'message' => 'Added to watchlist!',
             ]);
         }
     }
 
     public function removeFromWatchlist(int $contentId): void
     {
-        $this->watchlist = array_values(array_filter($this->watchlist, fn($id) => $id !== $contentId));
+        $this->watchlist = array_values(array_filter($this->watchlist, fn ($id) => $id !== $contentId));
         session(['watch.watchlist' => $this->watchlist]);
-        
+
         $this->dispatch('watchlist-updated', [
-            'type' => 'removed', 
-            'message' => 'Removed from watchlist!'
+            'type' => 'removed',
+            'message' => 'Removed from watchlist!',
         ]);
     }
 
@@ -187,10 +187,10 @@ class ModernWatchPage extends Component
     {
         $this->watchlist = [];
         session(['watch.watchlist' => []]);
-        
+
         $this->dispatch('watchlist-updated', [
             'type' => 'cleared',
-            'message' => 'Watchlist cleared!'
+            'message' => 'Watchlist cleared!',
         ]);
     }
 
@@ -200,20 +200,20 @@ class ModernWatchPage extends Component
         return [
             'recent' => [
                 'label' => 'Most Recent',
-                'icon' => 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z'
+                'icon' => 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z',
             ],
             'popular' => [
-                'label' => 'Most Popular', 
-                'icon' => 'M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z'
+                'label' => 'Most Popular',
+                'icon' => 'M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z',
             ],
             'alphabetical' => [
                 'label' => 'A-Z',
-                'icon' => 'M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2 2v-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10'
+                'icon' => 'M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2 2v-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10',
             ],
             'duration' => [
                 'label' => 'By Duration',
-                'icon' => 'M13 10V3L4 14h7v7l9-11h-7z'
-            ]
+                'icon' => 'M13 10V3L4 14h7v7l9-11h-7z',
+            ],
         ];
     }
 
@@ -400,11 +400,12 @@ class ModernWatchPage extends Component
 
         // Get all content and filter by watchlist IDs
         $allContent = $this->getAllContent();
-        
+
         return collect($allContent)
             ->whereIn('id', $this->watchlist)
             ->map(function ($item) {
                 $item['added_to_watchlist'] = now()->subDays(rand(1, 30))->format('M j, Y');
+
                 return $item;
             })
             ->sortByDesc(function ($item) {

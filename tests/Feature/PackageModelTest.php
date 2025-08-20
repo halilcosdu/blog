@@ -122,15 +122,15 @@ describe('Package Model Scopes', function () {
 
         // Test morphToMany relationship
         expect($package->tags())->toBeInstanceOf(\Illuminate\Database\Eloquent\Relations\MorphToMany::class);
-        
+
         // Test tag operations
         $package->attachTag('laravel');
         $package->attachTag('package');
-        
+
         expect($package->tags)->toHaveCount(2);
         expect($package->hasTag('laravel'))->toBeTrue();
         expect($package->hasTag('package'))->toBeTrue();
-        
+
         // Test detach
         $package->detachTag('laravel');
         expect($package->tags()->count())->toBe(1);

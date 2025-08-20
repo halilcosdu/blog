@@ -46,11 +46,11 @@ describe('Post Model Relationships', function () {
 
         // Test morphToMany relationship
         expect($post->tags())->toBeInstanceOf(\Illuminate\Database\Eloquent\Relations\MorphToMany::class);
-        
+
         // Test tag attachment
         $post->attachTag('laravel');
         $post->attachTag('php');
-        
+
         expect($post->tags)->toHaveCount(2);
         expect($post->hasTag('laravel'))->toBeTrue();
         expect($post->hasTag('php'))->toBeTrue();

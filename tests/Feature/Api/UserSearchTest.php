@@ -150,7 +150,7 @@ describe('User Search API', function () {
         expect($response->json())->toHaveCount(0);
 
         // Whitespace query - URL encode the spaces
-        $response = $this->getJson('/api/users/search?q=' . urlencode('   '));
+        $response = $this->getJson('/api/users/search?q='.urlencode('   '));
         $response->assertStatus(200);
         expect($response->json())->toHaveCount(0);
     });

@@ -75,7 +75,7 @@ test('markdown editor component includes typography plugin styles', function () 
     $response = $this->get('/discussions/create');
 
     $response->assertStatus(200)
-        ->assertSee('markdown-editor-wrapper')  // Check that markdown editor wrapper exists  
+        ->assertSee('markdown-editor-wrapper')  // Check that markdown editor wrapper exists
         ->assertSee('editor-toolbar')  // Check that editor toolbar exists
         ->assertSee('copyCodeToClipboard'); // Check that copy function exists
 });

@@ -55,26 +55,26 @@
                     <h2 class="text-2xl font-bold text-slate-900 dark:text-white">Continue Watching</h2>
                     <p class="text-slate-600 dark:text-slate-400">Pick up where you left off</p>
                 </div>
-                <button class="text-blue-600 dark:text-blue-400 hover:text-blue-700 dark:hover:text-blue-300 font-medium text-sm transition-colors">
+                <button class="text-red-600 dark:text-red-400 hover:text-red-700 dark:hover:text-red-300 font-medium text-sm transition-colors cursor-pointer">
                     View All
                 </button>
             </div>
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 @foreach($this->continueWatching as $video)
-                <div class="group bg-white dark:bg-slate-700 rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-slate-200 dark:border-slate-600">
+                <div class="group bg-white dark:bg-slate-700 rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-slate-200 dark:border-slate-600 cursor-pointer">
                     <div class="aspect-video bg-slate-100 dark:bg-slate-600 relative overflow-hidden">
                         <img src="{{ $video['thumbnail'] }}" alt="{{ $video['title'] }}" class="w-full h-full object-cover">
                         <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300 flex items-center justify-center">
                             <div class="w-12 h-12 bg-white/90 dark:bg-slate-800/90 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 scale-90 group-hover:scale-100">
-                                <svg class="w-5 h-5 text-blue-600 ml-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                <svg class="w-5 h-5 text-red-600 ml-0.5" fill="currentColor" viewBox="0 0 20 20">
                                     <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/>
                                 </svg>
                             </div>
                         </div>
                         {{-- Progress bar --}}
                         <div class="absolute bottom-0 left-0 right-0 h-1 bg-black/20">
-                            <div class="h-full bg-blue-500 transition-all duration-300" style="width: {{ $video['progress'] }}%"></div>
+                            <div class="h-full bg-red-500 transition-all duration-300" style="width: {{ $video['progress'] }}%"></div>
                         </div>
                         {{-- Duration badge --}}
                         <div class="absolute top-2 right-2">
@@ -84,7 +84,7 @@
                         </div>
                     </div>
                     <div class="p-4">
-                        <h3 class="font-semibold text-slate-900 dark:text-white mb-2 line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                        <h3 class="font-semibold text-slate-900 dark:text-white mb-2 line-clamp-2 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors">
                             {{ $video['title'] }}
                         </h3>
                         <p class="text-sm text-slate-600 dark:text-slate-400 mb-3">{{ $video['series'] }}</p>
@@ -116,31 +116,31 @@
                     <nav class="-mb-px flex space-x-8">
                         <button 
                             wire:click="setActiveTab('all')"
-                            class="py-2 px-1 border-b-2 font-medium text-sm transition-colors {{ $activeTab === 'all' ? 'border-blue-500 text-blue-600 dark:text-blue-400' : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 hover:border-slate-300 dark:hover:border-slate-600' }}"
+                            class="py-2 px-1 border-b-2 font-medium text-sm transition-colors cursor-pointer {{ $activeTab === 'all' ? 'border-red-500 text-red-600 dark:text-red-400' : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 hover:border-slate-300 dark:hover:border-slate-600' }}"
                         >
                             All Content
                         </button>
                         <button 
                             wire:click="setActiveTab('series')"
-                            class="py-2 px-1 border-b-2 font-medium text-sm transition-colors {{ $activeTab === 'series' ? 'border-blue-500 text-blue-600 dark:text-blue-400' : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 hover:border-slate-300 dark:hover:border-slate-600' }}"
+                            class="py-2 px-1 border-b-2 font-medium text-sm transition-colors cursor-pointer {{ $activeTab === 'series' ? 'border-red-500 text-red-600 dark:text-red-400' : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 hover:border-slate-300 dark:hover:border-slate-600' }}"
                         >
                             Series
                         </button>
                         <button 
                             wire:click="setActiveTab('lessons')"
-                            class="py-2 px-1 border-b-2 font-medium text-sm transition-colors {{ $activeTab === 'lessons' ? 'border-blue-500 text-blue-600 dark:text-blue-400' : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 hover:border-slate-300 dark:hover:border-slate-600' }}"
+                            class="py-2 px-1 border-b-2 font-medium text-sm transition-colors cursor-pointer {{ $activeTab === 'lessons' ? 'border-red-500 text-red-600 dark:text-red-400' : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 hover:border-slate-300 dark:hover:border-slate-600' }}"
                         >
                             Individual Lessons
                         </button>
                         <button 
                             wire:click="setActiveTab('pathways')"
-                            class="py-2 px-1 border-b-2 font-medium text-sm transition-colors {{ $activeTab === 'pathways' ? 'border-blue-500 text-blue-600 dark:text-blue-400' : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 hover:border-slate-300 dark:hover:border-slate-600' }}"
+                            class="py-2 px-1 border-b-2 font-medium text-sm transition-colors cursor-pointer {{ $activeTab === 'pathways' ? 'border-red-500 text-red-600 dark:text-red-400' : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 hover:border-slate-300 dark:hover:border-slate-600' }}"
                         >
                             Learning Paths
                         </button>
                         <button 
                             wire:click="setActiveTab('watchlist')"
-                            class="py-2 px-1 border-b-2 font-medium text-sm transition-colors relative {{ $activeTab === 'watchlist' ? 'border-purple-500 text-purple-600 dark:text-purple-400' : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 hover:border-slate-300 dark:hover:border-slate-600' }}"
+                            class="py-2 px-1 border-b-2 font-medium text-sm transition-colors relative cursor-pointer {{ $activeTab === 'watchlist' ? 'border-purple-500 text-purple-600 dark:text-purple-400' : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 hover:border-slate-300 dark:hover:border-slate-600' }}"
                         >
                             <div class="flex items-center gap-2">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -171,12 +171,12 @@
                                 type="search" 
                                 wire:model.live.debounce.300ms="search"
                                 placeholder="Search courses, lessons, topics..." 
-                                class="block w-full pl-10 pr-3 py-3 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                class="block w-full pl-10 pr-3 py-3 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-700 text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all"
                             >
                             @if($search)
                             <button 
                                 wire:click="$set('search', '')"
-                                class="absolute inset-y-0 right-0 pr-3 flex items-center"
+                                class="absolute inset-y-0 right-0 pr-3 flex items-center cursor-pointer"
                             >
                                 <svg class="h-4 w-4 text-slate-400 hover:text-slate-600 dark:hover:text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
@@ -191,14 +191,14 @@
                         {{-- Filter Toggle --}}
                         <button 
                             wire:click="toggleFilters"
-                            class="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-600 transition-all"
+                            class="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-600 transition-all cursor-pointer"
                         >
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.414A1 1 0 013 6.707V4z"/>
                             </svg>
                             Filters
                             @if($this->hasActiveFilters)
-                            <span class="w-2 h-2 bg-blue-500 rounded-full"></span>
+                            <span class="w-2 h-2 bg-red-500 rounded-full"></span>
                             @endif
                         </button>
 
@@ -206,7 +206,7 @@
                         @if($activeTab !== 'pathways' && $activeTab !== 'watchlist')
                         <button 
                             wire:click="toggleViewMode"
-                            class="p-2 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-600 transition-all"
+                            class="p-2 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-600 transition-all cursor-pointer"
                         >
                             @if($viewMode === 'grid')
                             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -224,7 +224,7 @@
                         <div class="relative sort-dropdown">
                             <button 
                                 wire:click="toggleSortDropdown"
-                                class="flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                                class="flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all cursor-pointer"
                             >
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $this->sortOptions[$sortBy]['icon'] ?? 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z' }}"/>
@@ -242,14 +242,14 @@
                                     @foreach($this->sortOptions as $value => $option)
                                     <button 
                                         wire:click="setSortBy('{{ $value }}')"
-                                        class="w-full flex items-center gap-3 px-4 py-2 text-left text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors {{ $sortBy === $value ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400' : '' }}"
+                                        class="w-full flex items-center gap-3 px-4 py-2 text-left text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors cursor-pointer {{ $sortBy === $value ? 'bg-red-50 dark:bg-red-900/30 text-red-600 dark:text-red-400' : '' }}"
                                     >
                                         <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $option['icon'] }}"/>
                                         </svg>
                                         <span class="flex-1">{{ $option['label'] }}</span>
                                         @if($sortBy === $value)
-                                        <svg class="w-4 h-4 text-blue-600 dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                                        <svg class="w-4 h-4 text-red-600 dark:text-red-400" fill="currentColor" viewBox="0 0 20 20">
                                             <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
                                         </svg>
                                         @endif
@@ -268,9 +268,9 @@
                     <span class="text-sm text-slate-600 dark:text-slate-400">Active filters:</span>
                     
                     @if($contentType !== 'all')
-                    <span class="inline-flex items-center gap-1 px-3 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 text-sm rounded-full">
+                    <span class="inline-flex items-center gap-1 px-3 py-1 bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200 text-sm rounded-full">
                         {{ ucfirst($contentType) }}
-                        <button wire:click="$set('contentType', 'all')" class="ml-1 text-blue-600 dark:text-blue-300 hover:text-blue-800 dark:hover:text-blue-100">
+                        <button wire:click="$set('contentType', 'all')" class="ml-1 text-red-600 dark:text-red-300 hover:text-red-800 dark:hover:text-red-100 cursor-pointer">
                             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                             </svg>
@@ -281,7 +281,7 @@
                     @if($selectedCategory)
                     <span class="inline-flex items-center gap-1 px-3 py-1 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 text-sm rounded-full">
                         {{ ucfirst($selectedCategory) }}
-                        <button wire:click="$set('selectedCategory', '')" class="ml-1 text-green-600 dark:text-green-300 hover:text-green-800 dark:hover:text-green-100">
+                        <button wire:click="$set('selectedCategory', '')" class="ml-1 text-green-600 dark:text-green-300 hover:text-green-800 dark:hover:text-green-100 cursor-pointer">
                             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                             </svg>
@@ -292,7 +292,7 @@
                     @if($selectedLevel)
                     <span class="inline-flex items-center gap-1 px-3 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-800 dark:text-purple-200 text-sm rounded-full">
                         {{ ucfirst($selectedLevel) }}
-                        <button wire:click="$set('selectedLevel', '')" class="ml-1 text-purple-600 dark:text-purple-300 hover:text-purple-800 dark:hover:text-purple-100">
+                        <button wire:click="$set('selectedLevel', '')" class="ml-1 text-purple-600 dark:text-purple-300 hover:text-purple-800 dark:hover:text-purple-100 cursor-pointer">
                             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                             </svg>
@@ -303,7 +303,7 @@
                     @if($selectedDuration)
                     <span class="inline-flex items-center gap-1 px-3 py-1 bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-200 text-sm rounded-full">
                         {{ $selectedDuration === 'short' ? 'Short' : ($selectedDuration === 'medium' ? 'Medium' : 'Long') }}
-                        <button wire:click="$set('selectedDuration', '')" class="ml-1 text-orange-600 dark:text-orange-300 hover:text-orange-800 dark:hover:text-orange-100">
+                        <button wire:click="$set('selectedDuration', '')" class="ml-1 text-orange-600 dark:text-orange-300 hover:text-orange-800 dark:hover:text-orange-100 cursor-pointer">
                             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                             </svg>
@@ -317,7 +317,7 @@
                             $instructorMap = ['halil' => 'Halil Coşdu', 'taylor' => 'Taylor Otwell', 'jeffrey' => 'Jeffrey Way', 'caleb' => 'Caleb Porzio'];
                         @endphp
                         {{ $instructorMap[$selectedInstructor] ?? $selectedInstructor }}
-                        <button wire:click="$set('selectedInstructor', '')" class="ml-1 text-indigo-600 dark:text-indigo-300 hover:text-indigo-800 dark:hover:text-indigo-100">
+                        <button wire:click="$set('selectedInstructor', '')" class="ml-1 text-indigo-600 dark:text-indigo-300 hover:text-indigo-800 dark:hover:text-indigo-100 cursor-pointer">
                             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                             </svg>
@@ -328,7 +328,7 @@
                     @foreach($selectedTags as $tag)
                     <span class="inline-flex items-center gap-1 px-3 py-1 bg-pink-100 dark:bg-pink-900/30 text-pink-800 dark:text-pink-200 text-sm rounded-full">
                         #{{ $tag }}
-                        <button wire:click="toggleTag('{{ $tag }}')" class="ml-1 text-pink-600 dark:text-pink-300 hover:text-pink-800 dark:hover:text-pink-100">
+                        <button wire:click="toggleTag('{{ $tag }}')" class="ml-1 text-pink-600 dark:text-pink-300 hover:text-pink-800 dark:hover:text-pink-100 cursor-pointer">
                             <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                             </svg>
@@ -338,7 +338,7 @@
 
                     <button 
                         wire:click="clearFilters"
-                        class="text-sm text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 underline"
+                        class="text-sm text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 underline cursor-pointer"
                     >
                         Clear all
                     </button>
@@ -357,7 +357,7 @@
                             @foreach($this->popularTags as $tag)
                             <button 
                                 wire:click="toggleTag('{{ $tag['name'] }}')"
-                                class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium rounded-full transition-all duration-200 {{ in_array($tag['name'], $selectedTags) ? 'bg-pink-100 dark:bg-pink-900/30 text-pink-800 dark:text-pink-200 ring-2 ring-pink-200 dark:ring-pink-700' : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600' }}"
+                                class="inline-flex items-center gap-1 px-3 py-1.5 text-xs font-medium rounded-full transition-all duration-200 cursor-pointer {{ in_array($tag['name'], $selectedTags) ? 'bg-pink-100 dark:bg-pink-900/30 text-pink-800 dark:text-pink-200 ring-2 ring-pink-200 dark:ring-pink-700' : 'bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-600' }}"
                             >
                                 <span class="w-2 h-2 rounded-full bg-{{ $tag['color'] }}-500"></span>
                                 #{{ $tag['name'] }}
@@ -377,7 +377,7 @@
                                         type="radio" 
                                         wire:model.live="selectedCategory" 
                                         value=""
-                                        class="w-4 h-4 text-blue-600 bg-white dark:bg-slate-700 border-slate-300 dark:border-slate-600 focus:ring-blue-500 dark:focus:ring-blue-400"
+                                        class="w-4 h-4 text-red-600 bg-white dark:bg-slate-700 border-slate-300 dark:border-slate-600 focus:ring-red-500 dark:focus:ring-red-400"
                                     >
                                     <span class="text-sm text-slate-700 dark:text-slate-300">All Categories</span>
                                 </label>
@@ -387,7 +387,7 @@
                                         type="radio" 
                                         wire:model.live="selectedCategory" 
                                         value="{{ $category['id'] }}"
-                                        class="w-4 h-4 text-blue-600 bg-white dark:bg-slate-700 border-slate-300 dark:border-slate-600 focus:ring-blue-500 dark:focus:ring-blue-400"
+                                        class="w-4 h-4 text-red-600 bg-white dark:bg-slate-700 border-slate-300 dark:border-slate-600 focus:ring-red-500 dark:focus:ring-red-400"
                                     >
                                     <span class="text-sm text-slate-700 dark:text-slate-300">{{ $category['name'] }}</span>
                                     <span class="text-xs text-slate-500 dark:text-slate-400">({{ $category['count'] }})</span>
@@ -405,7 +405,7 @@
                                         type="radio" 
                                         wire:model.live="selectedLevel" 
                                         value=""
-                                        class="w-4 h-4 text-blue-600 bg-white dark:bg-slate-700 border-slate-300 dark:border-slate-600 focus:ring-blue-500 dark:focus:ring-blue-400"
+                                        class="w-4 h-4 text-red-600 bg-white dark:bg-slate-700 border-slate-300 dark:border-slate-600 focus:ring-red-500 dark:focus:ring-red-400"
                                     >
                                     <span class="text-sm text-slate-700 dark:text-slate-300">All Levels</span>
                                 </label>
@@ -415,7 +415,7 @@
                                         type="radio" 
                                         wire:model.live="selectedLevel" 
                                         value="{{ $level['id'] }}"
-                                        class="w-4 h-4 text-blue-600 bg-white dark:bg-slate-700 border-slate-300 dark:border-slate-600 focus:ring-blue-500 dark:focus:ring-blue-400"
+                                        class="w-4 h-4 text-red-600 bg-white dark:bg-slate-700 border-slate-300 dark:border-slate-600 focus:ring-red-500 dark:focus:ring-red-400"
                                     >
                                     <div class="flex flex-col">
                                         <span class="text-sm text-slate-700 dark:text-slate-300">{{ $level['name'] }}</span>
@@ -435,7 +435,7 @@
                                         type="radio" 
                                         wire:model.live="selectedDuration" 
                                         value=""
-                                        class="w-4 h-4 text-blue-600 bg-white dark:bg-slate-700 border-slate-300 dark:border-slate-600 focus:ring-blue-500 dark:focus:ring-blue-400"
+                                        class="w-4 h-4 text-red-600 bg-white dark:bg-slate-700 border-slate-300 dark:border-slate-600 focus:ring-red-500 dark:focus:ring-red-400"
                                     >
                                     <span class="text-sm text-slate-700 dark:text-slate-300">Any Duration</span>
                                 </label>
@@ -445,7 +445,7 @@
                                         type="radio" 
                                         wire:model.live="selectedDuration" 
                                         value="{{ $duration['id'] }}"
-                                        class="w-4 h-4 text-blue-600 bg-white dark:bg-slate-700 border-slate-300 dark:border-slate-600 focus:ring-blue-500 dark:focus:ring-blue-400"
+                                        class="w-4 h-4 text-red-600 bg-white dark:bg-slate-700 border-slate-300 dark:border-slate-600 focus:ring-red-500 dark:focus:ring-red-400"
                                     >
                                     <span class="text-sm text-slate-700 dark:text-slate-300">{{ $duration['name'] }}</span>
                                     <span class="text-xs text-slate-500 dark:text-slate-400">({{ $duration['count'] }})</span>
@@ -463,7 +463,7 @@
                                         type="radio" 
                                         wire:model.live="selectedInstructor" 
                                         value=""
-                                        class="w-4 h-4 text-blue-600 bg-white dark:bg-slate-700 border-slate-300 dark:border-slate-600 focus:ring-blue-500 dark:focus:ring-blue-400"
+                                        class="w-4 h-4 text-red-600 bg-white dark:bg-slate-700 border-slate-300 dark:border-slate-600 focus:ring-red-500 dark:focus:ring-red-400"
                                     >
                                     <span class="text-sm text-slate-700 dark:text-slate-300">All Instructors</span>
                                 </label>
@@ -473,7 +473,7 @@
                                         type="radio" 
                                         wire:model.live="selectedInstructor" 
                                         value="{{ $instructor['id'] }}"
-                                        class="w-4 h-4 text-blue-600 bg-white dark:bg-slate-700 border-slate-300 dark:border-slate-600 focus:ring-blue-500 dark:focus:ring-blue-400"
+                                        class="w-4 h-4 text-red-600 bg-white dark:bg-slate-700 border-slate-300 dark:border-slate-600 focus:ring-red-500 dark:focus:ring-red-400"
                                     >
                                     <img src="{{ $instructor['avatar'] }}" alt="{{ $instructor['name'] }}" class="w-5 h-5 rounded-full">
                                     <span class="text-sm text-slate-700 dark:text-slate-300">{{ $instructor['name'] }}</span>
@@ -491,7 +491,7 @@
             @if($activeTab === 'pathways')
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 @foreach($this->pathways as $pathway)
-                <div class="group bg-white dark:bg-slate-800 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-slate-200 dark:border-slate-700 hover:-translate-y-1">
+                <div class="group bg-white dark:bg-slate-800 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-slate-200 dark:border-slate-700 hover:-translate-y-1 cursor-pointer">
                     {{-- Pathway Header --}}
                     <div class="relative">
                         <div class="aspect-[16/9] bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 relative overflow-hidden">
@@ -523,7 +523,7 @@
                             {{-- Play Button --}}
                             <div class="absolute inset-0 flex items-center justify-center">
                                 <div class="w-16 h-16 bg-white/90 dark:bg-slate-800/90 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 scale-75 group-hover:scale-100">
-                                    <svg class="w-7 h-7 text-blue-600 ml-1" fill="currentColor" viewBox="0 0 20 20">
+                                    <svg class="w-7 h-7 text-red-600 ml-1" fill="currentColor" viewBox="0 0 20 20">
                                         <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/>
                                     </svg>
                                 </div>
@@ -533,7 +533,7 @@
 
                     {{-- Pathway Content --}}
                     <div class="p-6">
-                        <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                        <h3 class="text-xl font-bold text-slate-900 dark:text-white mb-2 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors">
                             {{ $pathway['title'] }}
                         </h3>
                         <p class="text-slate-600 dark:text-slate-400 mb-4 line-clamp-2">
@@ -601,7 +601,7 @@
                     <button 
                         wire:click="clearWatchlist"
                         wire:confirm="Are you sure you want to clear your entire watchlist?"
-                        class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors text-sm font-medium"
+                        class="px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors text-sm font-medium cursor-pointer"
                     >
                         Clear All
                     </button>
@@ -611,11 +611,11 @@
                 {{-- Watchlist Grid --}}
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                     @foreach($this->watchlistItems as $content)
-                    <div class="group bg-white dark:bg-slate-800 rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-slate-200 dark:border-slate-700 relative">
+                    <div class="group bg-white dark:bg-slate-800 rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-slate-200 dark:border-slate-700 relative cursor-pointer">
                         {{-- Remove from watchlist button --}}
                         <button 
                             wire:click="removeFromWatchlist({{ $content['id'] }})"
-                            class="absolute top-2 right-2 z-10 w-8 h-8 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-200"
+                            class="absolute top-2 right-2 z-10 w-8 h-8 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-200 cursor-pointer"
                             title="Remove from watchlist"
                         >
                             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -657,7 +657,7 @@
 
                         {{-- Content Info --}}
                         <div class="p-4">
-                            <h3 class="font-semibold text-slate-900 dark:text-white mb-2 line-clamp-2 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
+                            <h3 class="font-semibold text-slate-900 dark:text-white mb-2 line-clamp-2 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors">
                                 {{ $content['title'] }}
                             </h3>
                             <p class="text-sm text-slate-600 dark:text-slate-400 mb-3 line-clamp-2">
@@ -704,7 +704,7 @@
                 </p>
                 <button 
                     wire:click="setActiveTab('all')"
-                    class="px-6 py-3 bg-purple-500 hover:bg-purple-600 text-white rounded-lg transition-colors font-medium"
+                    class="px-6 py-3 bg-purple-500 hover:bg-purple-600 text-white rounded-lg transition-colors font-medium cursor-pointer"
                 >
                     Browse Content
                 </button>
@@ -715,7 +715,7 @@
             @if($viewMode === 'grid')
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 @foreach($this->featuredContent as $content)
-                <div class="group bg-white dark:bg-slate-800 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-slate-200 dark:border-slate-700 hover:-translate-y-1">
+                <div class="group bg-white dark:bg-slate-800 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-slate-200 dark:border-slate-700 hover:-translate-y-1 cursor-pointer">
                     {{-- Thumbnail --}}
                     <div class="aspect-video bg-slate-100 dark:bg-slate-700 relative overflow-hidden">
                         <img src="{{ $content['thumbnail'] }}" alt="{{ $content['title'] }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
@@ -723,7 +723,7 @@
                         {{-- Overlay --}}
                         <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300 flex items-center justify-center">
                             <div class="w-16 h-16 bg-white/90 dark:bg-slate-800/90 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 scale-75 group-hover:scale-100">
-                                <svg class="w-6 h-6 text-blue-600 ml-1" fill="currentColor" viewBox="0 0 20 20">
+                                <svg class="w-6 h-6 text-red-600 ml-1" fill="currentColor" viewBox="0 0 20 20">
                                     <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/>
                                 </svg>
                             </div>
@@ -732,7 +732,7 @@
                         {{-- Badges --}}
                         <div class="absolute top-3 left-3 flex gap-2">
                             @if($content['type'] === 'series')
-                            <span class="px-2 py-1 bg-blue-600 text-white text-xs font-medium rounded-md">SERIES</span>
+                            <span class="px-2 py-1 bg-red-600 text-white text-xs font-medium rounded-md">SERIES</span>
                             @endif
                             @if(isset($content['isNew']) && $content['isNew'])
                             <span class="px-2 py-1 bg-green-600 text-white text-xs font-medium rounded-md">NEW</span>
@@ -745,7 +745,7 @@
                         {{-- Watchlist Button --}}
                         <button 
                             wire:click="toggleWatchlist({{ $content['id'] }})"
-                            class="absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200 {{ $this->isInWatchlist($content['id']) ? 'bg-purple-500 text-white' : 'bg-black/50 hover:bg-black/70 text-white' }}"
+                            class="absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer {{ $this->isInWatchlist($content['id']) ? 'bg-purple-500 text-white' : 'bg-black/50 hover:bg-black/70 text-white' }}"
                             title="{{ $this->isInWatchlist($content['id']) ? 'Remove from watchlist' : 'Add to watchlist' }}"
                         >
                             @if($this->isInWatchlist($content['id']))
@@ -777,7 +777,7 @@
 
                     {{-- Content --}}
                     <div class="p-5">
-                        <h3 class="font-semibold text-slate-900 dark:text-white mb-2 line-clamp-2 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                        <h3 class="font-semibold text-slate-900 dark:text-white mb-2 line-clamp-2 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors">
                             {{ $content['title'] }}
                         </h3>
                         <p class="text-sm text-slate-600 dark:text-slate-400 mb-4 line-clamp-2">
@@ -819,14 +819,14 @@
             {{-- List View --}}
             <div class="space-y-4">
                 @foreach($this->featuredContent as $content)
-                <div class="group bg-white dark:bg-slate-800 rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-slate-200 dark:border-slate-700 p-4">
+                <div class="group bg-white dark:bg-slate-800 rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-slate-200 dark:border-slate-700 p-4 cursor-pointer">
                     <div class="flex gap-4">
                         {{-- Thumbnail --}}
                         <div class="w-40 h-24 bg-slate-100 dark:bg-slate-700 rounded-lg overflow-hidden flex-shrink-0 relative">
                             <img src="{{ $content['thumbnail'] }}" alt="{{ $content['title'] }}" class="w-full h-full object-cover">
                             <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300 flex items-center justify-center">
                                 <div class="w-8 h-8 bg-white/90 dark:bg-slate-800/90 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300">
-                                    <svg class="w-4 h-4 text-blue-600 ml-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                    <svg class="w-4 h-4 text-red-600 ml-0.5" fill="currentColor" viewBox="0 0 20 20">
                                         <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/>
                                     </svg>
                                 </div>
@@ -842,7 +842,7 @@
                         <div class="flex-1 min-w-0">
                             <div class="flex items-start justify-between">
                                 <div class="flex-1 min-w-0">
-                                    <h3 class="font-semibold text-slate-900 dark:text-white mb-1 group-hover:text-blue-600 dark:group-hover:text-blue-400 transition-colors">
+                                    <h3 class="font-semibold text-slate-900 dark:text-white mb-1 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors">
                                         {{ $content['title'] }}
                                     </h3>
                                     <p class="text-sm text-slate-600 dark:text-slate-400 mb-3 line-clamp-2">
@@ -870,7 +870,7 @@
                                     {{-- Watchlist Button --}}
                                     <button 
                                         wire:click="toggleWatchlist({{ $content['id'] }})"
-                                        class="w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200 {{ $this->isInWatchlist($content['id']) ? 'bg-purple-500 text-white' : 'bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-400' }}"
+                                        class="w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer {{ $this->isInWatchlist($content['id']) ? 'bg-purple-500 text-white' : 'bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-400' }}"
                                         title="{{ $this->isInWatchlist($content['id']) ? 'Remove from watchlist' : 'Add to watchlist' }}"
                                     >
                                         @if($this->isInWatchlist($content['id']))
@@ -885,7 +885,7 @@
                                     </button>
 
                                     @if($content['type'] === 'series')
-                                    <span class="px-2 py-1 bg-blue-100 dark:bg-blue-900/30 text-blue-800 dark:text-blue-200 text-xs font-medium rounded">SERIES</span>
+                                    <span class="px-2 py-1 bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200 text-xs font-medium rounded">SERIES</span>
                                     @endif
                                     @if(isset($content['isNew']) && $content['isNew'])
                                     <span class="px-2 py-1 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 text-xs font-medium rounded">NEW</span>
@@ -946,7 +946,7 @@
                 <p class="text-slate-600 dark:text-slate-400 mb-4">Try adjusting your search or filter criteria</p>
                 <button 
                     wire:click="clearFilters"
-                    class="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white rounded-lg transition-colors"
+                    class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg transition-colors cursor-pointer"
                 >
                     Clear all filters
                 </button>
