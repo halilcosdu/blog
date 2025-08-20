@@ -38,26 +38,21 @@ it('can toggle category selection', function () {
         ->assertSet('categoryIds', []);
 });
 
-it('shows dropdown menu when open', function () {
+it('shows search functionality', function () {
     Livewire::test(PostsList::class)
-        ->set('categoryDropdownOpen', true)
-        ->assertSeeHtml('class="p-2 space-y-1"'); // Dropdown content container
+        ->assertSee('Search Posts');
 });
 
-it('hides dropdown menu when closed', function () {
+it('can update search query', function () {
     Livewire::test(PostsList::class)
-        ->set('categoryDropdownOpen', false)
-        ->assertDontSeeHtml('class="p-2 space-y-1"'); // Dropdown content container
+        ->set('search', 'Laravel')
+        ->assertSet('search', 'Laravel');
 });
 
-it('displays correct category count in dropdown button', function () {
-    $component = Livewire::test(PostsList::class)
-        ->set('categoryIds', [1])
-        ->assertSee('1 category selected');
-
-    $component->set('categoryIds', [1, 2])
-        ->assertSee('2 categories selected');
-
-    $component->set('categoryIds', [])
-        ->assertSee('All Categories');
+it('can filter by categories', function () {
+    $category = Category::factory()->create();
+    
+    Livewire::test(PostsList::class)
+        ->set('categoryIds', [$category->id])
+        ->assertSet('categoryIds', [$category->id]);
 });

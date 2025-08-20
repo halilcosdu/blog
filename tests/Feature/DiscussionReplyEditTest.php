@@ -21,7 +21,7 @@ it('allows users to edit their own replies', function () {
     $reply = DiscussionReply::factory()->create([
         'discussion_id' => $discussion->id,
         'user_id' => $user->id,
-        'content' => '<p>Original content</p>',
+        'content' => 'Original content',
     ]);
 
     actingAs($user);
@@ -29,13 +29,13 @@ it('allows users to edit their own replies', function () {
     Livewire::test(DiscussionShow::class, ['slug' => $discussion->slug])
         ->call('startEditingReply', $reply->id)
         ->assertSet('editingReplyId', $reply->id)
-        ->assertSet('editReplyContent', '<p>Original content</p>')
-        ->set('editReplyContent', '<p>Updated content with <strong>bold text</strong></p>')
+        ->assertSet('editReplyContent', 'Original content')
+        ->set('editReplyContent', 'Updated content with **bold text**')
         ->call('updateReply')
         ->assertHasNoErrors()
         ->assertSet('editingReplyId', null);
 
-    expect($reply->fresh()->content)->toBe('<p>Updated content with <strong>bold text</strong></p>');
+    expect($reply->fresh()->content)->toBe('Updated content with **bold text**');
 });
 
 it('prevents users from editing other users replies', function () {
@@ -66,7 +66,7 @@ it('allows users to cancel editing', function () {
     $reply = DiscussionReply::factory()->create([
         'discussion_id' => $discussion->id,
         'user_id' => $user->id,
-        'content' => '<p>Original content</p>',
+        'content' => 'Original content',
     ]);
 
     actingAs($user);
@@ -74,12 +74,12 @@ it('allows users to cancel editing', function () {
     Livewire::test(DiscussionShow::class, ['slug' => $discussion->slug])
         ->call('startEditingReply', $reply->id)
         ->assertSet('editingReplyId', $reply->id)
-        ->set('editReplyContent', '<p>Changed content</p>')
+        ->set('editReplyContent', 'Changed content')
         ->call('cancelEditingReply')
         ->assertSet('editingReplyId', null)
         ->assertSet('editReplyContent', '');
 
-    expect($reply->fresh()->content)->toBe('<p>Original content</p>');
+    expect($reply->fresh()->content)->toBe('Original content');
 });
 
 it('allows users to delete their own replies', function () {
@@ -205,6 +205,6 @@ it('does not show edit and delete buttons for non-authors', function () {
     $response = Livewire::test(DiscussionShow::class, ['slug' => $discussion->slug]);
 
     // Check that the wire:click for editing this specific reply is not present
-    expect($response->html())->not->toContain('wire:click="startEditingReply('.$reply->id.')');
-    expect($response->html())->not->toContain('wire:click="deleteReply('.$reply->id.')');
+    expect($response->html())->not->toContain('wire:click="startEditingReply('.$reply->id.')"');
+    expect($response->html())->not->toContain('wire:click="deleteReply('.$reply->id.')"');
 });

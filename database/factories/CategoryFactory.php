@@ -17,15 +17,14 @@ class CategoryFactory extends Factory
      */
     public function definition(): array
     {
-        $name = $this->faker->unique()->randomElement([
-            'Laravel', 'PHP', 'Frontend', 'DevOps', 'Testing', 'Databases', 'Security', 'Cloud',
-        ]);
+        $name = $this->faker->unique()->words(rand(1, 2), true);
+        $name = ucwords($name);
 
         $colors = ['#EF4444', '#3B82F6', '#10B981', '#8B5CF6', '#F59E0B', '#6366F1', '#06B6D4', '#DB2777'];
 
         return [
             'name' => $name,
-            'slug' => Str::slug($name),
+            'slug' => Str::slug($name) . '-' . $this->faker->unique()->numberBetween(1, 9999),
             'description' => $this->faker->sentence(10),
             'color' => $this->faker->randomElement($colors),
             'icon' => null,
