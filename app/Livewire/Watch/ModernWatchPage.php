@@ -47,6 +47,9 @@ class ModernWatchPage extends Component
     // Watchlist management
     public array $watchlist = [];
 
+    // UI state
+    public bool $showSortDropdown = false;
+
     protected $queryString = [
         'search' => ['except' => ''],
         'contentType' => ['except' => 'all'],
@@ -130,6 +133,18 @@ class ModernWatchPage extends Component
         $this->showFilters = ! $this->showFilters;
     }
 
+    public function toggleSortDropdown(): void
+    {
+        $this->showSortDropdown = ! $this->showSortDropdown;
+    }
+
+    public function setSortBy(string $sort): void
+    {
+        $this->sortBy = $sort;
+        $this->showSortDropdown = false;
+        $this->resetPage();
+    }
+
     public function toggleWatchlist(int $contentId): void
     {
         if ($this->isInWatchlist($contentId)) {
@@ -177,6 +192,29 @@ class ModernWatchPage extends Component
             'type' => 'cleared',
             'message' => 'Watchlist cleared!'
         ]);
+    }
+
+    #[Computed]
+    public function sortOptions(): array
+    {
+        return [
+            'recent' => [
+                'label' => 'Most Recent',
+                'icon' => 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z'
+            ],
+            'popular' => [
+                'label' => 'Most Popular', 
+                'icon' => 'M4.318 6.318a4.5 4.5 0 000 6.364L12 20.364l7.682-7.682a4.5 4.5 0 00-6.364-6.364L12 7.636l-1.318-1.318a4.5 4.5 0 00-6.364 0z'
+            ],
+            'alphabetical' => [
+                'label' => 'A-Z',
+                'icon' => 'M3 7v10a2 2 0 002 2h14a2 2 0 002-2V9a2 2 0 00-2-2H5a2 2 0 00-2 2v-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10'
+            ],
+            'duration' => [
+                'label' => 'By Duration',
+                'icon' => 'M13 10V3L4 14h7v7l9-11h-7z'
+            ]
+        ];
     }
 
     #[Computed]

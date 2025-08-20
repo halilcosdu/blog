@@ -221,15 +221,44 @@
                         @endif
 
                         {{-- Sort Dropdown --}}
-                        <select 
-                            wire:model.live="sortBy"
-                            class="px-4 py-2 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg text-slate-700 dark:text-slate-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                        >
-                            <option value="recent">Most Recent</option>
-                            <option value="popular">Most Popular</option>
-                            <option value="alphabetical">A-Z</option>
-                            <option value="duration">By Duration</option>
-                        </select>
+                        <div class="relative sort-dropdown">
+                            <button 
+                                wire:click="toggleSortDropdown"
+                                class="flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                            >
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $this->sortOptions[$sortBy]['icon'] ?? 'M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z' }}"/>
+                                </svg>
+                                <span>{{ $this->sortOptions[$sortBy]['label'] ?? 'Most Recent' }}</span>
+                                <svg class="w-4 h-4 transition-transform {{ $showSortDropdown ? 'rotate-180' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/>
+                                </svg>
+                            </button>
+
+                            {{-- Dropdown Menu --}}
+                            @if($showSortDropdown)
+                            <div class="absolute right-0 mt-2 w-48 bg-white dark:bg-slate-800 rounded-xl shadow-lg border border-slate-200 dark:border-slate-700 z-20 animate-in fade-in duration-200">
+                                <div class="py-2">
+                                    @foreach($this->sortOptions as $value => $option)
+                                    <button 
+                                        wire:click="setSortBy('{{ $value }}')"
+                                        class="w-full flex items-center gap-3 px-4 py-2 text-left text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors {{ $sortBy === $value ? 'bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400' : '' }}"
+                                    >
+                                        <svg class="w-4 h-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="{{ $option['icon'] }}"/>
+                                        </svg>
+                                        <span class="flex-1">{{ $option['label'] }}</span>
+                                        @if($sortBy === $value)
+                                        <svg class="w-4 h-4 text-blue-600 dark:text-blue-400" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                                        </svg>
+                                        @endif
+                                    </button>
+                                    @endforeach
+                                </div>
+                            </div>
+                            @endif
+                        </div>
                     </div>
                 </div>
 
@@ -930,6 +959,14 @@
 {{-- JavaScript for Watchlist Notifications --}}
 @script
 <script>
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(event) {
+        const dropdown = event.target.closest('.sort-dropdown');
+        if (!dropdown && $wire.get('showSortDropdown')) {
+            $wire.set('showSortDropdown', false);
+        }
+    });
+
     // Listen for watchlist updates
     $wire.on('watchlist-updated', (event) => {
         const { type, message } = event;
