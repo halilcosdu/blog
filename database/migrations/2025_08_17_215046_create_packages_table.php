@@ -22,7 +22,6 @@ return new class extends Migration
             $table->string('github_url')->nullable();
             $table->string('packagist_url')->nullable();
             $table->string('documentation_url')->nullable();
-            $table->json('tags')->nullable();
             $table->integer('sort_order')->default(0);
             $table->boolean('is_featured')->default(false);
             $table->boolean('is_active')->default(true);

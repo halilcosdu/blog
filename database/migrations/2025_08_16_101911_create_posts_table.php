@@ -27,7 +27,6 @@ return new class extends Migration
             $table->datetime('published_at')->nullable();
             $table->integer('views_count')->default(0);
             $table->integer('read_time')->nullable(); // estimated read time in minutes
-            $table->json('tags')->nullable();
             $table->timestamps();
         });
     }

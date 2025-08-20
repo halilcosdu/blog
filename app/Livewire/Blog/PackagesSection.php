@@ -18,6 +18,7 @@ class PackagesSection extends BaseComponent
         }
 
         $this->packages = Package::active()
+            ->with('tags')
             ->ordered()
             ->limit(6)
             ->get()

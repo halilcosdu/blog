@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\Taggable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -11,7 +12,7 @@ use Illuminate\Support\Str;
 class Post extends Model
 {
     /** @use HasFactory<\Database\Factories\PostFactory> */
-    use HasFactory;
+    use HasFactory, Taggable;
 
     protected function casts(): array
     {
@@ -19,7 +20,6 @@ class Post extends Model
             'is_published' => 'boolean',
             'is_featured' => 'boolean',
             'published_at' => 'datetime',
-            'tags' => 'array',
         ];
     }
 
@@ -38,7 +38,6 @@ class Post extends Model
         'published_at',
         'views_count',
         'read_time',
-        'tags',
     ];
 
     protected static function boot(): void

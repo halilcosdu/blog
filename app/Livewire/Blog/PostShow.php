@@ -48,7 +48,7 @@ class PostShow extends Component
         $seoData = [
             'title' => $this->post->title.' - phpuzem',
             'description' => $this->post->excerpt ?: Str::limit(strip_tags($this->post->content), 160),
-            'keywords' => implode(', ', $this->post->tags ?? []).', Laravel, PHP, Tutorial',
+            'keywords' => implode(', ', $this->tags ?? []).', Laravel, PHP, Tutorial',
             'url' => request()->url(),
             'type' => 'article',
             'image' => $this->post->featured_image ?: asset('images/og-default.jpg'),

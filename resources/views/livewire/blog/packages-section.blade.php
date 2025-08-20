@@ -39,18 +39,18 @@
                         </p>
 
                         <!-- Tags -->
-                        @if($package['tags'])
+                        @if($package['tags'] && $package['tags']->count() > 0)
                             <div class="flex flex-wrap gap-1 mb-3" x-data="{ showAllTags: false }">
                                 <template x-if="!showAllTags">
                                     <div class="flex flex-wrap gap-1">
-                                        @foreach(array_slice($package['tags'], 0, 3) as $tag)
+                                        @foreach($package['tags']->take(3) as $tag)
                                             <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300">
-                                                {{ $tag }}
+                                                {{ $tag->name }}
                                             </span>
                                         @endforeach
-                                        @if(count($package['tags']) > 3)
+                                        @if($package['tags']->count() > 3)
                                             <button @click="showAllTags = true" class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 hover:bg-blue-200 dark:hover:bg-blue-900/50 transition-colors cursor-pointer">
-                                                +{{ count($package['tags']) - 3 }} more
+                                                +{{ $package['tags']->count() - 3 }} more
                                             </button>
                                         @endif
                                     </div>
@@ -60,7 +60,7 @@
                                     <div class="flex flex-wrap gap-1">
                                         @foreach($package['tags'] as $tag)
                                             <span class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300">
-                                                {{ $tag }}
+                                                {{ $tag->name }}
                                             </span>
                                         @endforeach
                                         <button @click="showAllTags = false" class="inline-flex items-center px-2 py-0.5 rounded text-xs font-medium bg-slate-200 dark:bg-slate-600 text-slate-600 dark:text-slate-400 hover:bg-slate-300 dark:hover:bg-slate-500 transition-colors cursor-pointer">

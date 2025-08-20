@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\Taggable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Package extends Model
 {
-    use HasFactory;
+    use HasFactory, Taggable;
 
     protected $fillable = [
         'name',
@@ -20,7 +21,6 @@ class Package extends Model
         'github_url',
         'packagist_url',
         'documentation_url',
-        'tags',
         'sort_order',
         'is_featured',
         'is_active',
@@ -29,14 +29,16 @@ class Package extends Model
         'stars_count',
     ];
 
-    protected $casts = [
-        'tags' => 'array',
-        'is_featured' => 'boolean',
-        'is_active' => 'boolean',
-        'downloads_count' => 'integer',
-        'stars_count' => 'integer',
-        'sort_order' => 'integer',
-    ];
+    protected function casts(): array
+    {
+        return [
+            'is_featured' => 'boolean',
+            'is_active' => 'boolean',
+            'downloads_count' => 'integer',
+            'stars_count' => 'integer',
+            'sort_order' => 'integer',
+        ];
+    }
 
     /**
      * Scope to get active packages
