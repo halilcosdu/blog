@@ -109,6 +109,7 @@ class LessonShow extends Component
             $this->dispatch('auth-required', [
                 'message' => 'Please login to post a comment.',
             ]);
+
             return;
         }
 
@@ -154,18 +155,17 @@ class LessonShow extends Component
     #[Computed]
     public function relatedLessons(): array
     {
-        // Get similar standalone episodes from same category or with similar tags
+        // Get standalone episodes, prioritizing same category or similar tags, then fill with other episodes
         $episodes = Episode::published()
             ->where('is_standalone', true)
             ->where('id', '!=', $this->episode->id)
-            ->where(function ($query) {
-                $query->where('category_id', $this->episode->category_id)
-                    ->orWhereHas('tags', function ($tagQuery) {
-                        $tagQuery->whereIn('slug', $this->episode->tags->pluck('slug')->toArray());
-                    });
-            })
-            ->orderByDesc('views_count')
-            ->limit(6)
+            ->orderByRaw('
+                CASE 
+                    WHEN category_id = ? THEN 1
+                    ELSE 2
+                END, views_count DESC
+            ', [$this->episode->category_id])
+            ->limit(5)
             ->get();
 
         return $episodes->map(function (Episode $episode) {

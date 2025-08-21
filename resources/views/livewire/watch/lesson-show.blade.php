@@ -59,7 +59,7 @@
                                 <div class="p-4 border-b border-slate-200 dark:border-slate-700">
                                     <h2 class="text-lg font-semibold text-slate-900 dark:text-white">Up Next</h2>
                                 </div>
-                                <div class="max-h-[calc(100vh-200px)] overflow-y-auto">
+                                <div class="overflow-y-auto" data-video-height-limit>
                                     <div class="p-2">
                                         @foreach($this->relatedLessons as $lesson)
                                         <a href="{{ $lesson['url'] }}" class="block group p-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
@@ -105,42 +105,6 @@
                                         </a>
                                         @endforeach
 
-                                        {{-- Add more sample lessons for scrolling demonstration --}}
-                                        @for($i = 1; $i <= 8; $i++)
-                                        <a href="#" class="block group p-2 rounded-lg hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors">
-                                            <div class="flex gap-3">
-                                                <div class="relative w-24 h-16 bg-gradient-to-br from-slate-200 to-slate-300 dark:from-slate-700 dark:to-slate-800 rounded-lg overflow-hidden flex-shrink-0">
-                                                    <div class="w-full h-full flex items-center justify-center">
-                                                        <svg class="w-6 h-6 text-slate-400" fill="currentColor" viewBox="0 0 20 20">
-                                                            <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/>
-                                                        </svg>
-                                                    </div>
-                                                    <div class="absolute bottom-1 right-1 bg-black/80 text-white text-xs px-1.5 py-0.5 rounded">
-                                                        {{ rand(5, 45) }}:{{ str_pad(rand(0, 59), 2, '0', STR_PAD_LEFT) }}
-                                                    </div>
-                                                </div>
-
-                                                <div class="flex-1 min-w-0">
-                                                    <h3 class="font-medium text-slate-900 dark:text-white group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors text-sm leading-tight mb-1 line-clamp-2">
-                                                        Advanced Laravel {{ $i == 1 ? 'Eloquent Relationships' : ($i == 2 ? 'Queue Management' : ($i == 3 ? 'Cache Optimization' : ($i == 4 ? 'API Development' : ($i == 5 ? 'Testing Strategies' : ($i == 6 ? 'Security Practices' : ($i == 7 ? 'Performance Tuning' : 'Deploy Techniques')))))) }}
-                                                    </h3>
-
-                                                    <div class="flex items-center gap-1 text-xs text-slate-500 dark:text-slate-500 mb-1">
-                                                        <div class="w-4 h-4 bg-gradient-to-r from-red-600 to-orange-500 rounded-full flex items-center justify-center">
-                                                            <span class="text-white font-semibold text-xs">H</span>
-                                                        </div>
-                                                        <span>Halil Cosdu</span>
-                                                    </div>
-
-                                                    <div class="flex items-center gap-2 text-xs text-slate-600 dark:text-slate-400">
-                                                        <span>{{ number_format(rand(1000, 50000)) }} views</span>
-                                                        <span>•</span>
-                                                        <span>Laravel</span>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        </a>
-                                        @endfor
                                     </div>
                                 </div>
                             </div>
@@ -263,15 +227,6 @@
                             @endif
                         </div>
 
-                        {{-- Description --}}
-                        @if($episode->description)
-                        <div class="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-5 mb-5">
-                            <h2 class="text-base font-semibold text-slate-900 dark:text-white mb-3">About This Lesson</h2>
-                            <div class="prose prose-sm prose-slate dark:prose-invert max-w-none">
-                                {!! nl2br(e($episode->description)) !!}
-                            </div>
-                        </div>
-                        @endif
 
                         {{-- Comments Section --}}
                         <div class="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden mb-5">
@@ -456,19 +411,6 @@
                             </div>
                         </div>
 
-                        {{-- Tags --}}
-                        @if($episode->tags->isNotEmpty())
-                        <div class="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-5">
-                            <h2 class="text-base font-semibold text-slate-900 dark:text-white mb-3">Tags</h2>
-                            <div class="flex flex-wrap gap-2">
-                                @foreach($episode->tags as $tag)
-                                <span class="px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-full text-sm hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors cursor-pointer">
-                                    {{ $tag->name }}
-                                </span>
-                                @endforeach
-                            </div>
-                        </div>
-                        @endif
                     </div>
 
                     {{-- Stats Sidebar --}}
@@ -494,6 +436,30 @@
                                 </div>
                             </div>
                         </div>
+
+                        {{-- Description --}}
+                        @if($episode->description)
+                        <div class="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-5 mt-4">
+                            <h3 class="text-base font-semibold text-slate-900 dark:text-white mb-3">Description</h3>
+                            <div class="prose prose-sm prose-slate dark:prose-invert max-w-none text-sm">
+                                {!! nl2br(e($episode->description)) !!}
+                            </div>
+                        </div>
+                        @endif
+
+                        {{-- Tags --}}
+                        @if($episode->tags->isNotEmpty())
+                        <div class="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-5 mt-4">
+                            <h3 class="text-base font-semibold text-slate-900 dark:text-white mb-3">Tags</h3>
+                            <div class="flex flex-wrap gap-2">
+                                @foreach($episode->tags as $tag)
+                                <span class="px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-full text-xs hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors cursor-pointer">
+                                    {{ $tag->name }}
+                                </span>
+                                @endforeach
+                            </div>
+                        </div>
+                        @endif
                     </div>
                 </div>
             </div>
@@ -506,6 +472,23 @@
     // Vimeo Player Progress Tracking
     document.addEventListener('DOMContentLoaded', function() {
         const iframe = document.querySelector('iframe[data-lesson-id]');
+        
+        // Set Up Next sidebar height to match video player height
+        function setUpNextHeight() {
+            const videoContainer = document.querySelector('.aspect-video');
+            const upNextContainer = document.querySelector('[data-video-height-limit]');
+            
+            if (videoContainer && upNextContainer) {
+                const videoHeight = videoContainer.offsetHeight;
+                // Subtract header height (4rem = 64px) from video height
+                const maxHeight = Math.max(200, videoHeight - 64);
+                upNextContainer.style.maxHeight = maxHeight + 'px';
+            }
+        }
+        
+        // Set height on load and resize
+        setUpNextHeight();
+        window.addEventListener('resize', setUpNextHeight);
 
         if (iframe && typeof Vimeo !== 'undefined') {
             const player = new Vimeo.Player(iframe);
