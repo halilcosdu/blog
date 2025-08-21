@@ -873,6 +873,11 @@ class ModernWatchPage extends Component
         }
         
         if ($this->activeTab === 'all' || $this->activeTab === 'lessons') {
+            // For 'lessons' tab, only show standalone episodes (not part of a series)
+            if ($this->activeTab === 'lessons') {
+                $episodesQuery->where('is_standalone', true);
+            }
+            
             $episodes = $episodesQuery->get();
             foreach ($episodes as $item) {
                 $allContent[] = $this->formatEpisodeForFrontend($item);

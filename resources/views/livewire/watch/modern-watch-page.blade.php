@@ -62,7 +62,7 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
                 @foreach($this->continueWatching as $video)
-                <div class="group bg-white dark:bg-slate-700 rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-slate-200 dark:border-slate-600 cursor-pointer">
+                <a href="{{ $video['url'] }}" class="group bg-white dark:bg-slate-700 rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-slate-200 dark:border-slate-600 cursor-pointer block">
                     <div class="aspect-video bg-slate-100 dark:bg-slate-600 relative overflow-hidden">
                         <img src="{{ $video['thumbnail'] }}" alt="{{ $video['title'] }}" class="w-full h-full object-cover">
                         <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300 flex items-center justify-center">
@@ -99,7 +99,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </a>
                 @endforeach
             </div>
         </div>
@@ -500,7 +500,7 @@
             @if($activeTab === 'pathways')
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                 @foreach($this->pathways as $pathway)
-                <div class="group bg-white dark:bg-slate-800 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-slate-200 dark:border-slate-700 hover:-translate-y-1 cursor-pointer">
+                <a href="{{ $pathway['url'] }}" class="group bg-white dark:bg-slate-800 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-slate-200 dark:border-slate-700 hover:-translate-y-1 cursor-pointer block">
                     {{-- Pathway Header --}}
                     <div class="relative">
                         <div class="aspect-[16/9] bg-gradient-to-br from-blue-600 via-purple-600 to-pink-600 relative overflow-hidden">
@@ -587,7 +587,7 @@
                             <span class="text-sm text-slate-600 dark:text-slate-400">{{ $pathway['instructor'] }}</span>
                         </div>
                     </div>
-                </div>
+                </a>
                 @endforeach
             </div>
             @elseif($activeTab === 'watchlist')
@@ -620,7 +620,7 @@
                 {{-- Watchlist Grid --}}
                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                     @foreach($this->watchlistItems as $content)
-                    <div class="group bg-white dark:bg-slate-800 rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-slate-200 dark:border-slate-700 relative cursor-pointer">
+                    <div class="group bg-white dark:bg-slate-800 rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-slate-200 dark:border-slate-700 relative">
                         {{-- Remove from watchlist button --}}
                         <button 
                             wire:click="removeFromWatchlist({{ $content['id'] }})"
@@ -631,70 +631,73 @@
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/>
                             </svg>
                         </button>
-
-                        {{-- Content Thumbnail --}}
-                        <div class="aspect-video bg-slate-100 dark:bg-slate-700 relative overflow-hidden">
-                            <img src="{{ $content['thumbnail'] }}" alt="{{ $content['title'] }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-                            
-                            {{-- Content Type Badge --}}
-                            <div class="absolute top-2 left-2">
-                                <span class="px-2 py-1 bg-black/70 text-white text-xs font-bold rounded uppercase tracking-wide">
-                                    {{ $content['type'] === 'lesson' ? 'Lesson' : ucfirst($content['type']) }}
-                                </span>
-                            </div>
-
-                            {{-- Duration/Episodes --}}
-                            <div class="absolute bottom-2 right-2">
-                                <span class="px-2 py-1 bg-black/70 text-white text-xs font-medium rounded">
-                                    @if($content['type'] === 'series')
-                                        {{ $content['episodes'] }} episodes
-                                    @else
-                                        {{ $content['duration'] }}
-                                    @endif
-                                </span>
-                            </div>
-
-                            {{-- Play Button --}}
-                            <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300 flex items-center justify-center">
-                                <div class="w-12 h-12 bg-white/90 dark:bg-slate-800/90 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 scale-90 group-hover:scale-100">
-                                    <svg class="w-5 h-5 text-purple-600 ml-0.5" fill="currentColor" viewBox="0 0 20 20">
-                                        <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/>
-                                    </svg>
+                        
+                        {{-- Content Link --}}
+                        <a href="{{ $content['url'] }}" class="block cursor-pointer">
+                            {{-- Content Thumbnail --}}
+                            <div class="aspect-video bg-slate-100 dark:bg-slate-700 relative overflow-hidden">
+                                <img src="{{ $content['thumbnail'] }}" alt="{{ $content['title'] }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                                
+                                {{-- Content Type Badge --}}
+                                <div class="absolute top-2 left-2">
+                                    <span class="px-2 py-1 bg-black/70 text-white text-xs font-bold rounded uppercase tracking-wide">
+                                        {{ $content['type'] === 'lesson' ? 'Lesson' : ucfirst($content['type']) }}
+                                    </span>
                                 </div>
-                            </div>
-                        </div>
 
-                        {{-- Content Info --}}
-                        <div class="p-4">
-                            <h3 class="font-semibold text-slate-900 dark:text-white mb-2 line-clamp-2 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors">
-                                {{ $content['title'] }}
-                            </h3>
-                            <p class="text-sm text-slate-600 dark:text-slate-400 mb-3 line-clamp-2">
-                                {{ $content['description'] }}
-                            </p>
-                            
-                            {{-- Meta Info --}}
-                            <div class="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 mb-3">
-                                <span class="capitalize">{{ $content['level'] ?? 'All levels' }}</span>
-                                <div class="flex items-center gap-1">
-                                    <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                                        <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
-                                        <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/>
-                                    </svg>
-                                    <span>{{ number_format($content['views'] ?? rand(1000, 15000)) }}</span>
+                                {{-- Duration/Episodes --}}
+                                <div class="absolute bottom-2 right-2">
+                                    <span class="px-2 py-1 bg-black/70 text-white text-xs font-medium rounded">
+                                        @if($content['type'] === 'series')
+                                            {{ $content['episodes'] }} episodes
+                                        @else
+                                            {{ $content['duration'] }}
+                                        @endif
+                                    </span>
+                                </div>
+
+                                {{-- Play Button --}}
+                                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300 flex items-center justify-center">
+                                    <div class="w-12 h-12 bg-white/90 dark:bg-slate-800/90 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 scale-90 group-hover:scale-100">
+                                        <svg class="w-5 h-5 text-purple-600 ml-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/>
+                                        </svg>
+                                    </div>
                                 </div>
                             </div>
 
-                            {{-- Added Date --}}
-                            <div class="pt-3 border-t border-slate-200 dark:border-slate-700">
-                                <div class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
-                                    <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
-                                    </svg>
-                                    <span>Added {{ $content['added_to_watchlist'] }}</span>
+                            {{-- Content Info --}}
+                            <div class="p-4">
+                                <h3 class="font-semibold text-slate-900 dark:text-white mb-2 line-clamp-2 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors">
+                                    {{ $content['title'] }}
+                                </h3>
+                                <p class="text-sm text-slate-600 dark:text-slate-400 mb-3 line-clamp-2">
+                                    {{ $content['description'] }}
+                                </p>
+                                
+                                {{-- Meta Info --}}
+                                <div class="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400 mb-3">
+                                    <span class="capitalize">{{ $content['level'] ?? 'All levels' }}</span>
+                                    <div class="flex items-center gap-1">
+                                        <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
+                                            <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/>
+                                        </svg>
+                                        <span>{{ number_format($content['views'] ?? rand(1000, 15000)) }}</span>
+                                    </div>
+                                </div>
+
+                                {{-- Added Date --}}
+                                <div class="pt-3 border-t border-slate-200 dark:border-slate-700">
+                                    <div class="flex items-center gap-2 text-xs text-slate-500 dark:text-slate-400">
+                                        <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
+                                        </svg>
+                                        <span>Added {{ $content['added_to_watchlist'] }}</span>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
+                        </a>
                     </div>
                     @endforeach
                 </div>
@@ -724,37 +727,96 @@
             @if($viewMode === 'grid')
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
                 @foreach($this->featuredContent as $content)
-                <div class="group bg-white dark:bg-slate-800 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-slate-200 dark:border-slate-700 hover:-translate-y-1 cursor-pointer">
-                    {{-- Thumbnail --}}
-                    <div class="aspect-video bg-slate-100 dark:bg-slate-700 relative overflow-hidden">
-                        <img src="{{ $content['thumbnail'] }}" alt="{{ $content['title'] }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-                        
-                        {{-- Overlay --}}
-                        <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300 flex items-center justify-center">
-                            <div class="w-16 h-16 bg-white/90 dark:bg-slate-800/90 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 scale-75 group-hover:scale-100">
-                                <svg class="w-6 h-6 text-red-600 ml-1" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/>
-                                </svg>
+                <div class="group bg-white dark:bg-slate-800 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-slate-200 dark:border-slate-700 hover:-translate-y-1 relative">
+                    {{-- Content Link --}}
+                    <a href="{{ $content['url'] }}" class="block cursor-pointer">
+                        {{-- Thumbnail --}}
+                        <div class="aspect-video bg-slate-100 dark:bg-slate-700 relative overflow-hidden">
+                            <img src="{{ $content['thumbnail'] }}" alt="{{ $content['title'] }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                            
+                            {{-- Overlay --}}
+                            <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300 flex items-center justify-center">
+                                <div class="w-16 h-16 bg-white/90 dark:bg-slate-800/90 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 scale-75 group-hover:scale-100">
+                                    <svg class="w-6 h-6 text-red-600 ml-1" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/>
+                                    </svg>
+                                </div>
+                            </div>
+
+                            {{-- Badges --}}
+                            <div class="absolute top-3 left-3 flex gap-2">
+                                @if($content['type'] === 'series')
+                                <span class="px-2 py-1 bg-red-600 text-white text-xs font-medium rounded-md">SERIES</span>
+                                @endif
+                                @if(isset($content['isNew']) && $content['isNew'])
+                                <span class="px-2 py-1 bg-green-600 text-white text-xs font-medium rounded-md">NEW</span>
+                                @endif
+                                @if(isset($content['isPopular']) && $content['isPopular'])
+                                <span class="px-2 py-1 bg-orange-600 text-white text-xs font-medium rounded-md">POPULAR</span>
+                                @endif
+                            </div>
+
+                            {{-- Duration & Rating --}}
+                            <div class="absolute bottom-3 right-3 flex gap-2">
+                                @if(isset($content['rating']))
+                                <span class="px-2 py-1 bg-black/70 text-white text-xs font-medium rounded flex items-center gap-1">
+                                    <svg class="w-3 h-3 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
+                                        <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                                    </svg>
+                                    {{ $content['rating'] }}
+                                </span>
+                                @endif
+                                <span class="px-2 py-1 bg-black/70 text-white text-xs font-medium rounded">
+                                    {{ $content['duration'] }}
+                                </span>
+                            </div>
+
+                        </div>
+
+                        {{-- Content --}}
+                        <div class="p-5">
+                            <h3 class="font-semibold text-slate-900 dark:text-white mb-2 line-clamp-2 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors">
+                                {{ $content['title'] }}
+                            </h3>
+                            <p class="text-sm text-slate-600 dark:text-slate-400 mb-4 line-clamp-2">
+                                {{ $content['description'] }}
+                            </p>
+
+                            {{-- Meta Info --}}
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+                                    <div class="flex items-center gap-2">
+                                        <span class="px-2 py-1 bg-slate-100 dark:bg-slate-700 rounded">
+                                            {{ ucfirst($content['category']) }}
+                                        </span>
+                                        <span class="capitalize">{{ $content['level'] }}</span>
+                                    </div>
+                                    @if($content['type'] === 'series' && isset($content['episodes']))
+                                    <span>{{ $content['episodes'] }} episodes</span>
+                                    @endif
+                                </div>
+                                
+                                <div class="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
+                                    <span>{{ $content['instructor'] }}</span>
+                                    @if(isset($content['views']))
+                                    <div class="flex items-center gap-1">
+                                        <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
+                                            <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/>
+                                        </svg>
+                                        <span>{{ number_format($content['views']) }}</span>
+                                    </div>
+                                    @endif
+                                </div>
                             </div>
                         </div>
+                    </a>
 
-                        {{-- Badges --}}
-                        <div class="absolute top-3 left-3 flex gap-2">
-                            @if($content['type'] === 'series')
-                            <span class="px-2 py-1 bg-red-600 text-white text-xs font-medium rounded-md">SERIES</span>
-                            @endif
-                            @if(isset($content['isNew']) && $content['isNew'])
-                            <span class="px-2 py-1 bg-green-600 text-white text-xs font-medium rounded-md">NEW</span>
-                            @endif
-                            @if(isset($content['isPopular']) && $content['isPopular'])
-                            <span class="px-2 py-1 bg-orange-600 text-white text-xs font-medium rounded-md">POPULAR</span>
-                            @endif
-                        </div>
-
-                        {{-- Watchlist Button --}}
-                        <button 
+                    {{-- Watchlist Actions (Outside the link) --}}
+                    <div class="absolute top-3 right-3">
+                        <span 
                             wire:click="toggleWatchlist({{ $content['id'] }})"
-                            class="absolute top-3 right-3 w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer {{ $this->isInWatchlist($content['id']) ? 'bg-purple-500 text-white' : 'bg-black/50 hover:bg-black/70 text-white' }}"
+                            class="w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer z-20 {{ $this->isInWatchlist($content['id']) ? 'bg-purple-500 text-white' : 'bg-black/50 hover:bg-black/70 text-white' }}"
                             title="{{ $this->isInWatchlist($content['id']) ? 'Remove from watchlist' : 'Add to watchlist' }}"
                         >
                             @if($this->isInWatchlist($content['id']))
@@ -766,60 +828,7 @@
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
                                 </svg>
                             @endif
-                        </button>
-
-                        {{-- Duration & Rating --}}
-                        <div class="absolute bottom-3 right-3 flex gap-2">
-                            @if(isset($content['rating']))
-                            <span class="px-2 py-1 bg-black/70 text-white text-xs font-medium rounded flex items-center gap-1">
-                                <svg class="w-3 h-3 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
-                                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
-                                </svg>
-                                {{ $content['rating'] }}
-                            </span>
-                            @endif
-                            <span class="px-2 py-1 bg-black/70 text-white text-xs font-medium rounded">
-                                {{ $content['duration'] }}
-                            </span>
-                        </div>
-                    </div>
-
-                    {{-- Content --}}
-                    <div class="p-5">
-                        <h3 class="font-semibold text-slate-900 dark:text-white mb-2 line-clamp-2 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors">
-                            {{ $content['title'] }}
-                        </h3>
-                        <p class="text-sm text-slate-600 dark:text-slate-400 mb-4 line-clamp-2">
-                            {{ $content['description'] }}
-                        </p>
-
-                        {{-- Meta Info --}}
-                        <div class="space-y-3">
-                            <div class="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
-                                <div class="flex items-center gap-2">
-                                    <span class="px-2 py-1 bg-slate-100 dark:bg-slate-700 rounded">
-                                        {{ ucfirst($content['category']) }}
-                                    </span>
-                                    <span class="capitalize">{{ $content['level'] }}</span>
-                                </div>
-                                @if($content['type'] === 'series' && isset($content['episodes']))
-                                <span>{{ $content['episodes'] }} episodes</span>
-                                @endif
-                            </div>
-                            
-                            <div class="flex items-center justify-between text-xs text-slate-500 dark:text-slate-400">
-                                <span>{{ $content['instructor'] }}</span>
-                                @if(isset($content['views']))
-                                <div class="flex items-center gap-1">
-                                    <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                                        <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
-                                        <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/>
-                                    </svg>
-                                    <span>{{ number_format($content['views']) }}</span>
-                                </div>
-                                @endif
-                            </div>
-                        </div>
+                        </span>
                     </div>
                 </div>
                 @endforeach
@@ -828,91 +837,73 @@
             {{-- List View --}}
             <div class="space-y-4">
                 @foreach($this->featuredContent as $content)
-                <div class="group bg-white dark:bg-slate-800 rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-slate-200 dark:border-slate-700 p-4 cursor-pointer">
-                    <div class="flex gap-4">
-                        {{-- Thumbnail --}}
-                        <div class="w-40 h-24 bg-slate-100 dark:bg-slate-700 rounded-lg overflow-hidden flex-shrink-0 relative">
-                            <img src="{{ $content['thumbnail'] }}" alt="{{ $content['title'] }}" class="w-full h-full object-cover">
-                            <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300 flex items-center justify-center">
-                                <div class="w-8 h-8 bg-white/90 dark:bg-slate-800/90 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300">
-                                    <svg class="w-4 h-4 text-red-600 ml-0.5" fill="currentColor" viewBox="0 0 20 20">
-                                        <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/>
-                                    </svg>
-                                </div>
-                            </div>
-                            <div class="absolute bottom-1 right-1">
-                                <span class="px-1.5 py-0.5 bg-black/70 text-white text-xs font-medium rounded">
-                                    {{ $content['duration'] }}
-                                </span>
-                            </div>
-                        </div>
-
-                        {{-- Content --}}
-                        <div class="flex-1 min-w-0">
-                            <div class="flex items-start justify-between">
-                                <div class="flex-1 min-w-0">
-                                    <h3 class="font-semibold text-slate-900 dark:text-white mb-1 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors">
-                                        {{ $content['title'] }}
-                                    </h3>
-                                    <p class="text-sm text-slate-600 dark:text-slate-400 mb-3 line-clamp-2">
-                                        {{ $content['description'] }}
-                                    </p>
-                                    <div class="flex items-center gap-4 text-xs text-slate-500 dark:text-slate-400">
-                                        <span class="px-2 py-1 bg-slate-100 dark:bg-slate-700 rounded">{{ ucfirst($content['category']) }}</span>
-                                        <span class="capitalize">{{ $content['level'] }}</span>
-                                        <span>{{ $content['instructor'] }}</span>
-                                        @if($content['type'] === 'series' && isset($content['episodes']))
-                                        <span>{{ $content['episodes'] }} episodes</span>
-                                        @endif
-                                        @if(isset($content['views']))
-                                        <div class="flex items-center gap-1">
-                                            <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
-                                                <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
-                                                <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/>
-                                            </svg>
-                                            <span>{{ number_format($content['views']) }}</span>
-                                        </div>
-                                        @endif
-                                    </div>
-                                </div>
-                                <div class="flex flex-col gap-2 ml-4 items-end">
-                                    {{-- Watchlist Button --}}
-                                    <button 
-                                        wire:click="toggleWatchlist({{ $content['id'] }})"
-                                        class="w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer {{ $this->isInWatchlist($content['id']) ? 'bg-purple-500 text-white' : 'bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-400' }}"
-                                        title="{{ $this->isInWatchlist($content['id']) ? 'Remove from watchlist' : 'Add to watchlist' }}"
-                                    >
-                                        @if($this->isInWatchlist($content['id']))
-                                            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
-                                                <path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z"/>
-                                            </svg>
-                                        @else
-                                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
-                                            </svg>
-                                        @endif
-                                    </button>
-
-                                    @if($content['type'] === 'series')
-                                    <span class="px-2 py-1 bg-red-100 dark:bg-red-900/30 text-red-800 dark:text-red-200 text-xs font-medium rounded">SERIES</span>
-                                    @endif
-                                    @if(isset($content['isNew']) && $content['isNew'])
-                                    <span class="px-2 py-1 bg-green-100 dark:bg-green-900/30 text-green-800 dark:text-green-200 text-xs font-medium rounded">NEW</span>
-                                    @endif
-                                    @if(isset($content['isPopular']) && $content['isPopular'])
-                                    <span class="px-2 py-1 bg-orange-100 dark:bg-orange-900/30 text-orange-800 dark:text-orange-200 text-xs font-medium rounded">POPULAR</span>
-                                    @endif
-                                    @if(isset($content['rating']))
-                                    <div class="flex items-center gap-1 text-xs text-slate-500 dark:text-slate-400">
-                                        <svg class="w-3 h-3 text-yellow-400" fill="currentColor" viewBox="0 0 20 20">
-                                            <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/>
+                <div class="group bg-white dark:bg-slate-800 rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-slate-200 dark:border-slate-700 p-4 relative">
+                    {{-- Content Link --}}
+                    <a href="{{ $content['url'] }}" class="block cursor-pointer">
+                        <div class="flex gap-4">
+                            {{-- Thumbnail --}}
+                            <div class="w-40 h-24 bg-slate-100 dark:bg-slate-700 rounded-lg overflow-hidden flex-shrink-0 relative">
+                                <img src="{{ $content['thumbnail'] }}" alt="{{ $content['title'] }}" class="w-full h-full object-cover">
+                                <div class="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-all duration-300 flex items-center justify-center">
+                                    <div class="w-8 h-8 bg-white/90 dark:bg-slate-800/90 rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300">
+                                        <svg class="w-4 h-4 text-red-600 ml-0.5" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/>
                                         </svg>
-                                        <span>{{ $content['rating'] }}</span>
+                                    </div>
+                                </div>
+                                <div class="absolute bottom-1 right-1">
+                                    <span class="px-1.5 py-0.5 bg-black/70 text-white text-xs font-medium rounded">
+                                        {{ $content['duration'] }}
+                                    </span>
+                                </div>
+                            </div>
+
+                            {{-- Content --}}
+                            <div class="flex-1 min-w-0 pr-12">
+                                <h3 class="font-semibold text-slate-900 dark:text-white mb-1 group-hover:text-red-600 dark:group-hover:text-red-400 transition-colors">
+                                    {{ $content['title'] }}
+                                </h3>
+                                <p class="text-sm text-slate-600 dark:text-slate-400 mb-3 line-clamp-2">
+                                    {{ $content['description'] }}
+                                </p>
+                                <div class="flex items-center gap-4 text-xs text-slate-500 dark:text-slate-400">
+                                    <span class="px-2 py-1 bg-slate-100 dark:bg-slate-700 rounded">{{ ucfirst($content['category']) }}</span>
+                                    <span class="capitalize">{{ $content['level'] }}</span>
+                                    <span>{{ $content['instructor'] }}</span>
+                                    @if($content['type'] === 'series' && isset($content['episodes']))
+                                    <span>{{ $content['episodes'] }} episodes</span>
+                                    @endif
+                                    @if(isset($content['views']))
+                                    <div class="flex items-center gap-1">
+                                        <svg class="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
+                                            <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/>
+                                        </svg>
+                                        <span>{{ number_format($content['views']) }}</span>
                                     </div>
                                     @endif
                                 </div>
                             </div>
                         </div>
+                    </a>
+                    
+                    {{-- Watchlist Button (Outside link) --}}
+                    <div class="absolute top-4 right-4">
+                        <span 
+                            wire:click="toggleWatchlist({{ $content['id'] }})"
+                            class="w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer z-10 {{ $this->isInWatchlist($content['id']) ? 'bg-purple-500 text-white' : 'bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-400' }}"
+                            title="{{ $this->isInWatchlist($content['id']) ? 'Remove from watchlist' : 'Add to watchlist' }}"
+                        >
+                            @if($this->isInWatchlist($content['id']))
+                                <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
+                                    <path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z"/>
+                                </svg>
+                            @else
+                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
+                                </svg>
+                            @endif
+                        </span>
                     </div>
                 </div>
                 @endforeach
