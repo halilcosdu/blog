@@ -175,7 +175,7 @@ class LessonShow extends Component
                 'duration' => $episode->formatted_duration,
                 'level' => $episode->level,
                 'thumbnail' => $episode->thumbnail,
-                'url' => route('watch.lesson.show', ['slug' => $episode->slug]),
+                'url' => route('watch.lessons.show', ['slug' => $episode->slug]),
                 'category' => $episode->category?->name ?? '',
                 'views' => $episode->views_count,
             ];

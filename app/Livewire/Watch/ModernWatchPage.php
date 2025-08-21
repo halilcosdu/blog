@@ -775,7 +775,7 @@ class ModernWatchPage extends Component
                     'thumbnail' => $episode->thumbnail,
                     'duration' => $episode->formatted_duration,
                     'url' => $episode->is_standalone ?
-                        route('watch.lesson.show', ['slug' => $episode->slug]) :
+                        route('watch.lessons.show', ['slug' => $episode->slug]) :
                         route('watch.episode.show', [
                             'seriesSlug' => $episode->series?->slug,
                             'episodeSlug' => $episode->slug,
@@ -1021,7 +1021,7 @@ class ModernWatchPage extends Component
             'progress' => $userProgress,
             'tags' => $episode->tags->pluck('slug')->toArray(),
             'url' => $episode->is_standalone ?
-                route('watch.lesson.show', ['slug' => $episode->slug]) :
+                route('watch.lessons.show', ['slug' => $episode->slug]) :
                 route('watch.episode.show', [
                     'seriesSlug' => $episode->series?->slug,
                     'episodeSlug' => $episode->slug,

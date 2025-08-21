@@ -136,7 +136,7 @@ class PathwayShow extends Component
 
                 if ($item) {
                     $url = $item->is_standalone ?
-                        route('watch.lesson.show', ['slug' => $item->slug]) :
+                        route('watch.lessons.show', ['slug' => $item->slug]) :
                         route('watch.episode.show', [
                             'seriesSlug' => $item->series?->slug,
                             'episodeSlug' => $item->slug,
