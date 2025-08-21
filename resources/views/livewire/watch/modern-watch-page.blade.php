@@ -819,10 +819,10 @@
                     <div class="absolute top-3 right-3">
                         <span 
                             wire:click="toggleWatchlist({{ $content['id'] }}, '{{ $content['type'] ?? 'auto' }}')"
-                            class="w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer z-20 {{ $this->isInWatchlist($content['id']) ? 'bg-purple-500 text-white' : 'bg-black/50 hover:bg-black/70 text-white' }}"
-                            title="{{ $this->isInWatchlist($content['id']) ? 'Remove from watchlist' : 'Add to watchlist' }}"
+                            class="w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer z-20 {{ $this->isInWatchlist($content['id'], $content['type'] ?? 'auto') ? 'bg-purple-500 text-white' : 'bg-black/50 hover:bg-black/70 text-white' }}"
+                            title="{{ $this->isInWatchlist($content['id'], $content['type'] ?? 'auto') ? 'Remove from watchlist' : 'Add to watchlist' }}"
                         >
-                            @if($this->isInWatchlist($content['id']))
+                            @if($this->isInWatchlist($content['id'], $content['type'] ?? 'auto'))
                                 <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                                     <path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z"/>
                                 </svg>
@@ -896,10 +896,10 @@
                     <div class="absolute top-4 right-4">
                         <span 
                             wire:click="toggleWatchlist({{ $content['id'] }}, '{{ $content['type'] ?? 'auto' }}')"
-                            class="w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer z-10 {{ $this->isInWatchlist($content['id']) ? 'bg-purple-500 text-white' : 'bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-400' }}"
-                            title="{{ $this->isInWatchlist($content['id']) ? 'Remove from watchlist' : 'Add to watchlist' }}"
+                            class="w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer z-10 {{ $this->isInWatchlist($content['id'], $content['type'] ?? 'auto') ? 'bg-purple-500 text-white' : 'bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-400' }}"
+                            title="{{ $this->isInWatchlist($content['id'], $content['type'] ?? 'auto') ? 'Remove from watchlist' : 'Add to watchlist' }}"
                         >
-                            @if($this->isInWatchlist($content['id']))
+                            @if($this->isInWatchlist($content['id'], $content['type'] ?? 'auto'))
                                 <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                                     <path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z"/>
                                 </svg>
