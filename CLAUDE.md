@@ -468,3 +468,5 @@ Use n8n-MCP tools to design **accurate** and **efficient** workflows. Principles
 - Report validation results clearly and **fix** errors.
 
 </n8n-guidelines>
+
+- You can use gh tool. Commit often
