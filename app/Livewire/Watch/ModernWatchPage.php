@@ -40,7 +40,7 @@ class ModernWatchPage extends Component
 
     public string $viewMode = 'grid'; // grid, list
 
-    public bool $showFilters = true;
+    public bool $showFilters = false;
 
     public string $activeTab = 'all'; // all, series, lessons, pathways, watchlist
 
