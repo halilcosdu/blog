@@ -941,7 +941,7 @@
             @endif
 
             {{-- No Results --}}
-            @if((empty($this->featuredContent) && $activeTab !== 'pathways') || (empty($this->pathways) && $activeTab === 'pathways') && $this->hasActiveFilters)
+            @if((empty($this->featuredContent) && $activeTab !== 'pathways' && $activeTab !== 'watchlist') || (empty($this->pathways) && $activeTab === 'pathways') && $this->hasActiveFilters)
             <div class="text-center py-16">
                 <div class="w-16 h-16 bg-slate-100 dark:bg-slate-700 rounded-full flex items-center justify-center mx-auto mb-4">
                     <svg class="w-8 h-8 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
