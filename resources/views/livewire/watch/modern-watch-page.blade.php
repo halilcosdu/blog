@@ -623,7 +623,7 @@
                     <div class="group bg-white dark:bg-slate-800 rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-slate-200 dark:border-slate-700 relative">
                         {{-- Remove from watchlist button --}}
                         <button 
-                            wire:click="removeFromWatchlist({{ $content['id'] }})"
+                            wire:click="removeFromWatchlist({{ $content['id'] }}, '{{ $content['type'] ?? 'auto' }}')"
                             class="absolute top-2 right-2 z-10 w-8 h-8 bg-red-500 hover:bg-red-600 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-200 cursor-pointer"
                             title="Remove from watchlist"
                         >
@@ -641,17 +641,17 @@
                                 {{-- Content Type Badge --}}
                                 <div class="absolute top-2 left-2">
                                     <span class="px-2 py-1 bg-black/70 text-white text-xs font-bold rounded uppercase tracking-wide">
-                                        {{ $content['type'] === 'lesson' ? 'Lesson' : ucfirst($content['type']) }}
+                                        {{ ($content['type'] ?? 'content') === 'lesson' ? 'Lesson' : ucfirst($content['type'] ?? 'content') }}
                                     </span>
                                 </div>
 
                                 {{-- Duration/Episodes --}}
                                 <div class="absolute bottom-2 right-2">
                                     <span class="px-2 py-1 bg-black/70 text-white text-xs font-medium rounded">
-                                        @if($content['type'] === 'series')
-                                            {{ $content['episodes'] }} episodes
+                                        @if(($content['type'] ?? '') === 'series')
+                                            {{ $content['episodes'] ?? 0 }} episodes
                                         @else
-                                            {{ $content['duration'] }}
+                                            {{ $content['duration'] ?? 'N/A' }}
                                         @endif
                                     </span>
                                 </div>
@@ -815,7 +815,7 @@
                     {{-- Watchlist Actions (Outside the link) --}}
                     <div class="absolute top-3 right-3">
                         <span 
-                            wire:click="toggleWatchlist({{ $content['id'] }})"
+                            wire:click="toggleWatchlist({{ $content['id'] }}, '{{ $content['type'] ?? 'auto' }}')"
                             class="w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer z-20 {{ $this->isInWatchlist($content['id']) ? 'bg-purple-500 text-white' : 'bg-black/50 hover:bg-black/70 text-white' }}"
                             title="{{ $this->isInWatchlist($content['id']) ? 'Remove from watchlist' : 'Add to watchlist' }}"
                         >
@@ -890,7 +890,7 @@
                     {{-- Watchlist Button (Outside link) --}}
                     <div class="absolute top-4 right-4">
                         <span 
-                            wire:click="toggleWatchlist({{ $content['id'] }})"
+                            wire:click="toggleWatchlist({{ $content['id'] }}, '{{ $content['type'] ?? 'auto' }}')"
                             class="w-8 h-8 rounded-full flex items-center justify-center transition-all duration-200 cursor-pointer z-10 {{ $this->isInWatchlist($content['id']) ? 'bg-purple-500 text-white' : 'bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-600 dark:text-slate-400' }}"
                             title="{{ $this->isInWatchlist($content['id']) ? 'Remove from watchlist' : 'Add to watchlist' }}"
                         >
