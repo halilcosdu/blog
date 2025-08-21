@@ -18,7 +18,7 @@ return new class extends Migration
             $table->integer('sort_order')->default(0);
             $table->boolean('is_required')->default(true);
             $table->timestamps();
-            
+
             $table->unique(['pathway_id', 'item_type', 'item_id']);
             $table->index(['pathway_id', 'sort_order']);
         });

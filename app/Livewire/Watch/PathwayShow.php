@@ -2,10 +2,9 @@
 
 namespace App\Livewire\Watch;
 
-use App\Models\Pathway;
-use App\Models\PathwayItem;
-use App\Models\Series;
 use App\Models\Episode;
+use App\Models\Pathway;
+use App\Models\Series;
 use App\Models\UserProgress;
 use App\Models\UserWatchlist;
 use Livewire\Attributes\Computed;
@@ -14,14 +13,15 @@ use Livewire\Component;
 class PathwayShow extends Component
 {
     public Pathway $pathway;
+
     public string $slug;
 
     public function mount(string $slug): void
     {
         $this->slug = $slug;
-        
+
         $this->pathway = Pathway::published()
-            ->with(['category', 'user', 'tags', 'pathwayItems' => function($query) {
+            ->with(['category', 'user', 'tags', 'pathwayItems' => function ($query) {
                 $query->orderBy('sort_order');
             }])
             ->where('slug', $slug)
@@ -30,10 +30,11 @@ class PathwayShow extends Component
 
     public function toggleWatchlist(): void
     {
-        if (!auth()->check()) {
+        if (! auth()->check()) {
             $this->dispatch('auth-required', [
                 'message' => 'Please login to manage your watchlist.',
             ]);
+
             return;
         }
 
@@ -54,7 +55,7 @@ class PathwayShow extends Component
 
     public function updateProgress(int $watchedSeconds, int $totalSeconds): void
     {
-        if (!auth()->check()) {
+        if (! auth()->check()) {
             return;
         }
 
@@ -84,7 +85,7 @@ class PathwayShow extends Component
     #[Computed]
     public function isInWatchlist(): bool
     {
-        if (!auth()->check()) {
+        if (! auth()->check()) {
             return false;
         }
 
@@ -94,7 +95,7 @@ class PathwayShow extends Component
     #[Computed]
     public function userProgress(): int
     {
-        if (!auth()->check()) {
+        if (! auth()->check()) {
             return 0;
         }
 
@@ -110,18 +111,18 @@ class PathwayShow extends Component
     public function pathwayItems(): array
     {
         $items = [];
-        
+
         foreach ($this->pathway->pathwayItems as $pathwayItem) {
             $item = null;
             $type = '';
             $url = '';
             $progress = 0;
-            
+
             if ($pathwayItem->item_type === Series::class) {
                 $item = Series::with(['category', 'user'])->find($pathwayItem->item_id);
                 $type = 'series';
                 $url = route('watch.series.show', ['slug' => $item?->slug]);
-                
+
                 if (auth()->check() && $item) {
                     $userProgress = UserProgress::where('user_id', auth()->id())
                         ->where('progressable_type', Series::class)
@@ -132,16 +133,16 @@ class PathwayShow extends Component
             } elseif ($pathwayItem->item_type === Episode::class) {
                 $item = Episode::with(['category', 'user', 'series'])->find($pathwayItem->item_id);
                 $type = 'episode';
-                
+
                 if ($item) {
-                    $url = $item->is_standalone ? 
+                    $url = $item->is_standalone ?
                         route('watch.lesson.show', ['slug' => $item->slug]) :
                         route('watch.episode.show', [
                             'seriesSlug' => $item->series?->slug,
-                            'episodeSlug' => $item->slug
+                            'episodeSlug' => $item->slug,
                         ]);
                 }
-                
+
                 if (auth()->check() && $item) {
                     $userProgress = UserProgress::where('user_id', auth()->id())
                         ->where('progressable_type', Episode::class)
@@ -150,7 +151,7 @@ class PathwayShow extends Component
                     $progress = $userProgress ? (int) $userProgress->progress_percentage : 0;
                 }
             }
-            
+
             if ($item) {
                 $items[] = [
                     'id' => $item->id,
@@ -158,7 +159,7 @@ class PathwayShow extends Component
                     'title' => $item->title,
                     'description' => $item->description,
                     'thumbnail' => $item->thumbnail,
-                    'duration' => $item->formatted_duration ?? ($item->duration_minutes . ' min'),
+                    'duration' => $item->formatted_duration ?? ($item->duration_minutes.' min'),
                     'level' => $item->level,
                     'category' => $item->category?->name ?? '',
                     'instructor' => $item->user?->name ?? '',
@@ -166,11 +167,11 @@ class PathwayShow extends Component
                     'progress' => $progress,
                     'is_required' => $pathwayItem->is_required,
                     'sort_order' => $pathwayItem->sort_order,
-                    'series_title' => $type === 'episode' && !$item->is_standalone ? $item->series?->title : null,
+                    'series_title' => $type === 'episode' && ! $item->is_standalone ? $item->series?->title : null,
                 ];
             }
         }
-        
+
         return $items;
     }
 
@@ -180,11 +181,11 @@ class PathwayShow extends Component
         // Get similar pathways from same category or with similar tags
         $pathways = Pathway::published()
             ->where('id', '!=', $this->pathway->id)
-            ->where(function($query) {
+            ->where(function ($query) {
                 $query->where('category_id', $this->pathway->category_id)
-                      ->orWhereHas('tags', function($tagQuery) {
-                          $tagQuery->whereIn('slug', $this->pathway->tags->pluck('slug')->toArray());
-                      });
+                    ->orWhereHas('tags', function ($tagQuery) {
+                        $tagQuery->whereIn('slug', $this->pathway->tags->pluck('slug')->toArray());
+                    });
             })
             ->orderByDesc('students_count')
             ->limit(6)
@@ -209,7 +210,7 @@ class PathwayShow extends Component
     public function render()
     {
         $seoData = [
-            'title' => $this->pathway->title . ' - Learning Pathway',
+            'title' => $this->pathway->title.' - Learning Pathway',
             'description' => $this->pathway->description,
             'keywords' => implode(', ', $this->pathway->tags->pluck('name')->toArray()),
             'url' => request()->url(),
@@ -218,7 +219,7 @@ class PathwayShow extends Component
         ];
 
         return view('livewire.watch.pathway-show')
-            ->title($this->pathway->title . ' - Learning Pathway')
+            ->title($this->pathway->title.' - Learning Pathway')
             ->layout('components.layouts.app', compact('seoData'));
     }
 }

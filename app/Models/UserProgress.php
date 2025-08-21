@@ -2,10 +2,10 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
-use Illuminate\Database\Eloquent\Builder;
 
 class UserProgress extends Model
 {
@@ -46,13 +46,13 @@ class UserProgress extends Model
             }
 
             // Mark as completed if progress is 100%
-            if ($progress->progress_percentage >= 100 && !$progress->is_completed) {
+            if ($progress->progress_percentage >= 100 && ! $progress->is_completed) {
                 $progress->is_completed = true;
                 $progress->completed_at = now();
             }
 
             // Set started_at if not set
-            if (!$progress->started_at && $progress->watched_seconds > 0) {
+            if (! $progress->started_at && $progress->watched_seconds > 0) {
                 $progress->started_at = now();
             }
 
@@ -83,7 +83,7 @@ class UserProgress extends Model
     public function scopeInProgress(Builder $query): Builder
     {
         return $query->where('is_completed', false)
-                    ->where('watched_seconds', '>', 0);
+            ->where('watched_seconds', '>', 0);
     }
 
     public function scopeForUser(Builder $query, int $userId): Builder
@@ -94,7 +94,7 @@ class UserProgress extends Model
     public function scopeRecentlyWatched(Builder $query): Builder
     {
         return $query->whereNotNull('last_watched_at')
-                    ->orderByDesc('last_watched_at');
+            ->orderByDesc('last_watched_at');
     }
 
     // Helper methods

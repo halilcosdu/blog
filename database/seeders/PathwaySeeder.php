@@ -2,11 +2,11 @@
 
 namespace Database\Seeders;
 
+use App\Models\Category;
+use App\Models\Episode;
 use App\Models\Pathway;
 use App\Models\PathwayItem;
 use App\Models\Series;
-use App\Models\Episode;
-use App\Models\Category;
 use App\Models\Tag;
 use Illuminate\Database\Seeder;
 
@@ -15,13 +15,13 @@ class PathwaySeeder extends Seeder
     public function run(): void
     {
         $adminUserId = 1;
-        
+
         // Get existing series and episodes
         $laravelSeries = Series::where('slug', 'master-laravel-11')->first();
         $testingSeries = Series::where('slug', 'testing-laravel-applications')->first();
         $livewireEpisode = Episode::where('slug', 'building-realtime-apps-livewire')->first();
         $securityEpisode = Episode::where('slug', 'security-best-practices-laravel')->first();
-        
+
         $pathways = [
             [
                 'title' => 'Laravel from Zero to Hero',
@@ -47,7 +47,7 @@ class PathwaySeeder extends Seeder
                     ['type' => Series::class, 'item' => $laravelSeries, 'sort_order' => 1, 'is_required' => true],
                     ['type' => Episode::class, 'item' => $livewireEpisode, 'sort_order' => 2, 'is_required' => true],
                     ['type' => Episode::class, 'item' => $securityEpisode, 'sort_order' => 3, 'is_required' => false],
-                ]
+                ],
             ],
             [
                 'title' => 'Testing and Quality Assurance',
@@ -72,7 +72,7 @@ class PathwaySeeder extends Seeder
                 'items' => [
                     ['type' => Series::class, 'item' => $testingSeries, 'sort_order' => 1, 'is_required' => true],
                     ['type' => Episode::class, 'item' => $securityEpisode, 'sort_order' => 2, 'is_required' => true],
-                ]
+                ],
             ],
             [
                 'title' => 'Modern Frontend Integration',
@@ -96,17 +96,17 @@ class PathwaySeeder extends Seeder
                 'tags' => ['frontend', 'vue', 'react', 'integration'],
                 'items' => [
                     ['type' => Episode::class, 'item' => $livewireEpisode, 'sort_order' => 1, 'is_required' => true],
-                ]
-            ]
+                ],
+            ],
         ];
 
         foreach ($pathways as $pathwayData) {
             $tags = $pathwayData['tags'];
             $items = $pathwayData['items'];
             unset($pathwayData['tags'], $pathwayData['items']);
-            
+
             $pathwayModel = Pathway::create($pathwayData);
-            
+
             // Attach tags
             $tagIds = [];
             foreach ($tags as $tagName) {
@@ -115,11 +115,11 @@ class PathwaySeeder extends Seeder
                     $tagIds[] = $tag->id;
                 }
             }
-            
-            if (!empty($tagIds)) {
+
+            if (! empty($tagIds)) {
                 $pathwayModel->tags()->attach($tagIds);
             }
-            
+
             // Add pathway items
             foreach ($items as $itemData) {
                 PathwayItem::create([

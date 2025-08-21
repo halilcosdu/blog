@@ -32,7 +32,7 @@ return new class extends Migration
             $table->boolean('is_free')->default(false);
             $table->timestamp('published_at')->nullable();
             $table->timestamps();
-            
+
             $table->index(['is_published', 'published_at']);
             $table->index(['is_featured']);
             $table->index(['category_id']);

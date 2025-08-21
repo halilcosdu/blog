@@ -3,11 +3,11 @@
 namespace App\Models;
 
 use App\Traits\Taggable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 
 class Episode extends Model
@@ -65,7 +65,7 @@ class Episode extends Model
             }
 
             // Auto-increment episode number if it's part of a series
-            if ($episode->series_id && !$episode->episode_number) {
+            if ($episode->series_id && ! $episode->episode_number) {
                 $lastEpisode = Episode::where('series_id', $episode->series_id)
                     ->orderByDesc('episode_number')
                     ->first();
@@ -182,17 +182,17 @@ class Episode extends Model
     public function getFormattedDurationAttribute(): string
     {
         if ($this->duration_minutes < 60) {
-            return $this->duration_minutes . ' min';
+            return $this->duration_minutes.' min';
         }
 
         $hours = floor($this->duration_minutes / 60);
         $minutes = $this->duration_minutes % 60;
 
         if ($minutes === 0) {
-            return $hours . ' hour' . ($hours > 1 ? 's' : '');
+            return $hours.' hour'.($hours > 1 ? 's' : '');
         }
 
-        return $hours . 'h ' . $minutes . 'm';
+        return $hours.'h '.$minutes.'m';
     }
 
     public function incrementViews(): void
@@ -202,7 +202,7 @@ class Episode extends Model
 
     public function getNextEpisode(): ?Episode
     {
-        if (!$this->series_id || !$this->episode_number) {
+        if (! $this->series_id || ! $this->episode_number) {
             return null;
         }
 
@@ -215,7 +215,7 @@ class Episode extends Model
 
     public function getPreviousEpisode(): ?Episode
     {
-        if (!$this->series_id || !$this->episode_number) {
+        if (! $this->series_id || ! $this->episode_number) {
             return null;
         }
 

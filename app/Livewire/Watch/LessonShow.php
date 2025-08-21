@@ -11,12 +11,13 @@ use Livewire\Component;
 class LessonShow extends Component
 {
     public Episode $episode;
+
     public string $slug;
 
     public function mount(string $slug): void
     {
         $this->slug = $slug;
-        
+
         // Find standalone episode
         $this->episode = Episode::published()
             ->with(['category', 'user', 'tags'])
@@ -27,10 +28,11 @@ class LessonShow extends Component
 
     public function toggleWatchlist(): void
     {
-        if (!auth()->check()) {
+        if (! auth()->check()) {
             $this->dispatch('auth-required', [
                 'message' => 'Please login to manage your watchlist.',
             ]);
+
             return;
         }
 
@@ -51,7 +53,7 @@ class LessonShow extends Component
 
     public function updateProgress(int $watchedSeconds, int $totalSeconds): void
     {
-        if (!auth()->check()) {
+        if (! auth()->check()) {
             return;
         }
 
@@ -80,7 +82,7 @@ class LessonShow extends Component
 
     public function markAsCompleted(): void
     {
-        if (!auth()->check()) {
+        if (! auth()->check()) {
             return;
         }
 
@@ -91,7 +93,7 @@ class LessonShow extends Component
 
         if ($progress) {
             $progress->markAsCompleted();
-            
+
             $this->dispatch('lesson-completed', [
                 'lesson_id' => $this->episode->id,
                 'message' => 'Lesson completed! 🎉',
@@ -102,7 +104,7 @@ class LessonShow extends Component
     #[Computed]
     public function isInWatchlist(): bool
     {
-        if (!auth()->check()) {
+        if (! auth()->check()) {
             return false;
         }
 
@@ -112,7 +114,7 @@ class LessonShow extends Component
     #[Computed]
     public function userProgress(): int
     {
-        if (!auth()->check()) {
+        if (! auth()->check()) {
             return 0;
         }
 
@@ -131,11 +133,11 @@ class LessonShow extends Component
         $episodes = Episode::published()
             ->where('is_standalone', true)
             ->where('id', '!=', $this->episode->id)
-            ->where(function($query) {
+            ->where(function ($query) {
                 $query->where('category_id', $this->episode->category_id)
-                      ->orWhereHas('tags', function($tagQuery) {
-                          $tagQuery->whereIn('slug', $this->episode->tags->pluck('slug')->toArray());
-                      });
+                    ->orWhereHas('tags', function ($tagQuery) {
+                        $tagQuery->whereIn('slug', $this->episode->tags->pluck('slug')->toArray());
+                    });
             })
             ->orderByDesc('views_count')
             ->limit(6)
@@ -158,7 +160,7 @@ class LessonShow extends Component
     public function render()
     {
         $seoData = [
-            'title' => $this->episode->title . ' - Standalone Lesson',
+            'title' => $this->episode->title.' - Standalone Lesson',
             'description' => $this->episode->description,
             'keywords' => implode(', ', $this->episode->tags->pluck('name')->toArray()),
             'url' => request()->url(),
@@ -167,7 +169,7 @@ class LessonShow extends Component
         ];
 
         return view('livewire.watch.lesson-show')
-            ->title($this->episode->title . ' - Standalone Lesson')
+            ->title($this->episode->title.' - Standalone Lesson')
             ->layout('components.layouts.app', compact('seoData'));
     }
 }

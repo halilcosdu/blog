@@ -2,13 +2,13 @@
 
 namespace App\Livewire\Watch;
 
-use App\Models\Series;
+use App\Models\Category;
 use App\Models\Episode;
 use App\Models\Pathway;
-use App\Models\Category;
+use App\Models\Series;
 use App\Models\Tag;
-use App\Models\UserWatchlist;
 use App\Models\UserProgress;
+use App\Models\UserWatchlist;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Url;
 use Livewire\Component;
@@ -50,7 +50,6 @@ class ModernWatchPage extends Component
     public bool $showFilters = false;
 
     public string $activeTab = 'all'; // all, series, lessons, pathways, watchlist
-
 
     // UI state
     public bool $showSortDropdown = false;
@@ -146,10 +145,11 @@ class ModernWatchPage extends Component
 
     public function toggleWatchlist(int $contentId, string $contentType = 'auto'): void
     {
-        if (!auth()->check()) {
+        if (! auth()->check()) {
             $this->dispatch('auth-required', [
                 'message' => 'Please login to manage your watchlist.',
             ]);
+
             return;
         }
 
@@ -162,7 +162,7 @@ class ModernWatchPage extends Component
 
     public function addToWatchlist(int $contentId, string $contentType = 'auto'): void
     {
-        if (!auth()->check()) {
+        if (! auth()->check()) {
             return;
         }
 
@@ -171,27 +171,27 @@ class ModernWatchPage extends Component
             $contentType = $this->detectContentType($contentId);
         }
 
-        if (!$contentType) {
+        if (! $contentType) {
             return;
         }
 
         $modelClass = $this->getModelClass($contentType);
-        
+
         UserWatchlist::firstOrCreate([
             'user_id' => auth()->id(),
             'watchable_type' => $modelClass,
             'watchable_id' => $contentId,
         ]);
 
-        $this->dispatch('watchlist-updated', [
-            'type' => 'added',
-            'message' => 'Added to watchlist!',
-        ]);
+        $this->dispatch('watchlist-updated',
+            type: 'added',
+            message: 'Added to watchlist!'
+        );
     }
 
     public function removeFromWatchlist(int $contentId, string $contentType = 'auto'): void
     {
-        if (!auth()->check()) {
+        if (! auth()->check()) {
             return;
         }
 
@@ -200,28 +200,28 @@ class ModernWatchPage extends Component
             $contentType = $this->detectContentType($contentId);
         }
 
-        if (!$contentType) {
+        if (! $contentType) {
             return;
         }
 
         $modelClass = $this->getModelClass($contentType);
-        
+
         $deleted = UserWatchlist::where('user_id', auth()->id())
             ->where('watchable_type', $modelClass)
             ->where('watchable_id', $contentId)
             ->delete();
 
         if ($deleted > 0) {
-            $this->dispatch('watchlist-updated', [
-                'type' => 'removed',
-                'message' => 'Removed from watchlist!',
-            ]);
+            $this->dispatch('watchlist-updated',
+                type: 'removed',
+                message: 'Removed from watchlist!'
+            );
         }
     }
 
     public function isInWatchlist(int $contentId, string $contentType = 'auto'): bool
     {
-        if (!auth()->check()) {
+        if (! auth()->check()) {
             return false;
         }
 
@@ -230,12 +230,12 @@ class ModernWatchPage extends Component
             $contentType = $this->detectContentType($contentId);
         }
 
-        if (!$contentType) {
+        if (! $contentType) {
             return false;
         }
 
         $modelClass = $this->getModelClass($contentType);
-        
+
         return UserWatchlist::where('user_id', auth()->id())
             ->where('watchable_type', $modelClass)
             ->where('watchable_id', $contentId)
@@ -244,16 +244,16 @@ class ModernWatchPage extends Component
 
     public function clearWatchlist(): void
     {
-        if (!auth()->check()) {
+        if (! auth()->check()) {
             return;
         }
 
         UserWatchlist::where('user_id', auth()->id())->delete();
 
-        $this->dispatch('watchlist-updated', [
-            'type' => 'cleared',
-            'message' => 'Watchlist cleared!',
-        ]);
+        $this->dispatch('watchlist-updated',
+            type: 'cleared',
+            message: 'Watchlist cleared!'
+        );
     }
 
     private function detectContentType(int $contentId): ?string
@@ -262,21 +262,21 @@ class ModernWatchPage extends Component
         if (Series::find($contentId)) {
             return 'series';
         }
-        
+
         if (Episode::find($contentId)) {
             return 'episode';
         }
-        
+
         if (Pathway::find($contentId)) {
             return 'pathway';
         }
-        
+
         return null;
     }
 
     private function getModelClass(string $contentType): string
     {
-        return match($contentType) {
+        return match ($contentType) {
             'series' => Series::class,
             'episode', 'lesson' => Episode::class,
             'pathway' => Pathway::class,
@@ -286,12 +286,12 @@ class ModernWatchPage extends Component
 
     public function updateProgress(int $contentId, string $contentType, int $watchedSeconds, int $totalSeconds): void
     {
-        if (!auth()->check()) {
+        if (! auth()->check()) {
             return;
         }
 
         $modelClass = $this->getModelClass($contentType);
-        
+
         // Get or create progress record
         $progress = UserProgress::firstOrCreate([
             'user_id' => auth()->id(),
@@ -321,12 +321,12 @@ class ModernWatchPage extends Component
 
     public function markAsCompleted(int $contentId, string $contentType): void
     {
-        if (!auth()->check()) {
+        if (! auth()->check()) {
             return;
         }
 
         $modelClass = $this->getModelClass($contentType);
-        
+
         $progress = UserProgress::where('user_id', auth()->id())
             ->where('progressable_type', $modelClass)
             ->where('progressable_id', $contentId)
@@ -334,7 +334,7 @@ class ModernWatchPage extends Component
 
         if ($progress) {
             $progress->markAsCompleted();
-            
+
             $this->dispatch('content-completed', [
                 'content_id' => $contentId,
                 'content_type' => $contentType,
@@ -345,12 +345,12 @@ class ModernWatchPage extends Component
 
     public function resetProgress(int $contentId, string $contentType): void
     {
-        if (!auth()->check()) {
+        if (! auth()->check()) {
             return;
         }
 
         $modelClass = $this->getModelClass($contentType);
-        
+
         UserProgress::where('user_id', auth()->id())
             ->where('progressable_type', $modelClass)
             ->where('progressable_id', $contentId)
@@ -365,7 +365,7 @@ class ModernWatchPage extends Component
 
     public function getProgressStats(): array
     {
-        if (!auth()->check()) {
+        if (! auth()->check()) {
             return [
                 'total_watched' => 0,
                 'completed_count' => 0,
@@ -377,7 +377,7 @@ class ModernWatchPage extends Component
         $completedCount = UserProgress::forUser(auth()->id())->completed()->count();
         $inProgressCount = UserProgress::forUser(auth()->id())->inProgress()->count();
         $totalWatchedSeconds = UserProgress::forUser(auth()->id())->sum('watched_seconds');
-        
+
         return [
             'total_watched' => $completedCount + $inProgressCount,
             'completed_count' => $completedCount,
@@ -389,22 +389,22 @@ class ModernWatchPage extends Component
     private function formatWatchTime(int $seconds): string
     {
         if ($seconds < 60) {
-            return $seconds . ' sec';
+            return $seconds.' sec';
         }
-        
+
         $minutes = floor($seconds / 60);
         if ($minutes < 60) {
-            return $minutes . ' min';
+            return $minutes.' min';
         }
-        
+
         $hours = floor($minutes / 60);
         $remainingMinutes = $minutes % 60;
-        
+
         if ($remainingMinutes === 0) {
-            return $hours . ' hr';
+            return $hours.' hr';
         }
-        
-        return $hours . ' hr ' . $remainingMinutes . ' min';
+
+        return $hours.' hr '.$remainingMinutes.' min';
     }
 
     #[Computed]
@@ -449,14 +449,14 @@ class ModernWatchPage extends Component
         $categories = Category::where('is_active', true)
             ->orderBy('sort_order')
             ->get();
-            
+
         return $categories->map(function (Category $category) {
             // Count published content in this category
             $seriesCount = $category->publishedSeries()->count();
             $episodesCount = $category->publishedEpisodes()->count();
             $pathwaysCount = $category->publishedPathways()->count();
             $totalCount = $seriesCount + $episodesCount + $pathwaysCount;
-            
+
             return [
                 'id' => $category->slug,
                 'name' => $category->name,
@@ -464,16 +464,16 @@ class ModernWatchPage extends Component
                 'color' => $this->getCategoryColor($category->color ?? $category->slug),
                 'description' => $category->description,
             ];
-        })->filter(fn($category) => $category['count'] > 0)->toArray();
+        })->filter(fn ($category) => $category['count'] > 0)->toArray();
     }
-    
+
     private function getCategoryColor(string $colorOrSlug): string
     {
         // If it's already a valid color format, return it
         if (str_starts_with($colorOrSlug, '#')) {
             return $colorOrSlug;
         }
-        
+
         // Map category slugs to colors for consistency
         $colorMap = [
             'laravel' => '#EF4444',
@@ -494,7 +494,7 @@ class ModernWatchPage extends Component
             'architecture' => '#7C3AED',
             'tooling' => '#475569',
         ];
-        
+
         return $colorMap[$colorOrSlug] ?? '#6B7280';
     }
 
@@ -523,35 +523,36 @@ class ModernWatchPage extends Component
     public function popularTags(): array
     {
         // Get tags that are used by published series, episodes, or pathways
-        $tags = Tag::whereHas('series', function($q) {
+        $tags = Tag::whereHas('series', function ($q) {
+            $q->where('is_published', true);
+        })
+            ->orWhereHas('episodes', function ($q) {
                 $q->where('is_published', true);
             })
-            ->orWhereHas('episodes', function($q) {
-                $q->where('is_published', true);
-            })
-            ->orWhereHas('pathways', function($q) {
+            ->orWhereHas('pathways', function ($q) {
                 $q->where('is_published', true);
             })
             ->withCount([
-                'series as series_count' => function($q) {
+                'series as series_count' => function ($q) {
                     $q->where('is_published', true);
                 },
-                'episodes as episodes_count' => function($q) {
+                'episodes as episodes_count' => function ($q) {
                     $q->where('is_published', true);
                 },
-                'pathways as pathways_count' => function($q) {
+                'pathways as pathways_count' => function ($q) {
                     $q->where('is_published', true);
-                }
+                },
             ])
             ->get()
-            ->map(function($tag) {
+            ->map(function ($tag) {
                 $tag->total_usage = $tag->series_count + $tag->episodes_count + $tag->pathways_count;
+
                 return $tag;
             })
             ->where('total_usage', '>', 0)
             ->sortByDesc('total_usage')
             ->take(15);
-            
+
         return $tags->map(function (Tag $tag) {
             return [
                 'name' => $tag->slug,
@@ -562,14 +563,14 @@ class ModernWatchPage extends Component
             ];
         })->toArray();
     }
-    
+
     private function getTagColor(string $colorOrSlug): string
     {
         // If it's already a valid color format, return it
         if (str_starts_with($colorOrSlug, '#')) {
             return $colorOrSlug;
         }
-        
+
         // Map tag slugs to Tailwind CSS color classes
         $colorMap = [
             'laravel' => 'red',
@@ -603,7 +604,7 @@ class ModernWatchPage extends Component
             'docker' => 'blue',
             'devops' => 'orange',
         ];
-        
+
         return $colorMap[$colorOrSlug] ?? 'gray';
     }
 
@@ -622,28 +623,28 @@ class ModernWatchPage extends Component
     {
         // Build base query
         $pathwaysQuery = Pathway::published()->with(['category', 'user', 'tags', 'pathwayItems']);
-        
+
         // Apply filters
         if ($this->selectedCategory) {
-            $pathwaysQuery->whereHas('category', fn($q) => $q->where('slug', $this->selectedCategory));
+            $pathwaysQuery->whereHas('category', fn ($q) => $q->where('slug', $this->selectedCategory));
         }
-        
+
         if ($this->selectedLevel) {
             $pathwaysQuery->where('level', $this->selectedLevel);
         }
-        
+
         if ($this->search) {
-            $searchTerm = '%' . $this->search . '%';
-            $pathwaysQuery->where(function($q) use ($searchTerm) {
+            $searchTerm = '%'.$this->search.'%';
+            $pathwaysQuery->where(function ($q) use ($searchTerm) {
                 $q->where('title', 'ILIKE', $searchTerm)
-                  ->orWhere('description', 'ILIKE', $searchTerm);
+                    ->orWhere('description', 'ILIKE', $searchTerm);
             });
         }
-        
-        if (!empty($this->selectedTags)) {
-            $pathwaysQuery->whereHas('tags', fn($q) => $q->whereIn('slug', $this->selectedTags));
+
+        if (! empty($this->selectedTags)) {
+            $pathwaysQuery->whereHas('tags', fn ($q) => $q->whereIn('slug', $this->selectedTags));
         }
-        
+
         // Apply sorting
         switch ($this->sortBy) {
             case 'popular':
@@ -658,14 +659,14 @@ class ModernWatchPage extends Component
             default: // recent
                 $pathwaysQuery->orderByDesc('published_at');
         }
-        
+
         $pathways = $pathwaysQuery->get();
-        
+
         return $pathways->map(function (Pathway $pathway) {
             return $this->formatPathwayForFrontend($pathway);
         })->toArray();
     }
-    
+
     private function formatPathwayForFrontend(Pathway $pathway): array
     {
         // Calculate user progress if authenticated
@@ -677,7 +678,7 @@ class ModernWatchPage extends Component
                 ->first();
             $userProgress = $progress ? $progress->progress_percentage : 0;
         }
-        
+
         return [
             'id' => $pathway->id,
             'slug' => $pathway->slug,
@@ -700,7 +701,7 @@ class ModernWatchPage extends Component
     #[Computed]
     public function continueWatching(): array
     {
-        if (!auth()->check()) {
+        if (! auth()->check()) {
             return [];
         }
 
@@ -754,11 +755,11 @@ class ModernWatchPage extends Component
                     'progress' => (int) $progress->progress_percentage,
                     'thumbnail' => $episode->thumbnail,
                     'duration' => $episode->formatted_duration,
-                    'url' => $episode->is_standalone ? 
-                        route('watch.lesson.show', ['slug' => $episode->slug]) : 
+                    'url' => $episode->is_standalone ?
+                        route('watch.lesson.show', ['slug' => $episode->slug]) :
                         route('watch.episode.show', [
                             'seriesSlug' => $episode->series?->slug,
-                            'episodeSlug' => $episode->slug
+                            'episodeSlug' => $episode->slug,
                         ]),
                     'last_watched' => $progress->last_watched_at,
                     'instructor' => $episode->user?->name ?? '',
@@ -777,7 +778,7 @@ class ModernWatchPage extends Component
     #[Computed]
     public function watchlistItems(): array
     {
-        if (!auth()->check()) {
+        if (! auth()->check()) {
             return [];
         }
 
@@ -791,8 +792,8 @@ class ModernWatchPage extends Component
 
         foreach ($watchlistItems as $watchlistItem) {
             $watchable = $watchlistItem->watchable;
-            
-            if (!$watchable) {
+
+            if (! $watchable) {
                 continue;
             }
 
@@ -812,7 +813,7 @@ class ModernWatchPage extends Component
                     $this->formatPathwayForFrontend($watchable),
                     [
                         'type' => 'pathway',
-                        'added_to_watchlist' => $watchlistItem->created_at->format('M j, Y')
+                        'added_to_watchlist' => $watchlistItem->created_at->format('M j, Y'),
                     ]
                 );
             }
@@ -824,52 +825,51 @@ class ModernWatchPage extends Component
     #[Computed]
     public function watchlistCount(): int
     {
-        if (!auth()->check()) {
+        if (! auth()->check()) {
             return 0;
         }
 
         return UserWatchlist::where('user_id', auth()->id())->count();
     }
 
-
     #[Computed]
     public function featuredContent(): array
     {
         // Get dynamic content from database
         $allContent = [];
-        
+
         // Build base queries
         $seriesQuery = Series::published()->with(['category', 'user', 'tags']);
         $episodesQuery = Episode::published()->with(['category', 'user', 'tags', 'series']);
-        
+
         // Apply filters
         if ($this->selectedCategory) {
-            $seriesQuery->whereHas('category', fn($q) => $q->where('slug', $this->selectedCategory));
-            $episodesQuery->whereHas('category', fn($q) => $q->where('slug', $this->selectedCategory));
+            $seriesQuery->whereHas('category', fn ($q) => $q->where('slug', $this->selectedCategory));
+            $episodesQuery->whereHas('category', fn ($q) => $q->where('slug', $this->selectedCategory));
         }
-        
+
         if ($this->selectedLevel) {
             $seriesQuery->where('level', $this->selectedLevel);
             $episodesQuery->where('level', $this->selectedLevel);
         }
-        
+
         if ($this->search) {
-            $searchTerm = '%' . $this->search . '%';
-            $seriesQuery->where(function($q) use ($searchTerm) {
+            $searchTerm = '%'.$this->search.'%';
+            $seriesQuery->where(function ($q) use ($searchTerm) {
                 $q->where('title', 'ILIKE', $searchTerm)
-                  ->orWhere('description', 'ILIKE', $searchTerm);
+                    ->orWhere('description', 'ILIKE', $searchTerm);
             });
-            $episodesQuery->where(function($q) use ($searchTerm) {
+            $episodesQuery->where(function ($q) use ($searchTerm) {
                 $q->where('title', 'ILIKE', $searchTerm)
-                  ->orWhere('description', 'ILIKE', $searchTerm);
+                    ->orWhere('description', 'ILIKE', $searchTerm);
             });
         }
-        
-        if (!empty($this->selectedTags)) {
-            $seriesQuery->whereHas('tags', fn($q) => $q->whereIn('slug', $this->selectedTags));
-            $episodesQuery->whereHas('tags', fn($q) => $q->whereIn('slug', $this->selectedTags));
+
+        if (! empty($this->selectedTags)) {
+            $seriesQuery->whereHas('tags', fn ($q) => $q->whereIn('slug', $this->selectedTags));
+            $episodesQuery->whereHas('tags', fn ($q) => $q->whereIn('slug', $this->selectedTags));
         }
-        
+
         // Apply sorting
         switch ($this->sortBy) {
             case 'popular':
@@ -888,7 +888,7 @@ class ModernWatchPage extends Component
                 $seriesQuery->orderByDesc('published_at');
                 $episodesQuery->orderByDesc('published_at');
         }
-        
+
         // Get content based on active tab
         if ($this->activeTab === 'all' || $this->activeTab === 'series') {
             $series = $seriesQuery->get();
@@ -896,27 +896,27 @@ class ModernWatchPage extends Component
                 $allContent[] = $this->formatSeriesForFrontend($item);
             }
         }
-        
+
         if ($this->activeTab === 'all' || $this->activeTab === 'lessons') {
             // For 'lessons' tab, only show standalone episodes (not part of a series)
             if ($this->activeTab === 'lessons') {
                 $episodesQuery->where('is_standalone', true);
             }
-            
+
             $episodes = $episodesQuery->get();
             foreach ($episodes as $item) {
                 $allContent[] = $this->formatEpisodeForFrontend($item);
             }
         }
-        
+
         // Handle pathways and watchlist tabs
         if ($this->activeTab === 'pathways' || $this->activeTab === 'watchlist') {
             return []; // These are handled by separate methods
         }
-        
+
         return $allContent;
     }
-    
+
     private function formatSeriesForFrontend(Series $series): array
     {
         // Calculate user progress if authenticated
@@ -950,7 +950,7 @@ class ModernWatchPage extends Component
             'url' => route('watch.series.show', ['slug' => $series->slug]),
         ];
     }
-    
+
     private function formatEpisodeForFrontend(Episode $episode): array
     {
         // Calculate user progress if authenticated
@@ -982,11 +982,11 @@ class ModernWatchPage extends Component
             'series' => $episode->series?->title ?? null,
             'progress' => $userProgress,
             'tags' => $episode->tags->pluck('slug')->toArray(),
-            'url' => $episode->is_standalone ? 
-                route('watch.lesson.show', ['slug' => $episode->slug]) : 
+            'url' => $episode->is_standalone ?
+                route('watch.lesson.show', ['slug' => $episode->slug]) :
                 route('watch.episode.show', [
                     'seriesSlug' => $episode->series?->slug,
-                    'episodeSlug' => $episode->slug
+                    'episodeSlug' => $episode->slug,
                 ]),
         ];
     }

@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Models\Category;
 use App\Models\Episode;
 use App\Models\Series;
-use App\Models\Category;
 use App\Models\Tag;
 use Illuminate\Database\Seeder;
 
@@ -13,12 +13,12 @@ class EpisodeSeeder extends Seeder
     public function run(): void
     {
         $adminUserId = 1;
-        
+
         // Get existing series
         $laravelSeries = Series::where('slug', 'master-laravel-11')->first();
         $filamentSeries = Series::where('slug', 'advanced-filament-development')->first();
         $testingSeries = Series::where('slug', 'testing-laravel-applications')->first();
-        
+
         $episodes = [
             // Laravel 11 Series Episodes
             [
@@ -32,7 +32,7 @@ class EpisodeSeeder extends Seeder
                 'vimeo_data' => [
                     'title' => 'Laravel 11 Introduction and Setup',
                     'duration' => 1200,
-                    'thumbnail' => 'https://i.vimeocdn.com/video/234567890_640.jpg'
+                    'thumbnail' => 'https://i.vimeocdn.com/video/234567890_640.jpg',
                 ],
                 'category_id' => Category::where('slug', 'laravel')->first()->id,
                 'user_id' => $adminUserId,
@@ -46,7 +46,7 @@ class EpisodeSeeder extends Seeder
                 'is_free' => true,
                 'is_standalone' => false,
                 'published_at' => now()->subDays(6),
-                'tags' => ['laravel', 'setup', 'introduction']
+                'tags' => ['laravel', 'setup', 'introduction'],
             ],
             [
                 'series_id' => $laravelSeries->id,
@@ -59,7 +59,7 @@ class EpisodeSeeder extends Seeder
                 'vimeo_data' => [
                     'title' => 'Routing and Controllers in Laravel 11',
                     'duration' => 1800,
-                    'thumbnail' => 'https://i.vimeocdn.com/video/234567891_640.jpg'
+                    'thumbnail' => 'https://i.vimeocdn.com/video/234567891_640.jpg',
                 ],
                 'category_id' => Category::where('slug', 'laravel')->first()->id,
                 'user_id' => $adminUserId,
@@ -73,9 +73,9 @@ class EpisodeSeeder extends Seeder
                 'is_free' => false,
                 'is_standalone' => false,
                 'published_at' => now()->subDays(5),
-                'tags' => ['laravel', 'routing', 'controllers']
+                'tags' => ['laravel', 'routing', 'controllers'],
             ],
-            
+
             // Filament Series Episodes
             [
                 'series_id' => $filamentSeries->id,
@@ -88,7 +88,7 @@ class EpisodeSeeder extends Seeder
                 'vimeo_data' => [
                     'title' => 'Filament v4 Custom Components',
                     'duration' => 2100,
-                    'thumbnail' => 'https://i.vimeocdn.com/video/234567892_640.jpg'
+                    'thumbnail' => 'https://i.vimeocdn.com/video/234567892_640.jpg',
                 ],
                 'category_id' => Category::where('slug', 'laravel')->first()->id,
                 'user_id' => $adminUserId,
@@ -102,9 +102,9 @@ class EpisodeSeeder extends Seeder
                 'is_free' => false,
                 'is_standalone' => false,
                 'published_at' => now()->subDays(13),
-                'tags' => ['filament', 'components', 'laravel']
+                'tags' => ['filament', 'components', 'laravel'],
             ],
-            
+
             // Testing Series Episodes
             [
                 'series_id' => $testingSeries->id,
@@ -117,7 +117,7 @@ class EpisodeSeeder extends Seeder
                 'vimeo_data' => [
                     'title' => 'Getting Started with Pest Testing',
                     'duration' => 1500,
-                    'thumbnail' => 'https://i.vimeocdn.com/video/234567893_640.jpg'
+                    'thumbnail' => 'https://i.vimeocdn.com/video/234567893_640.jpg',
                 ],
                 'category_id' => Category::where('slug', 'testing')->first()->id,
                 'user_id' => $adminUserId,
@@ -131,9 +131,9 @@ class EpisodeSeeder extends Seeder
                 'is_free' => true,
                 'is_standalone' => false,
                 'published_at' => now()->subDays(20),
-                'tags' => ['pest', 'testing', 'laravel']
+                'tags' => ['pest', 'testing', 'laravel'],
             ],
-            
+
             // Standalone Episodes
             [
                 'series_id' => null,
@@ -146,7 +146,7 @@ class EpisodeSeeder extends Seeder
                 'vimeo_data' => [
                     'title' => 'Building Real-time Apps with Livewire',
                     'duration' => 2700,
-                    'thumbnail' => 'https://i.vimeocdn.com/video/234567894_640.jpg'
+                    'thumbnail' => 'https://i.vimeocdn.com/video/234567894_640.jpg',
                 ],
                 'category_id' => Category::where('slug', 'livewire')->first()->id,
                 'user_id' => $adminUserId,
@@ -160,7 +160,7 @@ class EpisodeSeeder extends Seeder
                 'is_free' => false,
                 'is_standalone' => true,
                 'published_at' => now()->subDays(10),
-                'tags' => ['livewire', 'realtime', 'laravel']
+                'tags' => ['livewire', 'realtime', 'laravel'],
             ],
             [
                 'series_id' => null,
@@ -173,7 +173,7 @@ class EpisodeSeeder extends Seeder
                 'vimeo_data' => [
                     'title' => 'Database Optimization Techniques',
                     'duration' => 3120,
-                    'thumbnail' => 'https://i.vimeocdn.com/video/234567895_640.jpg'
+                    'thumbnail' => 'https://i.vimeocdn.com/video/234567895_640.jpg',
                 ],
                 'category_id' => Category::where('slug', 'databases')->first()->id,
                 'user_id' => $adminUserId,
@@ -187,7 +187,7 @@ class EpisodeSeeder extends Seeder
                 'is_free' => true,
                 'is_standalone' => true,
                 'published_at' => now()->subDays(15),
-                'tags' => ['mysql', 'optimization', 'performance']
+                'tags' => ['mysql', 'optimization', 'performance'],
             ],
             [
                 'series_id' => null,
@@ -200,7 +200,7 @@ class EpisodeSeeder extends Seeder
                 'vimeo_data' => [
                     'title' => 'Docker for Laravel Development',
                     'duration' => 2280,
-                    'thumbnail' => 'https://i.vimeocdn.com/video/234567896_640.jpg'
+                    'thumbnail' => 'https://i.vimeocdn.com/video/234567896_640.jpg',
                 ],
                 'category_id' => Category::where('slug', 'devops')->first()->id,
                 'user_id' => $adminUserId,
@@ -214,7 +214,7 @@ class EpisodeSeeder extends Seeder
                 'is_free' => false,
                 'is_standalone' => true,
                 'published_at' => now()->subDays(8),
-                'tags' => ['docker', 'laravel', 'devops']
+                'tags' => ['docker', 'laravel', 'devops'],
             ],
             [
                 'series_id' => null,
@@ -227,7 +227,7 @@ class EpisodeSeeder extends Seeder
                 'vimeo_data' => [
                     'title' => 'Vue.js 3 Composition API',
                     'duration' => 3300,
-                    'thumbnail' => 'https://i.vimeocdn.com/video/234567897_640.jpg'
+                    'thumbnail' => 'https://i.vimeocdn.com/video/234567897_640.jpg',
                 ],
                 'category_id' => Category::where('slug', 'vue')->first()->id,
                 'user_id' => $adminUserId,
@@ -241,7 +241,7 @@ class EpisodeSeeder extends Seeder
                 'is_free' => false,
                 'is_standalone' => true,
                 'published_at' => now()->subDays(12),
-                'tags' => ['vue', 'composition-api', 'javascript']
+                'tags' => ['vue', 'composition-api', 'javascript'],
             ],
             [
                 'series_id' => null,
@@ -254,7 +254,7 @@ class EpisodeSeeder extends Seeder
                 'vimeo_data' => [
                     'title' => 'Security Best Practices for Laravel',
                     'duration' => 2940,
-                    'thumbnail' => 'https://i.vimeocdn.com/video/234567898_640.jpg'
+                    'thumbnail' => 'https://i.vimeocdn.com/video/234567898_640.jpg',
                 ],
                 'category_id' => Category::where('slug', 'security')->first()->id,
                 'user_id' => $adminUserId,
@@ -268,16 +268,16 @@ class EpisodeSeeder extends Seeder
                 'is_free' => false,
                 'is_standalone' => true,
                 'published_at' => now()->subDays(5),
-                'tags' => ['security', 'laravel', 'best-practices']
-            ]
+                'tags' => ['security', 'laravel', 'best-practices'],
+            ],
         ];
 
         foreach ($episodes as $episodeData) {
             $tags = $episodeData['tags'];
             unset($episodeData['tags']);
-            
+
             $episodeModel = Episode::create($episodeData);
-            
+
             // Attach tags
             $tagIds = [];
             foreach ($tags as $tagName) {
@@ -286,8 +286,8 @@ class EpisodeSeeder extends Seeder
                     $tagIds[] = $tag->id;
                 }
             }
-            
-            if (!empty($tagIds)) {
+
+            if (! empty($tagIds)) {
                 $episodeModel->tags()->attach($tagIds);
             }
         }

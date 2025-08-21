@@ -138,6 +138,7 @@
                         >
                             Learning Paths
                         </button>
+                        @auth
                         <button 
                             wire:click="setActiveTab('watchlist')"
                             class="py-2 px-1 border-b-2 font-medium text-sm transition-colors relative cursor-pointer {{ $activeTab === 'watchlist' ? 'border-purple-500 text-purple-600 dark:text-purple-400' : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 hover:border-slate-300 dark:hover:border-slate-600' }}"
@@ -152,6 +153,7 @@
                                 @endif
                             </div>
                         </button>
+                        @endauth
                     </nav>
                 </div>
             </div>
@@ -812,7 +814,8 @@
                         </div>
                     </a>
 
-                    {{-- Watchlist Actions (Outside the link) --}}
+                    {{-- Watchlist Actions (Outside the link) - Only for authenticated users --}}
+                    @auth
                     <div class="absolute top-3 right-3">
                         <span 
                             wire:click="toggleWatchlist({{ $content['id'] }}, '{{ $content['type'] ?? 'auto' }}')"
@@ -830,6 +833,7 @@
                             @endif
                         </span>
                     </div>
+                    @endauth
                 </div>
                 @endforeach
             </div>
@@ -887,7 +891,8 @@
                         </div>
                     </a>
                     
-                    {{-- Watchlist Button (Outside link) --}}
+                    {{-- Watchlist Button (Outside link) - Only for authenticated users --}}
+                    @auth
                     <div class="absolute top-4 right-4">
                         <span 
                             wire:click="toggleWatchlist({{ $content['id'] }}, '{{ $content['type'] ?? 'auto' }}')"
@@ -905,6 +910,7 @@
                             @endif
                         </span>
                     </div>
+                    @endauth
                 </div>
                 @endforeach
             </div>
@@ -968,8 +974,22 @@
     });
 
     // Listen for watchlist updates
-    $wire.on('watchlist-updated', (event) => {
-        const { type, message } = event;
+    $wire.on('watchlist-updated', (...args) => {
+        console.log('Event args:', args); // Debug için
+        
+        // Livewire v3 named parameters are passed as separate arguments
+        let type = 'unknown';
+        let message = 'Watchlist updated';
+        
+        if (args.length >= 2) {
+            type = args[0];
+            message = args[1];
+        } else if (args.length === 1 && typeof args[0] === 'object') {
+            // Fallback for array format
+            const data = args[0];
+            type = data.type || 'unknown';
+            message = data.message || 'Watchlist updated';
+        }
         
         // Create toast notification
         const toast = document.createElement('div');

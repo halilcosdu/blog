@@ -2,26 +2,27 @@
 
 namespace App\Livewire\Watch;
 
-use App\Models\Series;
 use App\Models\Episode;
+use App\Models\Series;
 use App\Models\UserProgress;
 use App\Models\UserWatchlist;
 use Livewire\Attributes\Computed;
 use Livewire\Component;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class SeriesShow extends Component
 {
     public Series $series;
+
     public ?Episode $currentEpisode = null;
+
     public string $slug;
 
     public function mount(string $slug): void
     {
         $this->slug = $slug;
-        
+
         $this->series = Series::published()
-            ->with(['category', 'user', 'tags', 'episodes' => function($query) {
+            ->with(['category', 'user', 'tags', 'episodes' => function ($query) {
                 $query->where('is_published', true)->orderBy('episode_number');
             }])
             ->where('slug', $slug)
@@ -34,7 +35,7 @@ class SeriesShow extends Component
     public function selectEpisode(int $episodeId): void
     {
         $episode = $this->series->episodes->where('id', $episodeId)->first();
-        
+
         if ($episode) {
             $this->currentEpisode = $episode;
             $this->dispatch('episode-changed', ['episode' => $episode->id]);
@@ -43,10 +44,11 @@ class SeriesShow extends Component
 
     public function toggleWatchlist(): void
     {
-        if (!auth()->check()) {
+        if (! auth()->check()) {
             $this->dispatch('auth-required', [
                 'message' => 'Please login to manage your watchlist.',
             ]);
+
             return;
         }
 
@@ -67,7 +69,7 @@ class SeriesShow extends Component
 
     public function updateProgress(int $watchedSeconds, int $totalSeconds): void
     {
-        if (!auth()->check()) {
+        if (! auth()->check()) {
             return;
         }
 
@@ -97,7 +99,7 @@ class SeriesShow extends Component
     #[Computed]
     public function isInWatchlist(): bool
     {
-        if (!auth()->check()) {
+        if (! auth()->check()) {
             return false;
         }
 
@@ -107,7 +109,7 @@ class SeriesShow extends Component
     #[Computed]
     public function userProgress(): int
     {
-        if (!auth()->check()) {
+        if (! auth()->check()) {
             return 0;
         }
 
@@ -122,12 +124,12 @@ class SeriesShow extends Component
     #[Computed]
     public function episodeProgress(): array
     {
-        if (!auth()->check()) {
+        if (! auth()->check()) {
             return [];
         }
 
         $episodeIds = $this->series->episodes->pluck('id')->toArray();
-        
+
         $progressRecords = UserProgress::where('user_id', auth()->id())
             ->where('progressable_type', Episode::class)
             ->whereIn('progressable_id', $episodeIds)
@@ -146,7 +148,7 @@ class SeriesShow extends Component
     #[Computed]
     public function nextEpisode(): ?Episode
     {
-        if (!$this->currentEpisode) {
+        if (! $this->currentEpisode) {
             return null;
         }
 
@@ -158,7 +160,7 @@ class SeriesShow extends Component
     #[Computed]
     public function previousEpisode(): ?Episode
     {
-        if (!$this->currentEpisode) {
+        if (! $this->currentEpisode) {
             return null;
         }
 
@@ -171,7 +173,7 @@ class SeriesShow extends Component
     public function render()
     {
         $seoData = [
-            'title' => $this->series->title . ' - Video Series',
+            'title' => $this->series->title.' - Video Series',
             'description' => $this->series->description,
             'keywords' => implode(', ', $this->series->tags->pluck('name')->toArray()),
             'url' => request()->url(),
@@ -180,7 +182,7 @@ class SeriesShow extends Component
         ];
 
         return view('livewire.watch.series-show')
-            ->title($this->series->title . ' - Video Series')
+            ->title($this->series->title.' - Video Series')
             ->layout('components.layouts.app', compact('seoData'));
     }
 }

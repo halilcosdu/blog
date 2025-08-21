@@ -35,7 +35,7 @@ return new class extends Migration
             $table->boolean('is_standalone')->default(false);
             $table->timestamp('published_at')->nullable();
             $table->timestamps();
-            
+
             $table->index(['series_id', 'episode_number']);
             $table->index(['is_published', 'published_at']);
             $table->index(['is_featured']);

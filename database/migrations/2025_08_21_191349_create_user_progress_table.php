@@ -23,7 +23,7 @@ return new class extends Migration
             $table->timestamp('completed_at')->nullable();
             $table->timestamp('last_watched_at')->nullable();
             $table->timestamps();
-            
+
             $table->unique(['user_id', 'progressable_type', 'progressable_id']);
             $table->index(['user_id', 'is_completed']);
             $table->index(['user_id', 'last_watched_at']);

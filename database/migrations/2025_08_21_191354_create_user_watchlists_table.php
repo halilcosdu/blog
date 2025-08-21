@@ -16,7 +16,7 @@ return new class extends Migration
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->morphs('watchable'); // watchable_type, watchable_id (Episode, Series, or Pathway)
             $table->timestamps();
-            
+
             $table->unique(['user_id', 'watchable_type', 'watchable_id']);
             $table->index(['user_id', 'created_at']);
         });

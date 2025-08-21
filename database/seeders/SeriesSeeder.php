@@ -2,9 +2,8 @@
 
 namespace Database\Seeders;
 
-use App\Models\Series;
 use App\Models\Category;
-use App\Models\User;
+use App\Models\Series;
 use App\Models\Tag;
 use Illuminate\Database\Seeder;
 
@@ -13,7 +12,7 @@ class SeriesSeeder extends Seeder
     public function run(): void
     {
         $adminUserId = 1;
-        
+
         $series = [
             [
                 'title' => 'Master Laravel 11',
@@ -25,7 +24,7 @@ class SeriesSeeder extends Seeder
                 'trailer_vimeo_data' => [
                     'title' => 'Laravel 11 Masterclass Trailer',
                     'duration' => 120,
-                    'thumbnail' => 'https://i.vimeocdn.com/video/123456789_640.jpg'
+                    'thumbnail' => 'https://i.vimeocdn.com/video/123456789_640.jpg',
                 ],
                 'category_id' => Category::where('slug', 'laravel')->first()->id,
                 'user_id' => $adminUserId,
@@ -39,7 +38,7 @@ class SeriesSeeder extends Seeder
                 'is_featured' => true,
                 'is_free' => false,
                 'published_at' => now()->subDays(7),
-                'tags' => ['laravel', 'eloquent', 'artisan', 'blade', 'routing']
+                'tags' => ['laravel', 'eloquent', 'artisan', 'blade', 'routing'],
             ],
             [
                 'title' => 'Advanced Filament Development',
@@ -51,7 +50,7 @@ class SeriesSeeder extends Seeder
                 'trailer_vimeo_data' => [
                     'title' => 'Advanced Filament Development Trailer',
                     'duration' => 90,
-                    'thumbnail' => 'https://i.vimeocdn.com/video/123456790_640.jpg'
+                    'thumbnail' => 'https://i.vimeocdn.com/video/123456790_640.jpg',
                 ],
                 'category_id' => Category::where('slug', 'laravel')->first()->id,
                 'user_id' => $adminUserId,
@@ -65,7 +64,7 @@ class SeriesSeeder extends Seeder
                 'is_featured' => true,
                 'is_free' => false,
                 'published_at' => now()->subDays(14),
-                'tags' => ['laravel', 'filament', 'components', 'relationships', 'validation']
+                'tags' => ['laravel', 'filament', 'components', 'relationships', 'validation'],
             ],
             [
                 'title' => 'Testing Laravel Applications',
@@ -77,7 +76,7 @@ class SeriesSeeder extends Seeder
                 'trailer_vimeo_data' => [
                     'title' => 'Testing Laravel Applications Trailer',
                     'duration' => 75,
-                    'thumbnail' => 'https://i.vimeocdn.com/video/123456791_640.jpg'
+                    'thumbnail' => 'https://i.vimeocdn.com/video/123456791_640.jpg',
                 ],
                 'category_id' => Category::where('slug', 'testing')->first()->id,
                 'user_id' => $adminUserId,
@@ -91,7 +90,7 @@ class SeriesSeeder extends Seeder
                 'is_featured' => false,
                 'is_free' => true,
                 'published_at' => now()->subDays(21),
-                'tags' => ['testing', 'pest', 'tdd', 'validation', 'security']
+                'tags' => ['testing', 'pest', 'tdd', 'validation', 'security'],
             ],
             [
                 'title' => 'API Development with Laravel',
@@ -103,7 +102,7 @@ class SeriesSeeder extends Seeder
                 'trailer_vimeo_data' => [
                     'title' => 'API Development with Laravel Trailer',
                     'duration' => 110,
-                    'thumbnail' => 'https://i.vimeocdn.com/video/123456792_640.jpg'
+                    'thumbnail' => 'https://i.vimeocdn.com/video/123456792_640.jpg',
                 ],
                 'category_id' => Category::where('slug', 'apis')->first()->id,
                 'user_id' => $adminUserId,
@@ -117,7 +116,7 @@ class SeriesSeeder extends Seeder
                 'is_featured' => false,
                 'is_free' => false,
                 'published_at' => now()->subDays(28),
-                'tags' => ['laravel', 'api', 'authentication', 'middleware', 'validation']
+                'tags' => ['laravel', 'api', 'authentication', 'middleware', 'validation'],
             ],
             [
                 'title' => 'Modern PHP Practices',
@@ -129,7 +128,7 @@ class SeriesSeeder extends Seeder
                 'trailer_vimeo_data' => [
                     'title' => 'Modern PHP Practices Trailer',
                     'duration' => 95,
-                    'thumbnail' => 'https://i.vimeocdn.com/video/123456793_640.jpg'
+                    'thumbnail' => 'https://i.vimeocdn.com/video/123456793_640.jpg',
                 ],
                 'category_id' => Category::where('slug', 'php')->first()->id,
                 'user_id' => $adminUserId,
@@ -143,7 +142,7 @@ class SeriesSeeder extends Seeder
                 'is_featured' => true,
                 'is_free' => false,
                 'published_at' => now()->subDays(35),
-                'tags' => ['php', 'modern', 'patterns', 'clean-code', 'oop']
+                'tags' => ['php', 'modern', 'patterns', 'clean-code', 'oop'],
             ],
             [
                 'title' => 'Frontend Build Tools Mastery',
@@ -155,7 +154,7 @@ class SeriesSeeder extends Seeder
                 'trailer_vimeo_data' => [
                     'title' => 'Build Tools Mastery Trailer',
                     'duration' => 85,
-                    'thumbnail' => 'https://i.vimeocdn.com/video/123456794_640.jpg'
+                    'thumbnail' => 'https://i.vimeocdn.com/video/123456794_640.jpg',
                 ],
                 'category_id' => Category::where('slug', 'frontend')->first()->id,
                 'user_id' => $adminUserId,
@@ -169,16 +168,16 @@ class SeriesSeeder extends Seeder
                 'is_featured' => false,
                 'is_free' => true,
                 'published_at' => now()->subDays(42),
-                'tags' => ['vite', 'webpack', 'build-tools', 'frontend', 'optimization']
-            ]
+                'tags' => ['vite', 'webpack', 'build-tools', 'frontend', 'optimization'],
+            ],
         ];
 
         foreach ($series as $seriesData) {
             $tags = $seriesData['tags'];
             unset($seriesData['tags']);
-            
+
             $seriesModel = Series::create($seriesData);
-            
+
             // Attach tags
             $tagIds = [];
             foreach ($tags as $tagName) {
@@ -187,8 +186,8 @@ class SeriesSeeder extends Seeder
                     $tagIds[] = $tag->id;
                 }
             }
-            
-            if (!empty($tagIds)) {
+
+            if (! empty($tagIds)) {
                 $seriesModel->tags()->attach($tagIds);
             }
         }

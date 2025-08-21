@@ -2,8 +2,8 @@
 
 namespace App\Livewire\Watch;
 
-use App\Models\Series;
 use App\Models\Episode;
+use App\Models\Series;
 use App\Models\UserProgress;
 use App\Models\UserWatchlist;
 use Livewire\Attributes\Computed;
@@ -12,15 +12,18 @@ use Livewire\Component;
 class EpisodeShow extends Component
 {
     public Episode $episode;
+
     public ?Series $series = null;
+
     public string $seriesSlug;
+
     public string $episodeSlug;
 
     public function mount(string $seriesSlug, string $episodeSlug): void
     {
         $this->seriesSlug = $seriesSlug;
         $this->episodeSlug = $episodeSlug;
-        
+
         // Find the series first
         $this->series = Series::published()
             ->with(['category', 'user', 'tags'])
@@ -37,10 +40,11 @@ class EpisodeShow extends Component
 
     public function toggleWatchlist(): void
     {
-        if (!auth()->check()) {
+        if (! auth()->check()) {
             $this->dispatch('auth-required', [
                 'message' => 'Please login to manage your watchlist.',
             ]);
+
             return;
         }
 
@@ -61,7 +65,7 @@ class EpisodeShow extends Component
 
     public function updateProgress(int $watchedSeconds, int $totalSeconds): void
     {
-        if (!auth()->check()) {
+        if (! auth()->check()) {
             return;
         }
 
@@ -90,7 +94,7 @@ class EpisodeShow extends Component
 
     public function markAsCompleted(): void
     {
-        if (!auth()->check()) {
+        if (! auth()->check()) {
             return;
         }
 
@@ -101,7 +105,7 @@ class EpisodeShow extends Component
 
         if ($progress) {
             $progress->markAsCompleted();
-            
+
             $this->dispatch('episode-completed', [
                 'episode_id' => $this->episode->id,
                 'message' => 'Episode completed! 🎉',
@@ -112,7 +116,7 @@ class EpisodeShow extends Component
     #[Computed]
     public function isInWatchlist(): bool
     {
-        if (!auth()->check()) {
+        if (! auth()->check()) {
             return false;
         }
 
@@ -122,7 +126,7 @@ class EpisodeShow extends Component
     #[Computed]
     public function userProgress(): int
     {
-        if (!auth()->check()) {
+        if (! auth()->check()) {
             return 0;
         }
 
@@ -137,7 +141,7 @@ class EpisodeShow extends Component
     #[Computed]
     public function nextEpisode(): ?Episode
     {
-        if (!$this->series) {
+        if (! $this->series) {
             return null;
         }
 
@@ -151,7 +155,7 @@ class EpisodeShow extends Component
     #[Computed]
     public function previousEpisode(): ?Episode
     {
-        if (!$this->series) {
+        if (! $this->series) {
             return null;
         }
 
@@ -165,7 +169,7 @@ class EpisodeShow extends Component
     #[Computed]
     public function relatedEpisodes(): array
     {
-        if (!$this->series) {
+        if (! $this->series) {
             return [];
         }
 
@@ -185,7 +189,7 @@ class EpisodeShow extends Component
                 'thumbnail' => $episode->thumbnail,
                 'url' => route('watch.episode.show', [
                     'seriesSlug' => $this->series->slug,
-                    'episodeSlug' => $episode->slug
+                    'episodeSlug' => $episode->slug,
                 ]),
             ];
         })->toArray();
@@ -194,7 +198,7 @@ class EpisodeShow extends Component
     public function render()
     {
         $seoData = [
-            'title' => $this->episode->title . ' - ' . ($this->series?->title ?? 'Episode'),
+            'title' => $this->episode->title.' - '.($this->series?->title ?? 'Episode'),
             'description' => $this->episode->description,
             'keywords' => implode(', ', $this->episode->tags->pluck('name')->toArray()),
             'url' => request()->url(),
@@ -203,7 +207,7 @@ class EpisodeShow extends Component
         ];
 
         return view('livewire.watch.episode-show')
-            ->title($this->episode->title . ' - ' . ($this->series?->title ?? 'Episode'))
+            ->title($this->episode->title.' - '.($this->series?->title ?? 'Episode'))
             ->layout('components.layouts.app', compact('seoData'));
     }
 }

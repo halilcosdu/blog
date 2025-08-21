@@ -3,12 +3,12 @@
 namespace App\Models;
 
 use App\Traits\Taggable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 
 class Series extends Model
@@ -146,17 +146,17 @@ class Series extends Model
     public function getFormattedDurationAttribute(): string
     {
         if ($this->duration_minutes < 60) {
-            return $this->duration_minutes . ' min';
+            return $this->duration_minutes.' min';
         }
 
         $hours = floor($this->duration_minutes / 60);
         $minutes = $this->duration_minutes % 60;
 
         if ($minutes === 0) {
-            return $hours . ' hour' . ($hours > 1 ? 's' : '');
+            return $hours.' hour'.($hours > 1 ? 's' : '');
         }
 
-        return $hours . 'h ' . $minutes . 'm';
+        return $hours.'h '.$minutes.'m';
     }
 
     public function incrementViews(): void

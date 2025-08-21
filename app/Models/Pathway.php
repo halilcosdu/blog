@@ -3,12 +3,12 @@
 namespace App\Models;
 
 use App\Traits\Taggable;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 
 class Pathway extends Model
@@ -140,17 +140,17 @@ class Pathway extends Model
     public function getFormattedDurationAttribute(): string
     {
         if ($this->total_duration_minutes < 60) {
-            return $this->total_duration_minutes . ' min';
+            return $this->total_duration_minutes.' min';
         }
 
         $hours = floor($this->total_duration_minutes / 60);
         $minutes = $this->total_duration_minutes % 60;
 
         if ($minutes === 0) {
-            return $hours . ' hour' . ($hours > 1 ? 's' : '');
+            return $hours.' hour'.($hours > 1 ? 's' : '');
         }
 
-        return $hours . 'h ' . $minutes . 'm';
+        return $hours.'h '.$minutes.'m';
     }
 
     public function incrementViews(): void
@@ -166,7 +166,7 @@ class Pathway extends Model
     public function updateCounts(): void
     {
         $this->items_count = $this->pathwayItems()->count();
-        
+
         // Calculate total duration from all items
         $totalDuration = 0;
         foreach ($this->pathwayItems as $item) {
@@ -176,7 +176,7 @@ class Pathway extends Model
                 $totalDuration += $item->item->duration_minutes ?? 0;
             }
         }
-        
+
         $this->total_duration_minutes = $totalDuration;
         $this->save();
     }
