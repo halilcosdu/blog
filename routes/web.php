@@ -9,6 +9,14 @@ Route::get('/posts', App\Livewire\Blog\PostsList::class)->name('posts.index');
 Route::get('/posts/{slug}', App\Livewire\Blog\PostShow::class)->name('posts.show');
 Route::get('/watch', App\Livewire\Watch\ModernWatchPage::class)->name('watch');
 
+// Watch content routes
+Route::prefix('watch')->name('watch.')->group(function () {
+    Route::get('/series/{slug}', App\Livewire\Watch\SeriesShow::class)->name('series.show');
+    Route::get('/series/{seriesSlug}/episode/{episodeSlug}', App\Livewire\Watch\EpisodeShow::class)->name('episode.show');
+    Route::get('/lesson/{slug}', App\Livewire\Watch\LessonShow::class)->name('lesson.show');
+    Route::get('/pathways/{slug}', App\Livewire\Watch\PathwayShow::class)->name('pathway.show');
+});
+
 // Test route for markdown editor
 Route::get('/test-editor', function () {
     return view('test-editor');

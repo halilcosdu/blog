@@ -11,7 +11,7 @@ use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Str;
 
-class Series extends Model
+class Pathway extends Model
 {
     use Taggable;
 
@@ -21,13 +21,12 @@ class Series extends Model
         'description',
         'excerpt',
         'thumbnail',
-        'trailer_vimeo_id',
-        'trailer_vimeo_data',
         'category_id',
         'user_id',
         'level',
-        'duration_minutes',
-        'episodes_count',
+        'total_duration_minutes',
+        'items_count',
+        'students_count',
         'views_count',
         'rating',
         'sort_order',
@@ -44,9 +43,9 @@ class Series extends Model
             'is_featured' => 'boolean',
             'is_free' => 'boolean',
             'published_at' => 'datetime',
-            'trailer_vimeo_data' => 'array',
-            'duration_minutes' => 'integer',
-            'episodes_count' => 'integer',
+            'total_duration_minutes' => 'integer',
+            'items_count' => 'integer',
+            'students_count' => 'integer',
             'views_count' => 'integer',
             'rating' => 'decimal:2',
             'sort_order' => 'integer',
@@ -57,15 +56,15 @@ class Series extends Model
     {
         parent::boot();
 
-        static::creating(function (Series $series) {
-            if (empty($series->slug)) {
-                $series->slug = Str::slug($series->title);
+        static::creating(function (Pathway $pathway) {
+            if (empty($pathway->slug)) {
+                $pathway->slug = Str::slug($pathway->title);
             }
         });
 
-        static::updating(function (Series $series) {
-            if ($series->isDirty('title') && empty($series->slug)) {
-                $series->slug = Str::slug($series->title);
+        static::updating(function (Pathway $pathway) {
+            if ($pathway->isDirty('title') && empty($pathway->slug)) {
+                $pathway->slug = Str::slug($pathway->title);
             }
         });
     }
@@ -81,24 +80,19 @@ class Series extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function episodes(): HasMany
+    public function pathwayItems(): HasMany
     {
-        return $this->hasMany(Episode::class)->orderBy('episode_number');
+        return $this->hasMany(PathwayItem::class)->orderBy('sort_order');
     }
 
-    public function publishedEpisodes(): HasMany
+    public function series(): MorphToMany
     {
-        return $this->episodes()->where('is_published', true);
+        return $this->morphedByMany(Series::class, 'item', 'pathway_items');
     }
 
-    public function pathwayItems(): MorphMany
+    public function episodes(): MorphToMany
     {
-        return $this->morphMany(PathwayItem::class, 'item');
-    }
-
-    public function pathways(): MorphToMany
-    {
-        return $this->morphToMany(Pathway::class, 'item', 'pathway_items');
+        return $this->morphedByMany(Episode::class, 'item', 'pathway_items');
     }
 
     public function userProgress(): MorphMany
@@ -134,7 +128,7 @@ class Series extends Model
 
     public function scopePopular(Builder $query): Builder
     {
-        return $query->orderByDesc('views_count');
+        return $query->orderByDesc('students_count');
     }
 
     public function scopeRecent(Builder $query): Builder
@@ -145,12 +139,12 @@ class Series extends Model
     // Helper methods
     public function getFormattedDurationAttribute(): string
     {
-        if ($this->duration_minutes < 60) {
-            return $this->duration_minutes . ' min';
+        if ($this->total_duration_minutes < 60) {
+            return $this->total_duration_minutes . ' min';
         }
 
-        $hours = floor($this->duration_minutes / 60);
-        $minutes = $this->duration_minutes % 60;
+        $hours = floor($this->total_duration_minutes / 60);
+        $minutes = $this->total_duration_minutes % 60;
 
         if ($minutes === 0) {
             return $hours . ' hour' . ($hours > 1 ? 's' : '');
@@ -164,15 +158,26 @@ class Series extends Model
         $this->increment('views_count');
     }
 
-    public function updateEpisodesCount(): void
+    public function incrementStudents(): void
     {
-        $this->episodes_count = $this->episodes()->count();
-        $this->save();
+        $this->increment('students_count');
     }
 
-    public function updateDuration(): void
+    public function updateCounts(): void
     {
-        $this->duration_minutes = $this->episodes()->sum('duration_minutes');
+        $this->items_count = $this->pathwayItems()->count();
+        
+        // Calculate total duration from all items
+        $totalDuration = 0;
+        foreach ($this->pathwayItems as $item) {
+            if ($item->item_type === Series::class) {
+                $totalDuration += $item->item->duration_minutes ?? 0;
+            } elseif ($item->item_type === Episode::class) {
+                $totalDuration += $item->item->duration_minutes ?? 0;
+            }
+        }
+        
+        $this->total_duration_minutes = $totalDuration;
         $this->save();
     }
 

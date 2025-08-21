@@ -60,4 +60,34 @@ class Category extends Model
     {
         return $this->posts()->where('is_published', true);
     }
+
+    public function series(): HasMany
+    {
+        return $this->hasMany(Series::class);
+    }
+
+    public function publishedSeries(): HasMany
+    {
+        return $this->series()->where('is_published', true);
+    }
+
+    public function episodes(): HasMany
+    {
+        return $this->hasMany(Episode::class);
+    }
+
+    public function publishedEpisodes(): HasMany
+    {
+        return $this->episodes()->where('is_published', true);
+    }
+
+    public function pathways(): HasMany
+    {
+        return $this->hasMany(Pathway::class);
+    }
+
+    public function publishedPathways(): HasMany
+    {
+        return $this->pathways()->where('is_published', true);
+    }
 }

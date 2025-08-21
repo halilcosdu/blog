@@ -27,5 +27,12 @@ class DatabaseSeeder extends Seeder
             DiscussionTagSeeder::class,
             PackageTagSeeder::class,
         ]);
+
+        // Seed video content
+        $this->call([
+            SeriesSeeder::class,
+            EpisodeSeeder::class,
+            PathwaySeeder::class,
+        ]);
     }
 }

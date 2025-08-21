@@ -69,6 +69,11 @@ class Tag extends Model
         return $this->morphedByMany(Series::class, 'taggable');
     }
 
+    public function pathways(): MorphToMany
+    {
+        return $this->morphedByMany(Pathway::class, 'taggable');
+    }
+
     // Helper methods
     public function incrementUsage(): void
     {

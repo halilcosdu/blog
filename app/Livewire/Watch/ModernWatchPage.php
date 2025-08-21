@@ -2,6 +2,13 @@
 
 namespace App\Livewire\Watch;
 
+use App\Models\Series;
+use App\Models\Episode;
+use App\Models\Pathway;
+use App\Models\Category;
+use App\Models\Tag;
+use App\Models\UserWatchlist;
+use App\Models\UserProgress;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\Url;
 use Livewire\Component;
@@ -145,21 +152,40 @@ class ModernWatchPage extends Component
         $this->resetPage();
     }
 
-    public function toggleWatchlist(int $contentId): void
+    public function toggleWatchlist(int $contentId, string $contentType = 'auto'): void
     {
-        if ($this->isInWatchlist($contentId)) {
-            $this->removeFromWatchlist($contentId);
+        if (!auth()->check()) {
+            $this->dispatch('auth-required', [
+                'message' => 'Please login to manage your watchlist.',
+            ]);
+            return;
+        }
+
+        if ($this->isInWatchlist($contentId, $contentType)) {
+            $this->removeFromWatchlist($contentId, $contentType);
         } else {
-            $this->addToWatchlist($contentId);
+            $this->addToWatchlist($contentId, $contentType);
         }
     }
 
-    public function addToWatchlist(int $contentId): void
+    public function addToWatchlist(int $contentId, string $contentType = 'auto'): void
     {
-        if (! $this->isInWatchlist($contentId)) {
-            $this->watchlist[] = $contentId;
-            session(['watch.watchlist' => $this->watchlist]);
+        if (!auth()->check()) {
+            return;
+        }
 
+        // Auto-detect content type if not provided
+        if ($contentType === 'auto') {
+            $contentType = $this->detectContentType($contentId);
+        }
+
+        if (!$contentType) {
+            return;
+        }
+
+        $modelClass = $this->getModelClass($contentType);
+        
+        if (UserWatchlist::addToWatchlist(auth()->id(), $modelClass, $contentId)) {
             $this->dispatch('watchlist-updated', [
                 'type' => 'added',
                 'message' => 'Added to watchlist!',
@@ -167,31 +193,214 @@ class ModernWatchPage extends Component
         }
     }
 
-    public function removeFromWatchlist(int $contentId): void
+    public function removeFromWatchlist(int $contentId, string $contentType = 'auto'): void
     {
-        $this->watchlist = array_values(array_filter($this->watchlist, fn ($id) => $id !== $contentId));
-        session(['watch.watchlist' => $this->watchlist]);
+        if (!auth()->check()) {
+            return;
+        }
 
-        $this->dispatch('watchlist-updated', [
-            'type' => 'removed',
-            'message' => 'Removed from watchlist!',
-        ]);
+        // Auto-detect content type if not provided
+        if ($contentType === 'auto') {
+            $contentType = $this->detectContentType($contentId);
+        }
+
+        if (!$contentType) {
+            return;
+        }
+
+        $modelClass = $this->getModelClass($contentType);
+        
+        if (UserWatchlist::removeFromWatchlist(auth()->id(), $modelClass, $contentId)) {
+            $this->dispatch('watchlist-updated', [
+                'type' => 'removed',
+                'message' => 'Removed from watchlist!',
+            ]);
+        }
     }
 
-    public function isInWatchlist(int $contentId): bool
+    public function isInWatchlist(int $contentId, string $contentType = 'auto'): bool
     {
-        return in_array($contentId, $this->watchlist);
+        if (!auth()->check()) {
+            return false;
+        }
+
+        // Auto-detect content type if not provided
+        if ($contentType === 'auto') {
+            $contentType = $this->detectContentType($contentId);
+        }
+
+        if (!$contentType) {
+            return false;
+        }
+
+        $modelClass = $this->getModelClass($contentType);
+        
+        return UserWatchlist::isInWatchlist(auth()->id(), $modelClass, $contentId);
     }
 
     public function clearWatchlist(): void
     {
-        $this->watchlist = [];
-        session(['watch.watchlist' => []]);
+        if (!auth()->check()) {
+            return;
+        }
+
+        UserWatchlist::where('user_id', auth()->id())->delete();
 
         $this->dispatch('watchlist-updated', [
             'type' => 'cleared',
             'message' => 'Watchlist cleared!',
         ]);
+    }
+
+    private function detectContentType(int $contentId): ?string
+    {
+        // Try to find the content in different models
+        if (Series::find($contentId)) {
+            return 'series';
+        }
+        
+        if (Episode::find($contentId)) {
+            return 'episode';
+        }
+        
+        if (Pathway::find($contentId)) {
+            return 'pathway';
+        }
+        
+        return null;
+    }
+
+    private function getModelClass(string $contentType): string
+    {
+        return match($contentType) {
+            'series' => Series::class,
+            'episode', 'lesson' => Episode::class,
+            'pathway' => Pathway::class,
+            default => Episode::class,
+        };
+    }
+
+    public function updateProgress(int $contentId, string $contentType, int $watchedSeconds, int $totalSeconds): void
+    {
+        if (!auth()->check()) {
+            return;
+        }
+
+        $modelClass = $this->getModelClass($contentType);
+        
+        // Get or create progress record
+        $progress = UserProgress::firstOrCreate([
+            'user_id' => auth()->id(),
+            'progressable_type' => $modelClass,
+            'progressable_id' => $contentId,
+        ], [
+            'watched_seconds' => 0,
+            'total_seconds' => $totalSeconds,
+            'progress_percentage' => 0,
+            'is_completed' => false,
+        ]);
+
+        // Update progress
+        $progress->update([
+            'watched_seconds' => $watchedSeconds,
+            'total_seconds' => $totalSeconds,
+        ]);
+
+        // Emit progress updated event
+        $this->dispatch('progress-updated', [
+            'content_id' => $contentId,
+            'content_type' => $contentType,
+            'progress' => $progress->progress_percentage,
+            'is_completed' => $progress->is_completed,
+        ]);
+    }
+
+    public function markAsCompleted(int $contentId, string $contentType): void
+    {
+        if (!auth()->check()) {
+            return;
+        }
+
+        $modelClass = $this->getModelClass($contentType);
+        
+        $progress = UserProgress::where('user_id', auth()->id())
+            ->where('progressable_type', $modelClass)
+            ->where('progressable_id', $contentId)
+            ->first();
+
+        if ($progress) {
+            $progress->markAsCompleted();
+            
+            $this->dispatch('content-completed', [
+                'content_id' => $contentId,
+                'content_type' => $contentType,
+                'message' => 'Congratulations! You completed this content.',
+            ]);
+        }
+    }
+
+    public function resetProgress(int $contentId, string $contentType): void
+    {
+        if (!auth()->check()) {
+            return;
+        }
+
+        $modelClass = $this->getModelClass($contentType);
+        
+        UserProgress::where('user_id', auth()->id())
+            ->where('progressable_type', $modelClass)
+            ->where('progressable_id', $contentId)
+            ->delete();
+
+        $this->dispatch('progress-reset', [
+            'content_id' => $contentId,
+            'content_type' => $contentType,
+            'message' => 'Progress has been reset.',
+        ]);
+    }
+
+    public function getProgressStats(): array
+    {
+        if (!auth()->check()) {
+            return [
+                'total_watched' => 0,
+                'completed_count' => 0,
+                'in_progress_count' => 0,
+                'total_watch_time' => '0 min',
+            ];
+        }
+
+        $completedCount = UserProgress::forUser(auth()->id())->completed()->count();
+        $inProgressCount = UserProgress::forUser(auth()->id())->inProgress()->count();
+        $totalWatchedSeconds = UserProgress::forUser(auth()->id())->sum('watched_seconds');
+        
+        return [
+            'total_watched' => $completedCount + $inProgressCount,
+            'completed_count' => $completedCount,
+            'in_progress_count' => $inProgressCount,
+            'total_watch_time' => $this->formatWatchTime($totalWatchedSeconds),
+        ];
+    }
+
+    private function formatWatchTime(int $seconds): string
+    {
+        if ($seconds < 60) {
+            return $seconds . ' sec';
+        }
+        
+        $minutes = floor($seconds / 60);
+        if ($minutes < 60) {
+            return $minutes . ' min';
+        }
+        
+        $hours = floor($minutes / 60);
+        $remainingMinutes = $minutes % 60;
+        
+        if ($remainingMinutes === 0) {
+            return $hours . ' hr';
+        }
+        
+        return $hours . ' hr ' . $remainingMinutes . ' min';
     }
 
     #[Computed]
@@ -233,16 +442,56 @@ class ModernWatchPage extends Component
     #[Computed]
     public function categories(): array
     {
-        return [
-            ['id' => 'laravel', 'name' => 'Laravel', 'count' => 85, 'color' => 'red'],
-            ['id' => 'php', 'name' => 'PHP', 'count' => 67, 'color' => 'blue'],
-            ['id' => 'frontend', 'name' => 'Frontend', 'count' => 54, 'color' => 'green'],
-            ['id' => 'testing', 'name' => 'Testing', 'count' => 38, 'color' => 'purple'],
-            ['id' => 'devops', 'name' => 'DevOps', 'count' => 29, 'color' => 'orange'],
-            ['id' => 'javascript', 'name' => 'JavaScript', 'count' => 42, 'color' => 'yellow'],
-            ['id' => 'database', 'name' => 'Database', 'count' => 31, 'color' => 'indigo'],
-            ['id' => 'api', 'name' => 'API Development', 'count' => 26, 'color' => 'pink'],
+        $categories = Category::where('is_active', true)
+            ->orderBy('sort_order')
+            ->get();
+            
+        return $categories->map(function (Category $category) {
+            // Count published content in this category
+            $seriesCount = $category->publishedSeries()->count();
+            $episodesCount = $category->publishedEpisodes()->count();
+            $pathwaysCount = $category->publishedPathways()->count();
+            $totalCount = $seriesCount + $episodesCount + $pathwaysCount;
+            
+            return [
+                'id' => $category->slug,
+                'name' => $category->name,
+                'count' => $totalCount,
+                'color' => $this->getCategoryColor($category->color ?? $category->slug),
+                'description' => $category->description,
+            ];
+        })->filter(fn($category) => $category['count'] > 0)->toArray();
+    }
+    
+    private function getCategoryColor(string $colorOrSlug): string
+    {
+        // If it's already a valid color format, return it
+        if (str_starts_with($colorOrSlug, '#')) {
+            return $colorOrSlug;
+        }
+        
+        // Map category slugs to colors for consistency
+        $colorMap = [
+            'laravel' => '#EF4444',
+            'php' => '#3B82F6',
+            'frontend' => '#10B981',
+            'testing' => '#8B5CF6',
+            'devops' => '#F59E0B',
+            'javascript' => '#F59E0B',
+            'databases' => '#6366F1',
+            'apis' => '#EC4899',
+            'vue' => '#22C55E',
+            'react' => '#06B6D4',
+            'tailwind-css' => '#334155',
+            'livewire' => '#DB2777',
+            'security' => '#DC2626',
+            'cloud' => '#3B82F6',
+            'performance' => '#F97316',
+            'architecture' => '#7C3AED',
+            'tooling' => '#475569',
         ];
+        
+        return $colorMap[$colorOrSlug] ?? '#6B7280';
     }
 
     #[Computed]
@@ -269,23 +518,89 @@ class ModernWatchPage extends Component
     #[Computed]
     public function popularTags(): array
     {
-        return [
-            ['name' => 'eloquent', 'count' => 45, 'color' => 'blue'],
-            ['name' => 'authentication', 'count' => 38, 'color' => 'green'],
-            ['name' => 'validation', 'count' => 42, 'color' => 'purple'],
-            ['name' => 'middleware', 'count' => 29, 'color' => 'orange'],
-            ['name' => 'blade', 'count' => 36, 'color' => 'red'],
-            ['name' => 'artisan', 'count' => 31, 'color' => 'indigo'],
-            ['name' => 'migrations', 'count' => 27, 'color' => 'pink'],
-            ['name' => 'relationships', 'count' => 33, 'color' => 'teal'],
-            ['name' => 'components', 'count' => 24, 'color' => 'yellow'],
-            ['name' => 'routing', 'count' => 39, 'color' => 'gray'],
-            ['name' => 'caching', 'count' => 18, 'color' => 'emerald'],
-            ['name' => 'queues', 'count' => 22, 'color' => 'cyan'],
-            ['name' => 'events', 'count' => 16, 'color' => 'violet'],
-            ['name' => 'notifications', 'count' => 14, 'color' => 'rose'],
-            ['name' => 'security', 'count' => 26, 'color' => 'amber'],
+        // Get tags that are used by published series, episodes, or pathways
+        $tags = Tag::whereHas('series', function($q) {
+                $q->where('is_published', true);
+            })
+            ->orWhereHas('episodes', function($q) {
+                $q->where('is_published', true);
+            })
+            ->orWhereHas('pathways', function($q) {
+                $q->where('is_published', true);
+            })
+            ->withCount([
+                'series as series_count' => function($q) {
+                    $q->where('is_published', true);
+                },
+                'episodes as episodes_count' => function($q) {
+                    $q->where('is_published', true);
+                },
+                'pathways as pathways_count' => function($q) {
+                    $q->where('is_published', true);
+                }
+            ])
+            ->get()
+            ->map(function($tag) {
+                $tag->total_usage = $tag->series_count + $tag->episodes_count + $tag->pathways_count;
+                return $tag;
+            })
+            ->where('total_usage', '>', 0)
+            ->sortByDesc('total_usage')
+            ->take(15);
+            
+        return $tags->map(function (Tag $tag) {
+            return [
+                'name' => $tag->slug,
+                'displayName' => $tag->name,
+                'count' => $tag->total_usage,
+                'color' => $this->getTagColor($tag->color ?? $tag->slug),
+                'description' => $tag->description,
+            ];
+        })->toArray();
+    }
+    
+    private function getTagColor(string $colorOrSlug): string
+    {
+        // If it's already a valid color format, return it
+        if (str_starts_with($colorOrSlug, '#')) {
+            return $colorOrSlug;
+        }
+        
+        // Map tag slugs to Tailwind CSS color classes
+        $colorMap = [
+            'laravel' => 'red',
+            'php' => 'blue',
+            'eloquent' => 'blue',
+            'authentication' => 'green',
+            'validation' => 'purple',
+            'middleware' => 'orange',
+            'blade' => 'red',
+            'artisan' => 'indigo',
+            'migrations' => 'pink',
+            'relationships' => 'teal',
+            'components' => 'yellow',
+            'routing' => 'gray',
+            'caching' => 'emerald',
+            'queues' => 'cyan',
+            'events' => 'violet',
+            'notifications' => 'rose',
+            'security' => 'amber',
+            'testing' => 'purple',
+            'pest' => 'purple',
+            'tdd' => 'purple',
+            'filament' => 'orange',
+            'livewire' => 'pink',
+            'vue' => 'green',
+            'react' => 'cyan',
+            'javascript' => 'yellow',
+            'typescript' => 'blue',
+            'frontend' => 'green',
+            'api' => 'pink',
+            'docker' => 'blue',
+            'devops' => 'orange',
         ];
+        
+        return $colorMap[$colorOrSlug] ?? 'gray';
     }
 
     #[Computed]
@@ -301,94 +616,158 @@ class ModernWatchPage extends Component
     #[Computed]
     public function pathways(): array
     {
+        // Build base query
+        $pathwaysQuery = Pathway::published()->with(['category', 'user', 'tags', 'pathwayItems']);
+        
+        // Apply filters
+        if ($this->selectedCategory) {
+            $pathwaysQuery->whereHas('category', fn($q) => $q->where('slug', $this->selectedCategory));
+        }
+        
+        if ($this->selectedLevel) {
+            $pathwaysQuery->where('level', $this->selectedLevel);
+        }
+        
+        if ($this->search) {
+            $searchTerm = '%' . $this->search . '%';
+            $pathwaysQuery->where(function($q) use ($searchTerm) {
+                $q->where('title', 'ILIKE', $searchTerm)
+                  ->orWhere('description', 'ILIKE', $searchTerm);
+            });
+        }
+        
+        if (!empty($this->selectedTags)) {
+            $pathwaysQuery->whereHas('tags', fn($q) => $q->whereIn('slug', $this->selectedTags));
+        }
+        
+        // Apply sorting
+        switch ($this->sortBy) {
+            case 'popular':
+                $pathwaysQuery->orderByDesc('students_count');
+                break;
+            case 'alphabetical':
+                $pathwaysQuery->orderBy('title');
+                break;
+            case 'duration':
+                $pathwaysQuery->orderBy('total_duration_minutes');
+                break;
+            default: // recent
+                $pathwaysQuery->orderByDesc('published_at');
+        }
+        
+        $pathways = $pathwaysQuery->get();
+        
+        return $pathways->map(function (Pathway $pathway) {
+            return $this->formatPathwayForFrontend($pathway);
+        })->toArray();
+    }
+    
+    private function formatPathwayForFrontend(Pathway $pathway): array
+    {
+        // Calculate user progress if authenticated
+        $userProgress = 0;
+        if (auth()->check()) {
+            $progress = UserProgress::where('user_id', auth()->id())
+                ->where('progressable_type', Pathway::class)
+                ->where('progressable_id', $pathway->id)
+                ->first();
+            $userProgress = $progress ? $progress->progress_percentage : 0;
+        }
+        
         return [
-            [
-                'id' => 'laravel-beginner',
-                'title' => 'Laravel from Zero to Hero',
-                'description' => 'Complete beginner-friendly path to master Laravel development',
-                'duration' => '45 hours',
-                'students' => 2847,
-                'lessons' => 67,
-                'level' => 'beginner',
-                'category' => 'laravel',
-                'thumbnail' => 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=600',
-                'instructor' => 'Halil Coşdu',
-                'progress' => 0,
-                'url' => '/pathways/laravel-beginner',
-            ],
-            [
-                'id' => 'api-mastery',
-                'title' => 'API Development Mastery',
-                'description' => 'Build robust APIs with Laravel, testing, and documentation',
-                'duration' => '32 hours',
-                'students' => 1923,
-                'lessons' => 45,
-                'level' => 'intermediate',
-                'category' => 'api',
-                'thumbnail' => 'https://images.unsplash.com/photo-1518779578993-ec3579fee39f?w=600',
-                'instructor' => 'Jeffrey Way',
-                'progress' => 25,
-                'url' => '/pathways/api-mastery',
-            ],
-            [
-                'id' => 'frontend-integration',
-                'title' => 'Modern Frontend Integration',
-                'description' => 'Connect Laravel with React, Vue, and Inertia.js',
-                'duration' => '28 hours',
-                'students' => 1456,
-                'lessons' => 38,
-                'level' => 'intermediate',
-                'category' => 'frontend',
-                'thumbnail' => 'https://images.unsplash.com/photo-1627398242454-45a1465c2479?w=600',
-                'instructor' => 'Caleb Porzio',
-                'progress' => 0,
-                'url' => '/pathways/frontend-integration',
-            ],
+            'id' => $pathway->id,
+            'slug' => $pathway->slug,
+            'title' => $pathway->title,
+            'description' => $pathway->description,
+            'duration' => $pathway->formatted_duration,
+            'students' => $pathway->students_count,
+            'lessons' => $pathway->items_count,
+            'level' => $pathway->level,
+            'category' => $pathway->category?->slug ?? '',
+            'thumbnail' => $pathway->thumbnail,
+            'instructor' => $pathway->user?->name ?? '',
+            'progress' => $userProgress,
+            'rating' => (float) $pathway->rating,
+            'tags' => $pathway->tags->pluck('slug')->toArray(),
+            'url' => route('watch.pathway.show', ['slug' => $pathway->slug]),
         ];
     }
 
     #[Computed]
     public function continueWatching(): array
     {
-        // Mock data - will be replaced with real data later
-        return [
-            [
-                'id' => 1,
-                'title' => 'Laravel Filament Advanced Components',
-                'series' => 'Filament Deep Dive',
-                'progress' => 65,
-                'thumbnail' => 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=400',
-                'duration' => '12:34',
-                'url' => '/watch/series/filament/episode/5',
-            ],
-            [
-                'id' => 2,
-                'title' => 'Testing with Pest: Feature Tests',
-                'series' => 'Modern Testing in Laravel',
-                'progress' => 30,
-                'thumbnail' => 'https://images.unsplash.com/photo-1526378722484-bd91ca387e72?w=400',
-                'duration' => '08:45',
-                'url' => '/watch/series/testing/episode/3',
-            ],
-            [
-                'id' => 3,
-                'title' => 'Building APIs with Laravel Sanctum',
-                'series' => 'API Development Mastery',
-                'progress' => 85,
-                'thumbnail' => 'https://images.unsplash.com/photo-1518779578993-ec3579fee39f?w=400',
-                'duration' => '15:22',
-                'url' => '/watch/series/api/episode/8',
-            ],
-            [
-                'id' => 4,
-                'title' => 'Livewire Component Communication',
-                'series' => 'Advanced Livewire',
-                'progress' => 45,
-                'thumbnail' => 'https://images.unsplash.com/photo-1536148935331-408321065b18?w=400',
-                'duration' => '09:15',
-                'url' => '/watch/series/livewire/episode/12',
-            ],
-        ];
+        if (!auth()->check()) {
+            return [];
+        }
+
+        // Get user's progress records for Series and Episodes that are in progress
+        $seriesProgress = UserProgress::forUser(auth()->id())
+            ->inProgress()
+            ->where('progressable_type', Series::class)
+            ->with(['progressable.category', 'progressable.user'])
+            ->recentlyWatched()
+            ->limit(6)
+            ->get();
+
+        $episodeProgress = UserProgress::forUser(auth()->id())
+            ->inProgress()
+            ->where('progressable_type', Episode::class)
+            ->with(['progressable.category', 'progressable.user', 'progressable.series'])
+            ->recentlyWatched()
+            ->limit(6)
+            ->get();
+
+        $continueWatchingItems = [];
+
+        // Format series progress
+        foreach ($seriesProgress as $progress) {
+            $series = $progress->progressable;
+            if ($series && $series->is_published) {
+                $continueWatchingItems[] = [
+                    'id' => $series->id,
+                    'type' => 'series',
+                    'title' => $series->title,
+                    'series' => null,
+                    'progress' => (int) $progress->progress_percentage,
+                    'thumbnail' => $series->thumbnail,
+                    'duration' => $series->formatted_duration,
+                    'url' => route('watch.series.show', ['slug' => $series->slug]),
+                    'last_watched' => $progress->last_watched_at,
+                    'instructor' => $series->user?->name ?? '',
+                ];
+            }
+        }
+
+        // Format episode progress
+        foreach ($episodeProgress as $progress) {
+            $episode = $progress->progressable;
+            if ($episode && $episode->is_published) {
+                $continueWatchingItems[] = [
+                    'id' => $episode->id,
+                    'type' => 'episode',
+                    'title' => $episode->title,
+                    'series' => $episode->series?->title ?? null,
+                    'progress' => (int) $progress->progress_percentage,
+                    'thumbnail' => $episode->thumbnail,
+                    'duration' => $episode->formatted_duration,
+                    'url' => $episode->is_standalone ? 
+                        route('watch.lesson.show', ['slug' => $episode->slug]) : 
+                        route('watch.episode.show', [
+                            'seriesSlug' => $episode->series?->slug,
+                            'episodeSlug' => $episode->slug
+                        ]),
+                    'last_watched' => $progress->last_watched_at,
+                    'instructor' => $episode->user?->name ?? '',
+                ];
+            }
+        }
+
+        // Sort by last watched time and return top 6
+        return collect($continueWatchingItems)
+            ->sortByDesc('last_watched')
+            ->take(6)
+            ->values()
+            ->toArray();
     }
 
     #[Computed]
@@ -431,275 +810,155 @@ class ModernWatchPage extends Component
     #[Computed]
     public function featuredContent(): array
     {
-        $allContent = [
-            // Series
-            [
-                'id' => 1,
-                'type' => 'series',
-                'title' => 'Master Laravel 11',
-                'description' => 'Complete guide to Laravel 11 features and best practices including new capabilities and modern patterns',
-                'thumbnail' => 'https://images.unsplash.com/photo-1555066931-4365d14bab8c?w=800',
-                'episodes' => 24,
-                'duration' => '8 hours',
-                'level' => 'intermediate',
-                'category' => 'laravel',
-                'instructor' => 'Halil Coşdu',
-                'views' => 12450,
-                'rating' => 4.9,
-                'isNew' => true,
-                'tags' => ['eloquent', 'artisan', 'blade', 'routing'],
-                'url' => '/watch/series/laravel-11',
-            ],
-            [
-                'id' => 2,
-                'type' => 'series',
-                'title' => 'Advanced Filament Development',
-                'description' => 'Deep dive into Filament v4 with custom components, actions, and complex relationships',
-                'thumbnail' => 'https://images.unsplash.com/photo-1526378722484-bd91ca387e72?w=800',
-                'episodes' => 18,
-                'duration' => '6.5 hours',
-                'level' => 'advanced',
-                'category' => 'laravel',
-                'instructor' => 'Jeffrey Way',
-                'views' => 8920,
-                'rating' => 4.8,
-                'isPopular' => true,
-                'tags' => ['components', 'relationships', 'validation'],
-                'url' => '/watch/series/filament-advanced',
-            ],
-            [
-                'id' => 3,
-                'type' => 'series',
-                'title' => 'Testing Laravel Applications',
-                'description' => 'Comprehensive testing strategies with Pest, feature tests, and TDD approach',
-                'thumbnail' => 'https://images.unsplash.com/photo-1515879218367-8466d910aaa4?w=800',
-                'episodes' => 15,
-                'duration' => '5 hours',
-                'level' => 'intermediate',
-                'category' => 'testing',
-                'instructor' => 'Taylor Otwell',
-                'views' => 6750,
-                'rating' => 4.7,
-                'tags' => ['testing', 'validation', 'security'],
-                'url' => '/watch/series/testing-laravel',
-            ],
-            [
-                'id' => 4,
-                'type' => 'series',
-                'title' => 'API Development with Laravel',
-                'description' => 'Build robust REST APIs with authentication, rate limiting, and documentation',
-                'thumbnail' => 'https://images.unsplash.com/photo-1518779578993-ec3579fee39f?w=800',
-                'episodes' => 22,
-                'duration' => '7.5 hours',
-                'level' => 'intermediate',
-                'category' => 'api',
-                'instructor' => 'Caleb Porzio',
-                'views' => 9340,
-                'rating' => 4.6,
-                'tags' => ['authentication', 'middleware', 'validation'],
-                'url' => '/watch/series/api-development',
-            ],
-            [
-                'id' => 5,
-                'type' => 'series',
-                'title' => 'Modern PHP Practices',
-                'description' => 'Learn PHP 8.4 features, design patterns, and clean code principles',
-                'thumbnail' => 'https://images.unsplash.com/photo-1627398242454-45a1465c2479?w=800',
-                'episodes' => 20,
-                'duration' => '6 hours',
-                'level' => 'beginner',
-                'category' => 'php',
-                'instructor' => 'Halil Coşdu',
-                'views' => 11280,
-                'rating' => 4.8,
-                'isPopular' => true,
-                'tags' => ['eloquent', 'caching', 'events'],
-                'url' => '/watch/series/modern-php',
-            ],
-
-            // Individual Lessons
-            [
-                'id' => 6,
-                'type' => 'lesson',
-                'title' => 'Building Real-time Apps with Livewire',
-                'description' => 'Learn to create dynamic interfaces without leaving PHP using Livewire v3 features',
-                'thumbnail' => 'https://images.unsplash.com/photo-1536148935331-408321065b18?w=800',
-                'duration' => '45 min',
-                'level' => 'beginner',
-                'category' => 'laravel',
-                'instructor' => 'Caleb Porzio',
-                'views' => 15670,
-                'rating' => 4.9,
-                'isPopular' => true,
-                'tags' => ['components', 'events', 'blade'],
-                'url' => '/watch/lesson/livewire-realtime',
-            ],
-            [
-                'id' => 7,
-                'type' => 'lesson',
-                'title' => 'Database Optimization Techniques',
-                'description' => 'Advanced MySQL optimization, indexing strategies, and query performance tuning',
-                'thumbnail' => 'https://images.unsplash.com/photo-1544383835-bda2bc66a55d?w=800',
-                'duration' => '52 min',
-                'level' => 'advanced',
-                'category' => 'database',
-                'instructor' => 'Jeffrey Way',
-                'views' => 7890,
-                'rating' => 4.7,
-                'tags' => ['eloquent', 'migrations', 'caching'],
-                'url' => '/watch/lesson/database-optimization',
-            ],
-            [
-                'id' => 8,
-                'type' => 'lesson',
-                'title' => 'Docker for Laravel Development',
-                'description' => 'Set up consistent development environments with Docker and Laravel Sail',
-                'thumbnail' => 'https://images.unsplash.com/photo-1605745341112-85968b19335b?w=800',
-                'duration' => '38 min',
-                'level' => 'intermediate',
-                'category' => 'devops',
-                'instructor' => 'Taylor Otwell',
-                'views' => 5440,
-                'rating' => 4.5,
-                'isNew' => true,
-                'tags' => ['artisan', 'queues'],
-                'url' => '/watch/lesson/docker-laravel',
-            ],
-            [
-                'id' => 9,
-                'type' => 'lesson',
-                'title' => 'Advanced JavaScript ES2024',
-                'description' => 'Latest JavaScript features and modern development patterns for web applications',
-                'thumbnail' => 'https://images.unsplash.com/photo-1579468118864-1b9ea3c0db4a?w=800',
-                'duration' => '41 min',
-                'level' => 'intermediate',
-                'category' => 'javascript',
-                'instructor' => 'Halil Coşdu',
-                'views' => 8920,
-                'rating' => 4.6,
-                'url' => '/watch/lesson/javascript-es2024',
-            ],
-            [
-                'id' => 10,
-                'type' => 'lesson',
-                'title' => 'Vue.js 3 Composition API',
-                'description' => 'Master the Composition API and reactive programming in Vue.js 3',
-                'thumbnail' => 'https://images.unsplash.com/photo-1633356122102-3fe601e05bd2?w=800',
-                'duration' => '55 min',
-                'level' => 'intermediate',
-                'category' => 'frontend',
-                'instructor' => 'Caleb Porzio',
-                'views' => 6720,
-                'rating' => 4.8,
-                'url' => '/watch/lesson/vue-composition-api',
-            ],
-            [
-                'id' => 11,
-                'type' => 'series',
-                'title' => 'Frontend Build Tools Mastery',
-                'description' => 'Deep dive into Vite, Webpack, and modern build processes for web development',
-                'thumbnail' => 'https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=800',
-                'episodes' => 12,
-                'duration' => '4 hours',
-                'level' => 'intermediate',
-                'category' => 'frontend',
-                'instructor' => 'Jeffrey Way',
-                'views' => 4530,
-                'rating' => 4.7,
-                'url' => '/watch/series/build-tools',
-            ],
-            [
-                'id' => 12,
-                'type' => 'lesson',
-                'title' => 'Security Best Practices for Laravel',
-                'description' => 'Implement comprehensive security measures and protect against common vulnerabilities',
-                'thumbnail' => 'https://images.unsplash.com/photo-1563013544-824ae1b704d3?w=800',
-                'duration' => '49 min',
-                'level' => 'advanced',
-                'category' => 'laravel',
-                'instructor' => 'Taylor Otwell',
-                'views' => 9870,
-                'rating' => 4.9,
-                'isPopular' => true,
-                'url' => '/watch/lesson/laravel-security',
-            ],
-        ];
-
-        // Filter based on active tab and other criteria
-        $filtered = collect($allContent);
-
-        if ($this->activeTab !== 'all') {
-            if ($this->activeTab === 'pathways') {
-                return []; // Pathways are handled separately
-            }
-            if ($this->activeTab === 'watchlist') {
-                return []; // Watchlist is handled separately
-            }
-            $filtered = $filtered->where('type', $this->activeTab === 'lessons' ? 'lesson' : $this->activeTab);
-        }
-
+        // Get dynamic content from database
+        $allContent = [];
+        
+        // Build base queries
+        $seriesQuery = Series::published()->with(['category', 'user', 'tags']);
+        $episodesQuery = Episode::published()->with(['category', 'user', 'tags', 'series']);
+        
+        // Apply filters
         if ($this->selectedCategory) {
-            $filtered = $filtered->where('category', $this->selectedCategory);
+            $seriesQuery->whereHas('category', fn($q) => $q->where('slug', $this->selectedCategory));
+            $episodesQuery->whereHas('category', fn($q) => $q->where('slug', $this->selectedCategory));
         }
-
+        
         if ($this->selectedLevel) {
-            $filtered = $filtered->where('level', $this->selectedLevel);
+            $seriesQuery->where('level', $this->selectedLevel);
+            $episodesQuery->where('level', $this->selectedLevel);
         }
-
-        if ($this->selectedInstructor) {
-            $filtered = $filtered->where('instructor', function ($instructor) {
-                $instructorMap = [
-                    'halil' => 'Halil Coşdu',
-                    'taylor' => 'Taylor Otwell',
-                    'jeffrey' => 'Jeffrey Way',
-                    'caleb' => 'Caleb Porzio',
-                ];
-
-                return $instructorMap[$this->selectedInstructor] ?? '';
-            });
-        }
-
+        
         if ($this->search) {
-            $filtered = $filtered->filter(function ($item) {
-                return str_contains(strtolower($item['title']), strtolower($this->search)) ||
-                       str_contains(strtolower($item['description']), strtolower($this->search)) ||
-                       (isset($item['tags']) && collect($item['tags'])->some(fn ($tag) => str_contains(strtolower($tag), strtolower($this->search))));
+            $searchTerm = '%' . $this->search . '%';
+            $seriesQuery->where(function($q) use ($searchTerm) {
+                $q->where('title', 'ILIKE', $searchTerm)
+                  ->orWhere('description', 'ILIKE', $searchTerm);
+            });
+            $episodesQuery->where(function($q) use ($searchTerm) {
+                $q->where('title', 'ILIKE', $searchTerm)
+                  ->orWhere('description', 'ILIKE', $searchTerm);
             });
         }
-
-        if (! empty($this->selectedTags)) {
-            $filtered = $filtered->filter(function ($item) {
-                if (! isset($item['tags'])) {
-                    return false;
-                }
-
-                return collect($this->selectedTags)->every(fn ($selectedTag) => collect($item['tags'])->contains($selectedTag)
-                );
-            });
+        
+        if (!empty($this->selectedTags)) {
+            $seriesQuery->whereHas('tags', fn($q) => $q->whereIn('slug', $this->selectedTags));
+            $episodesQuery->whereHas('tags', fn($q) => $q->whereIn('slug', $this->selectedTags));
         }
-
-        // Sort
+        
+        // Apply sorting
         switch ($this->sortBy) {
             case 'popular':
-                $filtered = $filtered->sortByDesc('views');
+                $seriesQuery->orderByDesc('views_count');
+                $episodesQuery->orderByDesc('views_count');
                 break;
             case 'alphabetical':
-                $filtered = $filtered->sortBy('title');
+                $seriesQuery->orderBy('title');
+                $episodesQuery->orderBy('title');
                 break;
             case 'duration':
-                $filtered = $filtered->sortBy(function ($item) {
-                    if (isset($item['episodes'])) {
-                        return $item['episodes'] * 25; // Estimate minutes per episode
-                    }
-
-                    return (int) $item['duration'];
-                });
+                $seriesQuery->orderBy('duration_minutes');
+                $episodesQuery->orderBy('duration_minutes');
                 break;
             default: // recent
-                $filtered = $filtered->reverse();
+                $seriesQuery->orderByDesc('published_at');
+                $episodesQuery->orderByDesc('published_at');
+        }
+        
+        // Get content based on active tab
+        if ($this->activeTab === 'all' || $this->activeTab === 'series') {
+            $series = $seriesQuery->get();
+            foreach ($series as $item) {
+                $allContent[] = $this->formatSeriesForFrontend($item);
+            }
+        }
+        
+        if ($this->activeTab === 'all' || $this->activeTab === 'lessons') {
+            $episodes = $episodesQuery->get();
+            foreach ($episodes as $item) {
+                $allContent[] = $this->formatEpisodeForFrontend($item);
+            }
+        }
+        
+        // Handle pathways and watchlist tabs
+        if ($this->activeTab === 'pathways' || $this->activeTab === 'watchlist') {
+            return []; // These are handled by separate methods
+        }
+        
+        return $allContent;
+    }
+    
+    private function formatSeriesForFrontend(Series $series): array
+    {
+        // Calculate user progress if authenticated
+        $userProgress = 0;
+        if (auth()->check()) {
+            $progress = UserProgress::where('user_id', auth()->id())
+                ->where('progressable_type', Series::class)
+                ->where('progressable_id', $series->id)
+                ->first();
+            $userProgress = $progress ? (int) $progress->progress_percentage : 0;
         }
 
-        return $filtered->values()->toArray();
+        return [
+            'id' => $series->id,
+            'type' => 'series',
+            'title' => $series->title,
+            'description' => $series->description,
+            'thumbnail' => $series->thumbnail,
+            'episodes' => $series->episodes_count,
+            'duration' => $series->formatted_duration,
+            'level' => $series->level,
+            'category' => $series->category?->slug ?? '',
+            'instructor' => $series->user?->name ?? '',
+            'views' => $series->views_count,
+            'rating' => (float) $series->rating,
+            'isNew' => $series->published_at?->isAfter(now()->subDays(7)) ?? false,
+            'isPopular' => $series->views_count > 10000,
+            'isFeatured' => $series->is_featured,
+            'progress' => $userProgress,
+            'tags' => $series->tags->pluck('slug')->toArray(),
+            'url' => route('watch.series.show', ['slug' => $series->slug]),
+        ];
+    }
+    
+    private function formatEpisodeForFrontend(Episode $episode): array
+    {
+        // Calculate user progress if authenticated
+        $userProgress = 0;
+        if (auth()->check()) {
+            $progress = UserProgress::where('user_id', auth()->id())
+                ->where('progressable_type', Episode::class)
+                ->where('progressable_id', $episode->id)
+                ->first();
+            $userProgress = $progress ? (int) $progress->progress_percentage : 0;
+        }
+
+        return [
+            'id' => $episode->id,
+            'type' => 'lesson',
+            'title' => $episode->title,
+            'description' => $episode->description,
+            'thumbnail' => $episode->thumbnail,
+            'duration' => $episode->formatted_duration,
+            'level' => $episode->level,
+            'category' => $episode->category?->slug ?? '',
+            'instructor' => $episode->user?->name ?? '',
+            'views' => $episode->views_count,
+            'rating' => (float) $episode->rating,
+            'isNew' => $episode->published_at?->isAfter(now()->subDays(7)) ?? false,
+            'isPopular' => $episode->views_count > 10000,
+            'isFeatured' => $episode->is_featured,
+            'isStandalone' => $episode->is_standalone,
+            'series' => $episode->series?->title ?? null,
+            'progress' => $userProgress,
+            'tags' => $episode->tags->pluck('slug')->toArray(),
+            'url' => $episode->is_standalone ? 
+                route('watch.lesson.show', ['slug' => $episode->slug]) : 
+                route('watch.episode.show', [
+                    'seriesSlug' => $episode->series?->slug,
+                    'episodeSlug' => $episode->slug
+                ]),
+        ];
     }
 
     public function render()
