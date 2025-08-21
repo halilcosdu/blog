@@ -451,16 +451,35 @@ class ModernWatchPage extends Component
             ->get();
 
         return $categories->map(function (Category $category) {
-            // Count published content in this category
-            $seriesCount = $category->publishedSeries()->count();
-            $episodesCount = $category->publishedEpisodes()->count();
-            $pathwaysCount = $category->publishedPathways()->count();
-            $totalCount = $seriesCount + $episodesCount + $pathwaysCount;
+            // Count published content in this category based on current tab
+            $count = 0;
+
+            if ($this->activeTab === 'all') {
+                // For "All Content" tab: count series + all episodes
+                $seriesCount = $category->publishedSeries()->count();
+                $episodesCount = $category->publishedEpisodes()->count();
+                $count = $seriesCount + $episodesCount;
+            } elseif ($this->activeTab === 'series') {
+                // For "Series" tab: count only series
+                $count = $category->publishedSeries()->count();
+            } elseif ($this->activeTab === 'lessons') {
+                // For "Individual Lessons" tab: count only standalone episodes
+                $count = $category->publishedEpisodes()->where('is_standalone', true)->count();
+            } elseif ($this->activeTab === 'pathways') {
+                // For "Learning Paths" tab: count only pathways
+                $count = $category->publishedPathways()->count();
+            } else {
+                // For other tabs (watchlist): show all content count
+                $seriesCount = $category->publishedSeries()->count();
+                $episodesCount = $category->publishedEpisodes()->count();
+                $pathwaysCount = $category->publishedPathways()->count();
+                $count = $seriesCount + $episodesCount + $pathwaysCount;
+            }
 
             return [
                 'id' => $category->slug,
                 'name' => $category->name,
-                'count' => $totalCount,
+                'count' => $count,
                 'color' => $this->getCategoryColor($category->color ?? $category->slug),
                 'description' => $category->description,
             ];
@@ -838,59 +857,44 @@ class ModernWatchPage extends Component
         // Get dynamic content from database
         $allContent = [];
 
-        // Build base queries
-        $seriesQuery = Series::published()->with(['category', 'user', 'tags']);
-        $episodesQuery = Episode::published()->with(['category', 'user', 'tags', 'series']);
-
-        // Apply filters
-        if ($this->selectedCategory) {
-            $seriesQuery->whereHas('category', fn ($q) => $q->where('slug', $this->selectedCategory));
-            $episodesQuery->whereHas('category', fn ($q) => $q->where('slug', $this->selectedCategory));
-        }
-
-        if ($this->selectedLevel) {
-            $seriesQuery->where('level', $this->selectedLevel);
-            $episodesQuery->where('level', $this->selectedLevel);
-        }
-
-        if ($this->search) {
-            $searchTerm = '%'.$this->search.'%';
-            $seriesQuery->where(function ($q) use ($searchTerm) {
-                $q->where('title', 'ILIKE', $searchTerm)
-                    ->orWhere('description', 'ILIKE', $searchTerm);
-            });
-            $episodesQuery->where(function ($q) use ($searchTerm) {
-                $q->where('title', 'ILIKE', $searchTerm)
-                    ->orWhere('description', 'ILIKE', $searchTerm);
-            });
-        }
-
-        if (! empty($this->selectedTags)) {
-            $seriesQuery->whereHas('tags', fn ($q) => $q->whereIn('slug', $this->selectedTags));
-            $episodesQuery->whereHas('tags', fn ($q) => $q->whereIn('slug', $this->selectedTags));
-        }
-
-        // Apply sorting
-        switch ($this->sortBy) {
-            case 'popular':
-                $seriesQuery->orderByDesc('views_count');
-                $episodesQuery->orderByDesc('views_count');
-                break;
-            case 'alphabetical':
-                $seriesQuery->orderBy('title');
-                $episodesQuery->orderBy('title');
-                break;
-            case 'duration':
-                $seriesQuery->orderBy('duration_minutes');
-                $episodesQuery->orderBy('duration_minutes');
-                break;
-            default: // recent
-                $seriesQuery->orderByDesc('published_at');
-                $episodesQuery->orderByDesc('published_at');
-        }
-
-        // Get content based on active tab
+        // Get content based on active tab and apply filters accordingly
         if ($this->activeTab === 'all' || $this->activeTab === 'series') {
+            // Build series query
+            $seriesQuery = Series::published()->with(['category', 'user', 'tags']);
+
+            // Apply filters to series
+            if ($this->selectedCategory) {
+                $seriesQuery->whereHas('category', fn ($q) => $q->where('slug', $this->selectedCategory));
+            }
+            if ($this->selectedLevel) {
+                $seriesQuery->where('level', $this->selectedLevel);
+            }
+            if ($this->search) {
+                $searchTerm = '%'.$this->search.'%';
+                $seriesQuery->where(function ($q) use ($searchTerm) {
+                    $q->where('title', 'ILIKE', $searchTerm)
+                        ->orWhere('description', 'ILIKE', $searchTerm);
+                });
+            }
+            if (! empty($this->selectedTags)) {
+                $seriesQuery->whereHas('tags', fn ($q) => $q->whereIn('slug', $this->selectedTags));
+            }
+
+            // Apply sorting to series
+            switch ($this->sortBy) {
+                case 'popular':
+                    $seriesQuery->orderByDesc('views_count');
+                    break;
+                case 'alphabetical':
+                    $seriesQuery->orderBy('title');
+                    break;
+                case 'duration':
+                    $seriesQuery->orderBy('duration_minutes');
+                    break;
+                default: // recent
+                    $seriesQuery->orderByDesc('published_at');
+            }
+
             $series = $seriesQuery->get();
             foreach ($series as $item) {
                 $allContent[] = $this->formatSeriesForFrontend($item);
@@ -898,9 +902,45 @@ class ModernWatchPage extends Component
         }
 
         if ($this->activeTab === 'all' || $this->activeTab === 'lessons') {
+            // Build episodes query - for lessons tab, only standalone episodes
+            $episodesQuery = Episode::published()->with(['category', 'user', 'tags', 'series']);
+
             // For 'lessons' tab, only show standalone episodes (not part of a series)
             if ($this->activeTab === 'lessons') {
                 $episodesQuery->where('is_standalone', true);
+            }
+
+            // Apply filters to episodes
+            if ($this->selectedCategory) {
+                $episodesQuery->whereHas('category', fn ($q) => $q->where('slug', $this->selectedCategory));
+            }
+            if ($this->selectedLevel) {
+                $episodesQuery->where('level', $this->selectedLevel);
+            }
+            if ($this->search) {
+                $searchTerm = '%'.$this->search.'%';
+                $episodesQuery->where(function ($q) use ($searchTerm) {
+                    $q->where('title', 'ILIKE', $searchTerm)
+                        ->orWhere('description', 'ILIKE', $searchTerm);
+                });
+            }
+            if (! empty($this->selectedTags)) {
+                $episodesQuery->whereHas('tags', fn ($q) => $q->whereIn('slug', $this->selectedTags));
+            }
+
+            // Apply sorting to episodes
+            switch ($this->sortBy) {
+                case 'popular':
+                    $episodesQuery->orderByDesc('views_count');
+                    break;
+                case 'alphabetical':
+                    $episodesQuery->orderBy('title');
+                    break;
+                case 'duration':
+                    $episodesQuery->orderBy('duration_minutes');
+                    break;
+                default: // recent
+                    $episodesQuery->orderByDesc('published_at');
             }
 
             $episodes = $episodesQuery->get();
