@@ -51,8 +51,6 @@ class ModernWatchPage extends Component
 
     public string $activeTab = 'all'; // all, series, lessons, pathways, watchlist
 
-    // Watchlist management
-    public array $watchlist = [];
 
     // UI state
     public bool $showSortDropdown = false;
@@ -74,12 +72,6 @@ class ModernWatchPage extends Component
     {
         // Set initial state based on user preferences or defaults
         $this->viewMode = session('watch.view_mode', 'grid');
-
-        // Load watchlist from session (mock data)
-        $this->watchlist = session('watch.watchlist', [
-            // Pre-populated with some mock items
-            1, 6, 12, // IDs of items already in watchlist
-        ]);
     }
 
     public function updatedSearch(): void
@@ -185,12 +177,16 @@ class ModernWatchPage extends Component
 
         $modelClass = $this->getModelClass($contentType);
         
-        if (UserWatchlist::addToWatchlist(auth()->id(), $modelClass, $contentId)) {
-            $this->dispatch('watchlist-updated', [
-                'type' => 'added',
-                'message' => 'Added to watchlist!',
-            ]);
-        }
+        UserWatchlist::firstOrCreate([
+            'user_id' => auth()->id(),
+            'watchable_type' => $modelClass,
+            'watchable_id' => $contentId,
+        ]);
+
+        $this->dispatch('watchlist-updated', [
+            'type' => 'added',
+            'message' => 'Added to watchlist!',
+        ]);
     }
 
     public function removeFromWatchlist(int $contentId, string $contentType = 'auto'): void
@@ -210,7 +206,12 @@ class ModernWatchPage extends Component
 
         $modelClass = $this->getModelClass($contentType);
         
-        if (UserWatchlist::removeFromWatchlist(auth()->id(), $modelClass, $contentId)) {
+        $deleted = UserWatchlist::where('user_id', auth()->id())
+            ->where('watchable_type', $modelClass)
+            ->where('watchable_id', $contentId)
+            ->delete();
+
+        if ($deleted > 0) {
             $this->dispatch('watchlist-updated', [
                 'type' => 'removed',
                 'message' => 'Removed from watchlist!',
@@ -235,7 +236,10 @@ class ModernWatchPage extends Component
 
         $modelClass = $this->getModelClass($contentType);
         
-        return UserWatchlist::isInWatchlist(auth()->id(), $modelClass, $contentId);
+        return UserWatchlist::where('user_id', auth()->id())
+            ->where('watchable_type', $modelClass)
+            ->where('watchable_id', $contentId)
+            ->exists();
     }
 
     public function clearWatchlist(): void
@@ -773,39 +777,60 @@ class ModernWatchPage extends Component
     #[Computed]
     public function watchlistItems(): array
     {
-        if (empty($this->watchlist)) {
+        if (!auth()->check()) {
             return [];
         }
 
-        // Get all content and filter by watchlist IDs
-        $allContent = $this->getAllContent();
+        // Get user's watchlist items from database
+        $watchlistItems = UserWatchlist::where('user_id', auth()->id())
+            ->with('watchable')
+            ->recent()
+            ->get();
 
-        return collect($allContent)
-            ->whereIn('id', $this->watchlist)
-            ->map(function ($item) {
-                $item['added_to_watchlist'] = now()->subDays(rand(1, 30))->format('M j, Y');
+        $items = [];
 
-                return $item;
-            })
-            ->sortByDesc(function ($item) {
-                // Sort by recently added to watchlist
-                return array_search($item['id'], array_reverse($this->watchlist));
-            })
-            ->values()
-            ->toArray();
+        foreach ($watchlistItems as $watchlistItem) {
+            $watchable = $watchlistItem->watchable;
+            
+            if (!$watchable) {
+                continue;
+            }
+
+            // Format based on content type
+            if ($watchable instanceof Series) {
+                $items[] = array_merge(
+                    $this->formatSeriesForFrontend($watchable),
+                    ['added_to_watchlist' => $watchlistItem->created_at->format('M j, Y')]
+                );
+            } elseif ($watchable instanceof Episode) {
+                $items[] = array_merge(
+                    $this->formatEpisodeForFrontend($watchable),
+                    ['added_to_watchlist' => $watchlistItem->created_at->format('M j, Y')]
+                );
+            } elseif ($watchable instanceof Pathway) {
+                $items[] = array_merge(
+                    $this->formatPathwayForFrontend($watchable),
+                    [
+                        'type' => 'pathway',
+                        'added_to_watchlist' => $watchlistItem->created_at->format('M j, Y')
+                    ]
+                );
+            }
+        }
+
+        return $items;
     }
 
     #[Computed]
     public function watchlistCount(): int
     {
-        return count($this->watchlist);
+        if (!auth()->check()) {
+            return 0;
+        }
+
+        return UserWatchlist::where('user_id', auth()->id())->count();
     }
 
-    private function getAllContent(): array
-    {
-        // Combined content from featuredContent and pathways
-        return array_merge($this->featuredContent, $this->pathways);
-    }
 
     #[Computed]
     public function featuredContent(): array
