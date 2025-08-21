@@ -29,7 +29,6 @@ class Series extends Model
         'duration_minutes',
         'episodes_count',
         'views_count',
-        'rating',
         'sort_order',
         'is_published',
         'is_featured',
@@ -48,7 +47,6 @@ class Series extends Model
             'duration_minutes' => 'integer',
             'episodes_count' => 'integer',
             'views_count' => 'integer',
-            'rating' => 'decimal:2',
             'sort_order' => 'integer',
         ];
     }
