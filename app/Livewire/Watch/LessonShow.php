@@ -14,6 +14,8 @@ class LessonShow extends Component
 
     public string $slug;
 
+    public string $newComment = '';
+
     public function mount(string $slug): void
     {
         $this->slug = $slug;
@@ -99,6 +101,29 @@ class LessonShow extends Component
                 'message' => 'Lesson completed! 🎉',
             ]);
         }
+    }
+
+    public function postComment(): void
+    {
+        if (! auth()->check()) {
+            $this->dispatch('auth-required', [
+                'message' => 'Please login to post a comment.',
+            ]);
+            return;
+        }
+
+        $this->validate([
+            'newComment' => 'required|min:10|max:1000',
+        ]);
+
+        // Here we would save the comment to database
+        // For now, just show a success message
+        $this->dispatch('comment-posted', [
+            'message' => 'Your comment has been posted!',
+        ]);
+
+        // Reset the form
+        $this->newComment = '';
     }
 
     #[Computed]

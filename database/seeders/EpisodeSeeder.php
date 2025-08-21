@@ -138,11 +138,11 @@ class EpisodeSeeder extends Seeder
                 'description' => 'Learn to create dynamic interfaces without leaving PHP using Livewire v3 features.',
                 'content' => 'Master Livewire v3 for building reactive user interfaces.',
                 'thumbnail' => 'https://images.unsplash.com/photo-1536148935331-408321065b18?w=400',
-                'vimeo_id' => '234567894',
+                'vimeo_id' => '373736799',
                 'vimeo_data' => [
                     'title' => 'Building Real-time Apps with Livewire',
                     'duration' => 2700,
-                    'thumbnail' => 'https://i.vimeocdn.com/video/234567894_640.jpg',
+                    'thumbnail' => 'https://i.vimeocdn.com/video/373736799_640.jpg',
                 ],
                 'category_id' => Category::where('slug', 'livewire')->first()->id,
                 'user_id' => $adminUserId,
