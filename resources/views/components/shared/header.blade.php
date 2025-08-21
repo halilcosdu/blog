@@ -101,3 +101,31 @@
         </nav>
     </div>
 </div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Mobile menu toggle
+    const mobileToggle = document.querySelector('[data-mobile-toggle]');
+    const mobileNav = document.getElementById('mobile-nav');
+    const openIcon = document.querySelector('[data-mobile-icon="open"]');
+    const closeIcon = document.querySelector('[data-mobile-icon="close"]');
+
+    if (mobileToggle && mobileNav) {
+        mobileToggle.addEventListener('click', function() {
+            const isHidden = mobileNav.classList.contains('hidden');
+            
+            if (isHidden) {
+                mobileNav.classList.remove('hidden');
+                openIcon.classList.add('hidden');
+                closeIcon.classList.remove('hidden');
+                mobileToggle.setAttribute('aria-expanded', 'true');
+            } else {
+                mobileNav.classList.add('hidden');
+                openIcon.classList.remove('hidden');
+                closeIcon.classList.add('hidden');
+                mobileToggle.setAttribute('aria-expanded', 'false');
+            }
+        });
+    }
+});
+</script>

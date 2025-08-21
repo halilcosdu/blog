@@ -4,7 +4,7 @@
     <x-shared.announcements />
 
     {{-- Hero Section --}}
-    <section class="relative pt-20 pb-12 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 overflow-hidden">
+    <section class="relative pt-16 md:pt-20 pb-8 md:pb-12 bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 overflow-hidden">
         {{-- Background Pattern --}}
         <div class="absolute inset-0">
             <div class="absolute inset-0 bg-gradient-to-r from-blue-600/10 via-purple-600/10 to-pink-600/10"></div>
@@ -13,31 +13,31 @@
 
         <div class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="text-center max-w-4xl mx-auto">
-                <h1 class="text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-6 leading-tight">
+                <h1 class="text-3xl sm:text-4xl md:text-5xl lg:text-6xl font-bold text-white mb-4 md:mb-6 leading-tight">
                     Master Development
                     <span class="bg-gradient-to-r from-blue-400 via-purple-400 to-pink-400 bg-clip-text text-transparent block">
                         Through Video
                     </span>
                 </h1>
-                <p class="text-xl text-slate-300 mb-8 leading-relaxed">
+                <p class="text-lg md:text-xl text-slate-300 mb-6 md:mb-8 leading-relaxed px-4">
                     Join thousands of developers learning through hands-on screencasts, structured learning paths, and comprehensive series
                 </p>
 
                 {{-- Stats --}}
-                <div class="flex flex-wrap justify-center gap-8 text-sm font-medium">
-                    <div class="flex items-center gap-2 text-slate-300">
+                <div class="grid grid-cols-2 md:flex md:flex-wrap justify-center gap-4 md:gap-8 text-sm font-medium">
+                    <div class="flex items-center gap-2 text-slate-300 justify-center">
                         <div class="w-2 h-2 bg-green-400 rounded-full"></div>
                         <span>240+ Lessons</span>
                     </div>
-                    <div class="flex items-center gap-2 text-slate-300">
+                    <div class="flex items-center gap-2 text-slate-300 justify-center">
                         <div class="w-2 h-2 bg-blue-400 rounded-full"></div>
                         <span>45 Series</span>
                     </div>
-                    <div class="flex items-center gap-2 text-slate-300">
+                    <div class="flex items-center gap-2 text-slate-300 justify-center">
                         <div class="w-2 h-2 bg-purple-400 rounded-full"></div>
                         <span>15 Learning Paths</span>
                     </div>
-                    <div class="flex items-center gap-2 text-slate-300">
+                    <div class="flex items-center gap-2 text-slate-300 justify-center">
                         <div class="w-2 h-2 bg-orange-400 rounded-full"></div>
                         <span>150+ Hours</span>
                     </div>
@@ -111,43 +111,44 @@
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             
             {{-- Content Tabs --}}
-            <div class="mb-8">
+            <div class="mb-6 md:mb-8">
                 <div class="border-b border-slate-200 dark:border-slate-700">
-                    <nav class="-mb-px flex space-x-8">
+                    <nav class="-mb-px flex space-x-4 md:space-x-8 overflow-x-auto scrollbar-hide">
                         <button 
                             wire:click="setActiveTab('all')"
-                            class="py-2 px-1 border-b-2 font-medium text-sm transition-colors cursor-pointer {{ $activeTab === 'all' ? 'border-red-500 text-red-600 dark:text-red-400' : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 hover:border-slate-300 dark:hover:border-slate-600' }}"
+                            class="py-2 px-2 md:px-1 border-b-2 font-medium text-sm whitespace-nowrap transition-colors cursor-pointer {{ $activeTab === 'all' ? 'border-red-500 text-red-600 dark:text-red-400' : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 hover:border-slate-300 dark:hover:border-slate-600' }}"
                         >
                             All Content
                         </button>
                         <button 
                             wire:click="setActiveTab('series')"
-                            class="py-2 px-1 border-b-2 font-medium text-sm transition-colors cursor-pointer {{ $activeTab === 'series' ? 'border-red-500 text-red-600 dark:text-red-400' : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 hover:border-slate-300 dark:hover:border-slate-600' }}"
+                            class="py-2 px-2 md:px-1 border-b-2 font-medium text-sm whitespace-nowrap transition-colors cursor-pointer {{ $activeTab === 'series' ? 'border-red-500 text-red-600 dark:text-red-400' : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 hover:border-slate-300 dark:hover:border-slate-600' }}"
                         >
                             Series
                         </button>
                         <button 
                             wire:click="setActiveTab('lessons')"
-                            class="py-2 px-1 border-b-2 font-medium text-sm transition-colors cursor-pointer {{ $activeTab === 'lessons' ? 'border-red-500 text-red-600 dark:text-red-400' : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 hover:border-slate-300 dark:hover:border-slate-600' }}"
+                            class="py-2 px-2 md:px-1 border-b-2 font-medium text-sm whitespace-nowrap transition-colors cursor-pointer {{ $activeTab === 'lessons' ? 'border-red-500 text-red-600 dark:text-red-400' : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 hover:border-slate-300 dark:hover:border-slate-600' }}"
                         >
-                            Individual Lessons
+                            Lessons
                         </button>
                         <button 
                             wire:click="setActiveTab('pathways')"
-                            class="py-2 px-1 border-b-2 font-medium text-sm transition-colors cursor-pointer {{ $activeTab === 'pathways' ? 'border-red-500 text-red-600 dark:text-red-400' : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 hover:border-slate-300 dark:hover:border-slate-600' }}"
+                            class="py-2 px-2 md:px-1 border-b-2 font-medium text-sm whitespace-nowrap transition-colors cursor-pointer {{ $activeTab === 'pathways' ? 'border-red-500 text-red-600 dark:text-red-400' : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 hover:border-slate-300 dark:hover:border-slate-600' }}"
                         >
-                            Learning Paths
+                            Paths
                         </button>
                         @auth
                         <button 
                             wire:click="setActiveTab('watchlist')"
-                            class="py-2 px-1 border-b-2 font-medium text-sm transition-colors relative cursor-pointer {{ $activeTab === 'watchlist' ? 'border-purple-500 text-purple-600 dark:text-purple-400' : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 hover:border-slate-300 dark:hover:border-slate-600' }}"
+                            class="py-2 px-2 md:px-1 border-b-2 font-medium text-sm whitespace-nowrap transition-colors relative cursor-pointer {{ $activeTab === 'watchlist' ? 'border-purple-500 text-purple-600 dark:text-purple-400' : 'border-transparent text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 hover:border-slate-300 dark:hover:border-slate-600' }}"
                         >
                             <div class="flex items-center gap-2">
                                 <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 5a2 2 0 012-2h10a2 2 0 012 2v16l-7-3.5L5 21V5z"/>
                                 </svg>
-                                Watchlist
+                                <span class="hidden sm:inline">Watchlist</span>
+                                <span class="sm:hidden">List</span>
                                 @if($this->watchlistCount > 0)
                                     <span class="bg-purple-500 text-white text-xs px-1.5 py-0.5 rounded-full">{{ $this->watchlistCount }}</span>
                                 @endif
@@ -159,10 +160,10 @@
             </div>
 
             {{-- Search and Filter Bar --}}
-            <div class="mb-8">
+            <div class="mb-6 md:mb-8">
                 <div class="flex flex-col lg:flex-row gap-4 items-start lg:items-center justify-between">
                     {{-- Search Input --}}
-                    <div class="flex-1 max-w-md">
+                    <div class="w-full lg:flex-1 lg:max-w-md">
                         <div class="relative">
                             <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
                                 <svg class="h-5 w-5 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -189,11 +190,11 @@
                     </div>
 
                     {{-- Controls --}}
-                    <div class="flex items-center gap-3">
+                    <div class="flex items-center justify-between lg:justify-end gap-3 w-full lg:w-auto overflow-x-auto scrollbar-hide">
                         {{-- Filter Toggle --}}
                         <button 
                             wire:click="toggleFilters"
-                            class="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-600 transition-all cursor-pointer {{ $showFilters ? 'ring-2 ring-red-500 ring-opacity-50 bg-red-50 dark:bg-red-900/20' : '' }}"
+                            class="inline-flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-600 transition-all cursor-pointer {{ $showFilters ? 'bg-slate-100 dark:bg-slate-600 border-slate-400 dark:border-slate-500' : '' }}"
                         >
                             <svg class="w-4 h-4 transition-transform {{ $showFilters ? 'rotate-180' : '' }}" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 4a1 1 0 011-1h16a1 1 0 011 1v2.586a1 1 0 01-.293.707l-6.414 6.414a1 1 0 00-.293.707V17l-4 4v-6.586a1 1 0 00-.293-.707L3.293 7.414A1 1 0 013 6.707V4z"/>
@@ -500,7 +501,7 @@
 
             {{-- Learning Paths Section --}}
             @if($activeTab === 'pathways')
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-8">
                 @foreach($this->pathways as $pathway)
                 <a href="{{ $pathway['url'] }}" class="group bg-white dark:bg-slate-800 rounded-2xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-slate-200 dark:border-slate-700 hover:-translate-y-1 cursor-pointer block">
                     {{-- Pathway Header --}}
@@ -620,7 +621,7 @@
                 </div>
 
                 {{-- Watchlist Grid --}}
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
                     @foreach($this->watchlistItems as $content)
                     <div class="group bg-white dark:bg-slate-800 rounded-xl shadow-sm hover:shadow-lg transition-all duration-300 overflow-hidden border border-slate-200 dark:border-slate-700 relative">
                         {{-- Remove from watchlist button --}}
@@ -727,7 +728,7 @@
             @else
             {{-- Regular Content (Series & Lessons) --}}
             @if($viewMode === 'grid')
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
                 @foreach($this->featuredContent as $content)
                 <div class="group bg-white dark:bg-slate-800 rounded-xl shadow-sm hover:shadow-xl transition-all duration-300 overflow-hidden border border-slate-200 dark:border-slate-700 hover:-translate-y-1 relative">
                     {{-- Content Link --}}
@@ -960,6 +961,16 @@
             @endif
         </div>
     </main>
+    
+    <style>
+    .scrollbar-hide {
+        -ms-overflow-style: none;
+        scrollbar-width: none;
+    }
+    .scrollbar-hide::-webkit-scrollbar {
+        display: none;
+    }
+    </style>
 </div>
 
 {{-- JavaScript for Watchlist Notifications --}}
