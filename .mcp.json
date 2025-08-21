@@ -6,6 +6,17 @@
                 "./artisan",
                 "boost:mcp"
             ]
+        },
+        "n8n-mcp": {
+            "command": "npx",
+            "args": ["n8n-mcp"],
+            "env": {
+                "MCP_MODE": "stdio",
+                "LOG_LEVEL": "error",
+                "DISABLE_CONSOLE_OUTPUT": "true",
+                "N8N_API_URL": "https://n8n.onoai.net",
+                "N8N_API_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJkMzdhZGQ0NS1hZjBiLTRiZWQtOGUyNi1jZGRjN2YyZmMwMzciLCJpc3MiOiJuOG4iLCJhdWQiOiJwdWJsaWMtYXBpIiwiaWF0IjoxNzU1Nzg2MjA2fQ.iJ76ocLSdzOBm3IBeYCr17MzHT5J8b-tMcdBhVpltCQ"
+            }
         }
     }
 }
