@@ -47,9 +47,14 @@
                         <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                             <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L15 1L13.5 2.5L16.17 5.17L10.59 10.75C10.21 10.37 9.7 10.17 9.17 10.17H4C2.9 10.17 2 11.07 2 12.17V14.17H4V22H10V14.17H11V13C11 12.65 11.04 12.31 11.1 11.97L16.5 6.5L19 9H21ZM6 12.17H8V14.17H6V12.17Z"/>
                         </svg>
-                        <div class="absolute -top-0.5 -right-0.5 w-2 h-2 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full animate-pulse"></div>
+                        <div class="absolute -top-1 -right-1 w-3 h-3 bg-gradient-to-r from-purple-500 to-indigo-600 rounded-full flex items-center justify-center">
+                            <span class="text-[8px] text-white font-bold">✓</span>
+                        </div>
                     </div>
-                    Avatar
+                    <div class="flex flex-col">
+                        <span>Avatar</span>
+                        <span class="text-[10px] text-purple-500 dark:text-purple-400 font-semibold leading-none">Premium</span>
+                    </div>
                     @if($currentPage === 'avatar')
                         <div class="absolute inset-x-0 bottom-0 h-0.5 bg-gradient-to-r from-purple-600 to-purple-500 rounded-full"></div>
                     @endif
@@ -113,9 +118,14 @@
                     <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24">
                         <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2ZM21 9V7L15 1L13.5 2.5L16.17 5.17L10.59 10.75C10.21 10.37 9.7 10.17 9.17 10.17H4C2.9 10.17 2 11.07 2 12.17V14.17H4V22H10V14.17H11V13C11 12.65 11.04 12.31 11.1 11.97L16.5 6.5L19 9H21ZM6 12.17H8V14.17H6V12.17Z"/>
                     </svg>
-                    <div class="absolute -top-0.5 -right-0.5 w-2 h-2 bg-gradient-to-r from-green-400 to-emerald-500 rounded-full animate-pulse"></div>
+                    <div class="absolute -top-1 -right-1 w-3 h-3 bg-gradient-to-r from-purple-500 to-indigo-600 rounded-full flex items-center justify-center">
+                        <span class="text-[8px] text-white font-bold">✓</span>
+                    </div>
                 </div>
-                Avatar
+                <div class="flex flex-col">
+                    <span>Avatar</span>
+                    <span class="text-[10px] text-purple-500 dark:text-purple-400 font-semibold leading-none">Premium</span>
+                </div>
             </a>
         </nav>
     </div>

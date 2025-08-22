@@ -101,14 +101,6 @@
                                         <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
                                     </svg>
                                 </div>
-                                <span class="text-slate-700 dark:text-slate-300">Basic AI Avatar sessions (5/month)</span>
-                            </li>
-                            <li class="flex items-center">
-                                <div class="w-5 h-5 bg-green-100 dark:bg-green-900/30 rounded-full flex items-center justify-center mr-3">
-                                    <svg class="w-3 h-3 text-green-600 dark:text-green-400" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
-                                    </svg>
-                                </div>
                                 <span class="text-slate-700 dark:text-slate-300">Access to basic tutorials</span>
                             </li>
                             <li class="flex items-center">
@@ -126,6 +118,15 @@
                                     </svg>
                                 </div>
                                 <span class="text-slate-700 dark:text-slate-300">Code examples & snippets</span>
+                            </li>
+                            <li class="flex items-center opacity-50">
+                                <div class="w-5 h-5 bg-slate-200 dark:bg-slate-700 rounded-full flex items-center justify-center mr-3">
+                                    <svg class="w-3 h-3 text-slate-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                    </svg>
+                                </div>
+                                <span class="text-slate-500 dark:text-slate-500 line-through">AI Avatar Teacher</span>
+                                <span class="ml-2 px-2 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400 text-xs font-semibold rounded-full">Premium Only</span>
                             </li>
                         </ul>
                         
@@ -164,13 +165,16 @@
                         </div>
                         
                         <ul class="space-y-4 mb-8">
-                            <li class="flex items-center">
-                                <div class="w-5 h-5 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center mr-3">
-                                    <svg class="w-3 h-3 text-purple-600 dark:text-purple-400" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                            <li class="flex items-center p-3 bg-gradient-to-r from-purple-50/50 to-indigo-50/50 dark:from-purple-900/20 dark:to-indigo-900/20 rounded-xl border border-purple-200/30 dark:border-purple-700/30">
+                                <div class="w-6 h-6 bg-gradient-to-br from-purple-500 to-indigo-600 rounded-full flex items-center justify-center mr-3 shadow-sm">
+                                    <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2Z"/>
                                     </svg>
                                 </div>
-                                <span class="text-slate-700 dark:text-slate-300"><strong>Unlimited AI Avatar sessions</strong></span>
+                                <div class="flex-1">
+                                    <span class="text-slate-700 dark:text-slate-300 font-semibold">🚀 Unlimited AI Avatar Teacher</span>
+                                    <div class="text-xs text-purple-600 dark:text-purple-400 font-medium">Premium Feature • HeyGen Powered</div>
+                                </div>
                             </li>
                             <li class="flex items-center">
                                 <div class="w-5 h-5 bg-purple-100 dark:bg-purple-900/30 rounded-full flex items-center justify-center mr-3">
@@ -247,13 +251,16 @@
                                 </div>
                                 <span class="text-slate-700 dark:text-slate-300"><strong>Everything in AI Pro</strong></span>
                             </li>
-                            <li class="flex items-center">
-                                <div class="w-5 h-5 bg-amber-100 dark:bg-amber-900/30 rounded-full flex items-center justify-center mr-3">
-                                    <svg class="w-3 h-3 text-amber-600 dark:text-amber-400" fill="currentColor" viewBox="0 0 20 20">
-                                        <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+                            <li class="flex items-center p-3 bg-gradient-to-r from-amber-50/50 to-orange-50/50 dark:from-amber-900/20 dark:to-orange-900/20 rounded-xl border border-amber-200/30 dark:border-amber-700/30">
+                                <div class="w-6 h-6 bg-gradient-to-br from-amber-500 to-orange-600 rounded-full flex items-center justify-center mr-3 shadow-sm">
+                                    <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 24 24">
+                                        <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2Z"/>
                                     </svg>
                                 </div>
-                                <span class="text-slate-700 dark:text-slate-300">Multiple AI Avatar trainers</span>
+                                <div class="flex-1">
+                                    <span class="text-slate-700 dark:text-slate-300 font-semibold">👥 Multiple AI Avatar Trainers</span>
+                                    <div class="text-xs text-amber-600 dark:text-amber-400 font-medium">Enterprise Premium • Custom AI Models</div>
+                                </div>
                             </li>
                             <li class="flex items-center">
                                 <div class="w-5 h-5 bg-amber-100 dark:bg-amber-900/30 rounded-full flex items-center justify-center mr-3">
@@ -319,8 +326,20 @@
                         </thead>
                         <tbody>
                             <tr class="border-b border-slate-200/60 dark:border-slate-700/60 hover:bg-slate-50/50 dark:hover:bg-slate-700/30 transition-colors">
-                                <td class="p-6 text-slate-700 dark:text-slate-300 font-medium">AI Avatar Sessions</td>
-                                <td class="p-6 text-center text-slate-600 dark:text-slate-400">5/month</td>
+                                <td class="p-6 text-slate-700 dark:text-slate-300 font-medium">
+                                    <div class="flex items-center gap-2">
+                                        <svg class="w-5 h-5 text-purple-500" fill="currentColor" viewBox="0 0 24 24">
+                                            <path d="M12 2C13.1 2 14 2.9 14 4C14 5.1 13.1 6 12 6C10.9 6 10 5.1 10 4C10 2.9 10.9 2 12 2Z"/>
+                                        </svg>
+                                        AI Avatar Teacher Sessions
+                                        <span class="px-2 py-1 bg-purple-100 dark:bg-purple-900/30 text-purple-700 dark:text-purple-400 text-xs font-semibold rounded-full">Premium</span>
+                                    </div>
+                                </td>
+                                <td class="p-6 text-center">
+                                    <svg class="w-5 h-5 text-slate-400 mx-auto" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+                                    </svg>
+                                </td>
                                 <td class="p-6 text-center">
                                     <span class="inline-flex items-center gap-1 text-purple-600 dark:text-purple-400 font-semibold">
                                         <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
@@ -334,7 +353,7 @@
                                         <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
                                             <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
                                         </svg>
-                                        Unlimited
+                                        Advanced
                                     </span>
                                 </td>
                             </tr>
@@ -449,8 +468,8 @@
                                 </svg>
                             </div>
                             <div>
-                                <h3 class="text-xl font-semibold text-slate-900 dark:text-white mb-3">Can I try AI Avatar sessions before upgrading?</h3>
-                                <p class="text-slate-600 dark:text-slate-400">Yes! The Starter plan includes 5 free AI Avatar sessions per month. You can also enjoy a 14-day free trial for AI Pro and Enterprise plans.</p>
+                                <h3 class="text-xl font-semibold text-slate-900 dark:text-white mb-3">How can I access AI Avatar Teacher?</h3>
+                                <p class="text-slate-600 dark:text-slate-400">AI Avatar Teacher is a premium feature available only with AI Pro and Enterprise plans. Start your 14-day free trial to experience personalized AI-powered learning with no commitment required.</p>
                             </div>
                         </div>
                     </div>
