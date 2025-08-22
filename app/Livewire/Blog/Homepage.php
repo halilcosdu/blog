@@ -39,12 +39,18 @@ class Homepage extends BaseComponent
     }
 
     /**
-     * Get top lessons (posts with featured images)
+     * Get top lessons (standalone episodes)
      */
     private function getTopLessons(): \Illuminate\Database\Eloquent\Collection
     {
         return $this->cacheMedium($this->getCacheKey('top_lessons'), function () {
-            return $this->repository(PostRepository::class)->getTopByViews(12);
+            return \App\Models\Episode::published()
+                ->where('is_standalone', true)
+                ->whereNotNull('thumbnail')
+                ->with(['user:id,name,email', 'category:id,name,slug'])
+                ->orderByDesc('views_count')
+                ->take(12)
+                ->get();
         });
     }
 

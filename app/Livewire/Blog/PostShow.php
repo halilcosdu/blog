@@ -3,7 +3,6 @@
 namespace App\Livewire\Blog;
 
 use App\Models\Post;
-use App\Repositories\PostRepository;
 use Illuminate\Support\Str;
 use Livewire\Component;
 
@@ -25,7 +24,13 @@ class PostShow extends Component
 
     private function getTopLessons(): \Illuminate\Database\Eloquent\Collection
     {
-        return app(PostRepository::class)->getTopByViews(12);
+        return \App\Models\Episode::published()
+            ->where('is_standalone', true)
+            ->whereNotNull('thumbnail')
+            ->with(['user:id,name,email', 'category:id,name,slug'])
+            ->orderByDesc('views_count')
+            ->take(12)
+            ->get();
     }
 
     public function render()

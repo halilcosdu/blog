@@ -144,9 +144,11 @@
             </div>
             <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-4">
                 @foreach($topLessons->take(10) as $t)
-                    <a href="/posts/{{ $t->slug }}" class="group rounded-2xl border border-slate-700/60 bg-slate-800/40 hover:bg-gradient-to-br hover:from-orange-500/10 hover:to-red-500/10 hover:border-orange-500/40 transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-orange-500/10">
+                    <a href="{{ route('watch.lessons.show', ['slug' => $t->slug]) }}" class="group block rounded-2xl border border-slate-700/60 bg-slate-800/40 overflow-hidden transition-all duration-300 hover:-translate-y-1 hover:shadow-xl hover:shadow-orange-500/10 hover:border-orange-500/40 relative">
+                        <div class="absolute inset-0 bg-gradient-to-br from-orange-500/0 to-red-500/0 group-hover:from-orange-500/10 group-hover:to-red-500/10 transition-all duration-300 rounded-2xl"></div>
+                        <div class="relative">
                         <div class="aspect-video overflow-hidden rounded-t-2xl relative">
-                            <img src="{{ $t->featured_image }}" alt="{{ $t->title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
+                            <img src="{{ $t->thumbnail }}" alt="{{ $t->title }}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
 
                             <div class="absolute inset-0 bg-black/20 group-hover:bg-black/40 transition-colors">
                                 <div class="absolute inset-0 flex items-center justify-center">
@@ -157,9 +159,9 @@
                                     </div>
                                 </div>
 
-                                @if($t->reading_time)
+                                @if($t->duration_minutes)
                                 <div class="absolute bottom-3 right-3 px-2 py-1 bg-black/80 backdrop-blur-sm text-white text-xs font-medium rounded-lg">
-                                    {{ $t->reading_time }}
+                                    {{ $t->duration_minutes }}m
                                 </div>
                                 @endif
                             </div>
@@ -179,6 +181,7 @@
                                 <span class="text-orange-400">{{ $t->category->name }}</span>
                                 @endif
                             </div>
+                        </div>
                         </div>
                     </a>
                 @endforeach

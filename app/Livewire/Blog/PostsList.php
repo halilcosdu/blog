@@ -190,8 +190,11 @@ class PostsList extends Component
         });
 
         $topLessons = \Cache::remember('posts_list.top_lessons', 3600, function () {
-            return Post::published()
-                ->orderBy('views_count', 'desc')
+            return \App\Models\Episode::published()
+                ->where('is_standalone', true)
+                ->whereNotNull('thumbnail')
+                ->with(['user:id,name,email', 'category:id,name,slug'])
+                ->orderByDesc('views_count')
                 ->take(12)
                 ->get();
         });

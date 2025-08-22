@@ -41,16 +41,16 @@ class LessonShow extends Component
 
         if ($this->isInWatchlist) {
             UserWatchlist::removeFromWatchlist(auth()->id(), Episode::class, $this->episode->id);
-            $this->dispatch('watchlist-updated', [
-                'type' => 'removed',
-                'message' => 'Removed from watchlist!',
-            ]);
+            $this->dispatch('watchlist-updated',
+                type: 'removed',
+                message: 'Removed from watchlist!'
+            );
         } else {
             UserWatchlist::addToWatchlist(auth()->id(), Episode::class, $this->episode->id);
-            $this->dispatch('watchlist-updated', [
-                'type' => 'added',
-                'message' => 'Added to watchlist!',
-            ]);
+            $this->dispatch('watchlist-updated',
+                type: 'added',
+                message: 'Added to watchlist!'
+            );
         }
     }
 
