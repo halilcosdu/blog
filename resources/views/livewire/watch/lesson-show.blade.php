@@ -56,8 +56,15 @@
                         @if(count($this->relatedLessons) > 0)
                         <div class="sticky top-24">
                             <div class="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
-                                <div class="p-4 border-b border-slate-200 dark:border-slate-700">
-                                    <h2 class="text-lg font-semibold text-slate-900 dark:text-white">Up Next</h2>
+                                <div class="px-5 py-4 bg-gradient-to-r from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-700 border-b border-slate-200 dark:border-slate-600">
+                                    <h2 class="text-lg font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+                                        <div class="w-5 h-5 bg-gradient-to-br from-red-500 to-orange-600 rounded-full flex items-center justify-center">
+                                            <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                                <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/>
+                                            </svg>
+                                        </div>
+                                        Up Next
+                                    </h2>
                                 </div>
                                 <div class="overflow-y-auto" data-video-height-limit>
                                     <div class="p-2">
@@ -389,48 +396,131 @@
 
                     {{-- Stats Sidebar --}}
                     <div class="xl:col-span-1">
-                        <div class="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-5">
-                            <h3 class="text-base font-semibold text-slate-900 dark:text-white mb-4">About this lesson</h3>
-                            <div class="space-y-3">
-                                <div class="flex items-center justify-between text-sm">
-                                    <span class="text-slate-600 dark:text-slate-400">Views</span>
-                                    <span class="font-medium text-slate-900 dark:text-white">{{ number_format($episode->views_count) }}</span>
+                        <div class="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
+                            <!-- Header with gradient -->
+                            <div class="px-5 py-4 bg-gradient-to-r from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-700 border-b border-slate-200 dark:border-slate-600">
+                                <h3 class="text-base font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+                                    <div class="w-5 h-5 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center">
+                                        <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                                        </svg>
+                                    </div>
+                                    Lesson Details
+                                </h3>
+                            </div>
+                            
+                            <!-- Content -->
+                            <div class="p-5 space-y-4">
+                                <div class="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-800 rounded-lg">
+                                    <div class="w-8 h-8 bg-gradient-to-br from-green-400 to-emerald-500 rounded-full flex items-center justify-center">
+                                        <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                            <path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/>
+                                            <path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/>
+                                        </svg>
+                                    </div>
+                                    <div class="flex-1">
+                                        <div class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wide font-medium">Views</div>
+                                        <div class="text-lg font-bold text-slate-900 dark:text-white">{{ number_format($episode->views_count) }}</div>
+                                    </div>
                                 </div>
-                                <div class="flex items-center justify-between text-sm">
-                                    <span class="text-slate-600 dark:text-slate-400">Duration</span>
-                                    <span class="font-medium text-slate-900 dark:text-white">{{ $episode->formatted_duration }}</span>
+
+                                <div class="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-800 rounded-lg">
+                                    <div class="w-8 h-8 bg-gradient-to-br from-blue-400 to-blue-600 rounded-full flex items-center justify-center">
+                                        <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm1-12a1 1 0 10-2 0v4a1 1 0 00.293.707l2.828 2.829a1 1 0 101.415-1.415L11 9.586V6z" clip-rule="evenodd"/>
+                                        </svg>
+                                    </div>
+                                    <div class="flex-1">
+                                        <div class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wide font-medium">Duration</div>
+                                        <div class="text-lg font-bold text-slate-900 dark:text-white">{{ $episode->formatted_duration }}</div>
+                                    </div>
                                 </div>
-                                <div class="flex items-center justify-between text-sm">
-                                    <span class="text-slate-600 dark:text-slate-400">Level</span>
-                                    <span class="font-medium text-slate-900 dark:text-white capitalize">{{ $episode->level }}</span>
+
+                                <div class="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-800 rounded-lg">
+                                    <div class="w-8 h-8 bg-gradient-to-br {{ $episode->level === 'beginner' ? 'from-green-400 to-green-600' : ($episode->level === 'intermediate' ? 'from-yellow-400 to-orange-500' : 'from-red-400 to-red-600') }} rounded-full flex items-center justify-center">
+                                        <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                            @if($episode->level === 'beginner')
+                                                <path fill-rule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clip-rule="evenodd"/>
+                                            @elseif($episode->level === 'intermediate')
+                                                <path fill-rule="evenodd" d="M3 6a3 3 0 013-3h10a1 1 0 01.8 1.6L14.25 8l2.55 3.4A1 1 0 0116 13H6a1 1 0 00-1 1v3a1 1 0 11-2 0V6z" clip-rule="evenodd"/>
+                                            @else
+                                                <path fill-rule="evenodd" d="M12.395 2.553a1 1 0 00-1.45-.385c-.345.23-.614.558-.822.88-.214.33-.403.713-.57 1.116-.334.804-.614 1.768-.84 2.734a31.365 31.365 0 00-.613 3.58 2.64 2.64 0 01-.945-1.067c-.328-.68-.398-1.534-.398-2.654A1 1 0 005.05 6.05 6.981 6.981 0 003 11a7 7 0 1011.95-4.95c-.592-.591-.98-.985-1.348-1.467-.363-.476-.724-1.063-1.207-2.03z" clip-rule="evenodd"/>
+                                            @endif
+                                        </svg>
+                                    </div>
+                                    <div class="flex-1">
+                                        <div class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wide font-medium">Level</div>
+                                        <div class="text-lg font-bold text-slate-900 dark:text-white capitalize">
+                                            {{ $episode->level }}
+                                        </div>
+                                    </div>
                                 </div>
-                                <div class="flex items-center justify-between text-sm">
-                                    <span class="text-slate-600 dark:text-slate-400">Published</span>
-                                    <span class="font-medium text-slate-900 dark:text-white">{{ $episode->published_at->format('M j, Y') }}</span>
+
+                                <div class="flex items-center gap-3 p-3 bg-slate-50 dark:bg-slate-800 rounded-lg">
+                                    <div class="w-8 h-8 bg-gradient-to-br from-purple-400 to-purple-600 rounded-full flex items-center justify-center">
+                                        <svg class="w-4 h-4 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/>
+                                        </svg>
+                                    </div>
+                                    <div class="flex-1">
+                                        <div class="text-xs text-slate-500 dark:text-slate-400 uppercase tracking-wide font-medium">Published</div>
+                                        <div class="text-lg font-bold text-slate-900 dark:text-white">{{ $episode->published_at->format('M j, Y') }}</div>
+                                    </div>
                                 </div>
                             </div>
                         </div>
 
                         {{-- Description --}}
                         @if($episode->description)
-                        <div class="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-5 mt-4">
-                            <h3 class="text-base font-semibold text-slate-900 dark:text-white mb-3">Description</h3>
-                            <div class="prose prose-sm prose-slate dark:prose-invert max-w-none text-sm">
-                                {!! nl2br(e($episode->description)) !!}
+                        <div class="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden mt-4">
+                            <!-- Header with gradient -->
+                            <div class="px-5 py-4 bg-gradient-to-r from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-700 border-b border-slate-200 dark:border-slate-600">
+                                <h3 class="text-base font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+                                    <div class="w-5 h-5 bg-gradient-to-br from-indigo-500 to-blue-600 rounded-full flex items-center justify-center">
+                                        <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M4 4a2 2 0 012-2h8a2 2 0 012 2v12a1 1 0 110 2h-3a1 1 0 01-1-1v-1H8v1a1 1 0 01-1 1H4a1 1 0 110-2V4zm3 1h2v4H7V5zm2 6H7v2h2v-2zm2-6h2v4h-2V5zm2 6h-2v2h2v-2z" clip-rule="evenodd"/>
+                                        </svg>
+                                    </div>
+                                    Description
+                                </h3>
+                            </div>
+                            
+                            <!-- Content -->
+                            <div class="p-5">
+                                <div class="prose prose-sm prose-slate dark:prose-invert max-w-none text-sm">
+                                    {!! nl2br(e($episode->description)) !!}
+                                </div>
                             </div>
                         </div>
                         @endif
 
                         {{-- Tags --}}
                         @if($episode->tags->isNotEmpty())
-                        <div class="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 p-5 mt-4">
-                            <h3 class="text-base font-semibold text-slate-900 dark:text-white mb-3">Tags</h3>
-                            <div class="flex flex-wrap gap-2">
-                                @foreach($episode->tags as $tag)
-                                <span class="px-3 py-1 bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300 rounded-full text-xs hover:bg-slate-200 dark:hover:bg-slate-700 transition-colors cursor-pointer">
-                                    {{ $tag->name }}
-                                </span>
-                                @endforeach
+                        <div class="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden mt-4">
+                            <!-- Header with gradient -->
+                            <div class="px-5 py-4 bg-gradient-to-r from-slate-50 to-slate-100 dark:from-slate-800 dark:to-slate-700 border-b border-slate-200 dark:border-slate-600">
+                                <h3 class="text-base font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+                                    <div class="w-5 h-5 bg-gradient-to-br from-emerald-500 to-teal-600 rounded-full flex items-center justify-center">
+                                        <svg class="w-3 h-3 text-white" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M17.707 9.293a1 1 0 010 1.414l-7 7a1 1 0 01-1.414 0l-7-7A.997.997 0 012 10V5a3 3 0 013-3h5c.256 0 .512.098.707.293l7 7zM5 6a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"/>
+                                        </svg>
+                                    </div>
+                                    Tags
+                                </h3>
+                            </div>
+                            
+                            <!-- Content -->
+                            <div class="p-5">
+                                <div class="flex flex-wrap gap-2">
+                                    @foreach($episode->tags as $tag)
+                                    <span class="inline-flex items-center px-3 py-1.5 bg-gradient-to-r from-slate-100 to-slate-200 dark:from-slate-700 dark:to-slate-800 text-slate-700 dark:text-slate-300 rounded-full text-xs font-medium hover:from-slate-200 hover:to-slate-300 dark:hover:from-slate-600 dark:hover:to-slate-700 transition-all cursor-pointer border border-slate-200 dark:border-slate-600">
+                                        <svg class="w-3 h-3 mr-1.5 text-slate-500 dark:text-slate-400" fill="currentColor" viewBox="0 0 20 20">
+                                            <path fill-rule="evenodd" d="M17.707 9.293a1 1 0 010 1.414l-7 7a1 1 0 01-1.414 0l-7-7A.997.997 0 012 10V5a3 3 0 013-3h5c.256 0 .512.098.707.293l7 7zM5 6a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd"/>
+                                        </svg>
+                                        {{ $tag->name }}
+                                    </span>
+                                    @endforeach
+                                </div>
                             </div>
                         </div>
                         @endif
