@@ -6,6 +6,7 @@ use App\Traits\Taggable;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\MorphMany;
 use Illuminate\Database\Eloquent\Relations\MorphToMany;
 use Illuminate\Support\Str;
@@ -128,6 +129,12 @@ class Episode extends Model
     public function watchlists(): MorphMany
     {
         return $this->morphMany(UserWatchlist::class, 'watchable');
+    }
+
+    public function comments(): HasMany
+    {
+        // Episode comments relationship
+        return $this->hasMany(EpisodeComment::class)->orderBy('created_at', 'desc');
     }
 
     // Scopes

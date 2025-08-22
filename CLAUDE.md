@@ -470,3 +470,5 @@ Use n8n-MCP tools to design **accurate** and **efficient** workflows. Principles
 </n8n-guidelines>
 
 - You can use gh tool. Commit often
+- tiklanabilir her elemente cursor pointer ekle
+- sistemde daha onceden ayni amac icin kullanilmis component var ise onu kullan

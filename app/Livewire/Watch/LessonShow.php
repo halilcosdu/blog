@@ -3,10 +3,12 @@
 namespace App\Livewire\Watch;
 
 use App\Models\Episode;
+use App\Models\EpisodeComment;
 use App\Models\UserProgress;
 use App\Models\UserWatchlist;
 use Livewire\Attributes\Computed;
 use Livewire\Attributes\On;
+use Livewire\Attributes\Rule;
 use Livewire\Component;
 
 class LessonShow extends Component
@@ -15,15 +17,21 @@ class LessonShow extends Component
 
     public string $slug;
 
+    #[Rule('required|string|min:10|max:1000')]
     public string $newComment = '';
+
+    public ?int $editingCommentId = null;
+
+    #[Rule('required|string|min:10|max:1000')]
+    public string $editCommentContent = '';
 
     public function mount(string $slug): void
     {
         $this->slug = $slug;
 
-        // Find standalone episode
+        // Find standalone episode with comments
         $this->episode = Episode::published()
-            ->with(['category', 'user', 'tags'])
+            ->with(['category', 'user', 'tags', 'comments.user'])
             ->where('slug', $slug)
             ->where('is_standalone', true)
             ->firstOrFail();
@@ -109,6 +117,8 @@ class LessonShow extends Component
     {
         if ($name === 'newComment') {
             $this->newComment = $content;
+        } elseif ($name === 'editCommentContent') {
+            $this->editCommentContent = $content;
         }
     }
 
@@ -122,19 +132,119 @@ class LessonShow extends Component
             return;
         }
 
-        $this->validate([
-            'newComment' => 'required|min:10|max:1000',
-        ]);
+        $this->validateOnly('newComment');
 
-        // Here we would save the comment to database
-        // For now, just show a success message
-        $this->dispatch('comment-posted', [
-            'message' => 'Your comment has been posted!',
+        EpisodeComment::create([
+            'episode_id' => $this->episode->id,
+            'user_id' => auth()->id(),
+            'content' => $this->newComment,
         ]);
 
         // Reset the form and clear the editor
         $this->newComment = '';
         $this->dispatch('clear-editor-content');
+        $this->dispatch('comment-posted', [
+            'message' => 'Your comment has been posted!',
+        ]);
+
+        // Refresh episode with comments
+        $this->episode->load('comments.user');
+    }
+
+    public function startEditingComment(int $commentId): void
+    {
+        $comment = EpisodeComment::findOrFail($commentId);
+
+        // Only comment author can edit their comment
+        if (auth()->id() !== $comment->user_id) {
+            abort(403, 'You can only edit your own comments.');
+        }
+
+        $this->editingCommentId = $commentId;
+        $this->editCommentContent = $comment->content;
+    }
+
+    public function updateComment(): void
+    {
+        $this->validateOnly('editCommentContent');
+
+        $comment = EpisodeComment::findOrFail($this->editingCommentId);
+
+        // Only comment author can edit their comment
+        if (auth()->id() !== $comment->user_id) {
+            abort(403, 'You can only edit your own comments.');
+        }
+
+        $comment->update([
+            'content' => $this->editCommentContent,
+        ]);
+
+        // Reset editing state
+        $this->editingCommentId = null;
+        $this->editCommentContent = '';
+        $this->dispatch('comment-updated');
+
+        // Refresh episode with comments
+        $this->episode->load('comments.user');
+
+        $this->dispatch('comment-posted', [
+            'message' => 'Comment updated successfully!',
+        ]);
+    }
+
+    public function cancelEditingComment(): void
+    {
+        $this->editingCommentId = null;
+        $this->editCommentContent = '';
+    }
+
+    public function deleteComment(int $commentId): void
+    {
+        $comment = EpisodeComment::findOrFail($commentId);
+
+        // Only comment author can delete their comment
+        if (auth()->id() !== $comment->user_id) {
+            abort(403, 'You can only delete your own comments.');
+        }
+
+        $comment->delete();
+
+        // Refresh episode with comments
+        $this->episode->load('comments.user');
+
+        $this->dispatch('comment-posted', [
+            'message' => 'Comment deleted successfully!',
+        ]);
+    }
+
+    public function markAsBestAnswer(int $commentId): void
+    {
+        // Only episode author can mark best answer
+        if (auth()->id() !== $this->episode->user_id) {
+            abort(403, 'Only the lesson author can mark a best answer.');
+        }
+
+        $comment = EpisodeComment::findOrFail($commentId);
+
+        // Ensure the comment belongs to this episode
+        if ($comment->episode_id !== $this->episode->id) {
+            abort(403, 'This comment does not belong to this episode.');
+        }
+
+        $comment->markAsBestAnswer();
+
+        // Refresh episode with comments
+        $this->episode->load('comments.user');
+
+        $this->dispatch('comment-posted', [
+            'message' => 'Comment marked as best answer!',
+        ]);
+    }
+
+    #[Computed]
+    public function commentsCount(): int
+    {
+        return $this->episode->comments->count();
     }
 
     #[Computed]
