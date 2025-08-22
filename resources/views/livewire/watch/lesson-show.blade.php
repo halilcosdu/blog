@@ -244,46 +244,20 @@
                             {{-- Add Comment Form --}}
                             @auth
                             <div class="mb-6 pb-6 border-b border-slate-200 dark:border-slate-700">
-                                <div class="flex gap-3">
-                                    <div class="w-8 h-8 bg-gradient-to-r from-red-600 to-orange-500 rounded-full flex items-center justify-center flex-shrink-0">
-                                        <span class="text-white font-semibold text-xs">
-                                            {{ substr(auth()->user()->name, 0, 1) }}
-                                        </span>
-                                    </div>
-                                    <div class="flex-1">
-                                        <div class="relative">
-                                            <textarea
-                                                wire:model="newComment"
-                                                placeholder="Share your thoughts about this lesson..."
-                                                class="w-full p-3 border border-slate-300 dark:border-slate-600 rounded-lg bg-white dark:bg-slate-800 text-slate-900 dark:text-white placeholder-slate-500 dark:placeholder-slate-400 resize-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all"
-                                                rows="3"
-                                            ></textarea>
-                                            <div class="absolute bottom-2 right-2 text-xs text-slate-400">
-                                                Markdown supported
-                                            </div>
-                                        </div>
-                                        <div class="flex items-center justify-between mt-3">
-                                            <div class="flex items-center gap-4 text-xs text-slate-500 dark:text-slate-400">
-                                                <button type="button" class="hover:text-slate-700 dark:hover:text-slate-300 transition-colors">
-                                                    <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.102m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/>
-                                                    </svg>
-                                                    Bold
-                                                </button>
-                                                <button type="button" class="hover:text-slate-700 dark:hover:text-slate-300 transition-colors">
-                                                    <svg class="w-4 h-4 inline mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 20l4-16m4 4l4 4-4 4M6 16l-4-4 4-4"/>
-                                                    </svg>
-                                                    Code
-                                                </button>
-                                            </div>
-                                            <button
-                                                wire:click="postComment"
-                                                class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-medium transition-colors"
-                                            >
-                                                Post Comment
-                                            </button>
-                                        </div>
+                                <div class="flex-1">
+                                    <livewire:simple-markdown-editor 
+                                        name="newComment"
+                                        :value="$newComment"
+                                        placeholder="Share your thoughts about this lesson... (Markdown supported)"
+                                        :rows="4"
+                                    />
+                                    <div class="flex items-center justify-end mt-3">
+                                        <button
+                                            wire:click="postComment"
+                                            class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-medium transition-colors"
+                                        >
+                                            Post Comment
+                                        </button>
                                     </div>
                                 </div>
                             </div>

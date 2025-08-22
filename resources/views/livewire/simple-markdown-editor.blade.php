@@ -1,8 +1,8 @@
 <div class="markdown-editor-wrapper">
     <!-- Editor Container -->
-    <div class="markdown-editor bg-transparent border-0 overflow-hidden">
+    <div class="markdown-editor bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 overflow-hidden">
         <!-- Toolbar -->
-        <div class="editor-toolbar flex items-center justify-between p-4 border-b border-slate-200/60 dark:border-slate-700/60 bg-slate-50/80 dark:bg-slate-900/80">
+        <div class="editor-toolbar flex items-center justify-between px-4 py-3 border-b border-slate-200/60 dark:border-slate-700/60 bg-slate-50/80 dark:bg-slate-900/80">
             <!-- Left side - Format buttons -->
             <div class="flex items-center gap-1">
                 <!-- Bold -->

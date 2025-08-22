@@ -6,6 +6,7 @@ use App\Models\Episode;
 use App\Models\UserProgress;
 use App\Models\UserWatchlist;
 use Livewire\Attributes\Computed;
+use Livewire\Attributes\On;
 use Livewire\Component;
 
 class LessonShow extends Component
@@ -103,6 +104,14 @@ class LessonShow extends Component
         }
     }
 
+    #[On('content-updated')]
+    public function updateCommentContent(string $name, string $content): void
+    {
+        if ($name === 'newComment') {
+            $this->newComment = $content;
+        }
+    }
+
     public function postComment(): void
     {
         if (! auth()->check()) {
@@ -123,8 +132,9 @@ class LessonShow extends Component
             'message' => 'Your comment has been posted!',
         ]);
 
-        // Reset the form
+        // Reset the form and clear the editor
         $this->newComment = '';
+        $this->dispatch('clear-editor-content');
     }
 
     #[Computed]
