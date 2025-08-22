@@ -13,20 +13,25 @@ class UserDropdown extends Component
         $this->open = ! $this->open;
     }
 
-    public function close(): void
+    public function openDropdown(): void
+    {
+        $this->open = true;
+    }
+
+    public function closeDropdown(): void
     {
         $this->open = false;
     }
 
     public function navigateToDashboard(): void
     {
-        $this->close();
+        $this->closeDropdown();
         $this->redirect('/dashboard');
     }
 
     public function logout(): void
     {
-        $this->close();
+        $this->closeDropdown();
         auth()->logout();
         session()->invalidate();
         session()->regenerateToken();
