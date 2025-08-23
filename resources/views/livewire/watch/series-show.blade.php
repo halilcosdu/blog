@@ -77,7 +77,7 @@
                         <div class="flex items-center gap-4">
                             {{-- Start Watching Button --}}
                             @if($currentEpisode)
-                            <a href="{{ route('watch.episode.show', [$series->slug, $currentEpisode->slug]) }}" 
+                            <a href="{{ route('watch.episodes.show', [$series->slug, $currentEpisode->slug]) }}" 
                                class="inline-flex items-center px-6 py-3 bg-red-600 hover:bg-red-700 text-white rounded-lg text-sm font-semibold transition-all duration-200 shadow-lg hover:shadow-xl cursor-pointer">
                                 <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20">
                                     <path d="M6.3 2.841A1.5 1.5 0 004 4.11V15.89a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/>
@@ -235,7 +235,7 @@
 
                             <div class="divide-y divide-slate-200 dark:divide-slate-700">
                                 @foreach($series->episodes as $episode)
-                                <a href="{{ route('watch.episode.show', [$series->slug, $episode->slug]) }}" class="group block p-6 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors cursor-pointer">
+                                <a href="{{ route('watch.episodes.show', [$series->slug, $episode->slug]) }}" class="group block p-6 hover:bg-slate-50 dark:hover:bg-slate-800 transition-colors cursor-pointer">
                                     <div class="flex gap-4">
                                         {{-- Episode Thumbnail --}}
                                         <div class="relative w-32 h-20 bg-slate-200 dark:bg-slate-700 rounded-lg overflow-hidden flex-shrink-0">

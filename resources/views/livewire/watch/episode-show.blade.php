@@ -141,7 +141,7 @@
                             <div class="mt-6 pt-6 mb-6 border-t border-slate-200 dark:border-slate-700">
                                 <div class="flex flex-col sm:flex-row gap-3">
                                     @if($this->previousEpisode)
-                                    <a href="{{ route('watch.episode.show', [$series->slug, $this->previousEpisode->slug]) }}" 
+                                    <a href="{{ route('watch.episodes.show', [$series->slug, $this->previousEpisode->slug]) }}" 
                                        class="group flex-1 flex items-center gap-3 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 dark:from-blue-900/20 dark:to-indigo-900/20 hover:from-blue-100 hover:to-indigo-100 dark:hover:from-blue-900/30 dark:hover:to-indigo-900/30 rounded-xl border border-blue-200 dark:border-blue-800 transition-all duration-200 cursor-pointer">
                                         <div class="flex items-center justify-center w-10 h-10 bg-blue-100 dark:bg-blue-900/40 rounded-lg group-hover:bg-blue-200 dark:group-hover:bg-blue-900/60 transition-colors">
                                             <svg class="w-5 h-5 text-blue-600 dark:text-blue-400 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -158,7 +158,7 @@
                                     @endif
 
                                     @if($this->nextEpisode)
-                                    <a href="{{ route('watch.episode.show', [$series->slug, $this->nextEpisode->slug]) }}" 
+                                    <a href="{{ route('watch.episodes.show', [$series->slug, $this->nextEpisode->slug]) }}" 
                                        class="group flex-1 flex items-center gap-3 p-4 bg-gradient-to-r from-emerald-500 to-green-600 hover:from-emerald-600 hover:to-green-700 text-white rounded-xl shadow-lg hover:shadow-xl transition-all duration-200 cursor-pointer">
                                         <div class="flex-1 min-w-0 text-right">
                                             <div class="text-xs font-medium text-emerald-100 uppercase tracking-wide">Next Episode</div>
@@ -389,7 +389,7 @@
                                 <div class="h-[400px] overflow-y-auto">
                                     <div class="p-2 min-h-full">
                                         @foreach($series->episodes as $ep)
-                                        <a href="{{ route('watch.episode.show', [$series->slug, $ep->slug]) }}" class="block group p-2 rounded-lg transition-colors
+                                        <a href="{{ route('watch.episodes.show', [$series->slug, $ep->slug]) }}" class="block group p-2 rounded-lg transition-colors
                                             @if($ep->id === $episode->id) 
                                                 bg-slate-50 dark:bg-slate-800
                                             @else

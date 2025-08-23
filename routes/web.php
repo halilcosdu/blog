@@ -12,7 +12,7 @@ Route::get('/watch', App\Livewire\Watch\ModernWatchPage::class)->name('watch');
 // Watch content routes
 Route::prefix('watch')->name('watch.')->group(function () {
     Route::get('/series/{slug}', App\Livewire\Watch\SeriesShow::class)->name('series.show');
-    Route::get('/series/{seriesSlug}/episode/{episodeSlug}', App\Livewire\Watch\EpisodeShow::class)->name('episode.show');
+    Route::get('/series/{seriesSlug}/episodes/{episodeSlug}', App\Livewire\Watch\EpisodeShow::class)->name('episodes.show');
     Route::get('/lessons/{slug}', App\Livewire\Watch\LessonShow::class)->name('lessons.show');
     Route::get('/pathways/{slug}', App\Livewire\Watch\PathwayShow::class)->name('pathway.show');
 });
