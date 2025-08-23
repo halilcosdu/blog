@@ -17,8 +17,8 @@ describe('Authentication and Authorization Security', function () {
         expect($response->getStatusCode())->toBeIn([302, 401, 403]);
 
         if ($response->getStatusCode() === 302) {
-            // If redirected, should be to login page
-            expect($response->headers->get('Location'))->toContain('login');
+            // If redirected, should be to home page (as configured in bootstrap/app.php)
+            expect($response->headers->get('Location'))->toBe('http://blog.test');
         }
     });
 

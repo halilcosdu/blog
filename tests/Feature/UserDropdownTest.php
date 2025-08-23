@@ -35,7 +35,7 @@ it('can close dropdown', function () {
 
     Livewire::test(UserDropdown::class)
         ->set('open', true)
-        ->call('close')
+        ->call('closeDropdown')
         ->assertSet('open', false);
 });
 

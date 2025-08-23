@@ -4,6 +4,7 @@ namespace App\Models;
 
 use App\Traits\Taggable;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -13,7 +14,7 @@ use Illuminate\Support\Str;
 
 class Episode extends Model
 {
-    use Taggable;
+    use HasFactory, Taggable;
 
     protected $fillable = [
         'series_id',

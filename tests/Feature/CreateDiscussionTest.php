@@ -367,7 +367,7 @@ test('unauthenticated user cannot access create discussion page', function () {
 
     $response = $this->get('/discussions/create');
 
-    $response->assertRedirect(route('filament.dashboard.auth.login'));
+    $response->assertRedirect(route('home'));
 });
 
 test('discussion requires user authentication', function () {

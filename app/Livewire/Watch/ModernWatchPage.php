@@ -163,6 +163,10 @@ class ModernWatchPage extends Component
     public function addToWatchlist(int $contentId, string $contentType = 'auto'): void
     {
         if (! auth()->check()) {
+            $this->dispatch('auth-required', [
+                'message' => 'Please login to manage your watchlist.',
+            ]);
+
             return;
         }
 
@@ -774,10 +778,10 @@ class ModernWatchPage extends Component
                     'progress' => (int) $progress->progress_percentage,
                     'thumbnail' => $episode->thumbnail,
                     'duration' => $episode->formatted_duration,
-                    'url' => $episode->is_standalone ?
+                    'url' => ($episode->is_standalone || ! $episode->series) ?
                         route('watch.lessons.show', ['slug' => $episode->slug]) :
                         route('watch.episodes.show', [
-                            'seriesSlug' => $episode->series?->slug,
+                            'seriesSlug' => $episode->series->slug,
                             'episodeSlug' => $episode->slug,
                         ]),
                     'last_watched' => $progress->last_watched_at,
@@ -1020,10 +1024,10 @@ class ModernWatchPage extends Component
             'series' => $episode->series?->title ?? null,
             'progress' => $userProgress,
             'tags' => $episode->tags->pluck('slug')->toArray(),
-            'url' => $episode->is_standalone ?
+            'url' => ($episode->is_standalone || ! $episode->series) ?
                 route('watch.lessons.show', ['slug' => $episode->slug]) :
                 route('watch.episodes.show', [
-                    'seriesSlug' => $episode->series?->slug,
+                    'seriesSlug' => $episode->series->slug,
                     'episodeSlug' => $episode->slug,
                 ]),
         ];

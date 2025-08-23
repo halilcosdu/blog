@@ -49,19 +49,19 @@ test('user search api handles usernames with dots and underscores', function () 
 
 test('user search api returns partial matches', function () {
     User::factory()->create([
-        'name' => 'John Doe',
-        'username' => 'john.doe_456',
+        'name' => 'Marcus Unique',
+        'username' => 'marcus.unique_789',
     ]);
 
     // Search by partial username
-    $response = $this->get('/api/users/search?q=john');
+    $response = $this->get('/api/users/search?q=marcus');
     $response->assertStatus(200);
 
     $users = $response->json();
     expect($users)->toHaveCount(1);
 
     // Search by partial name
-    $response = $this->get('/api/users/search?q=doe');
+    $response = $this->get('/api/users/search?q=unique');
     $response->assertStatus(200);
 
     $users = $response->json();
