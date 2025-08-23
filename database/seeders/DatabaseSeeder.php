@@ -12,9 +12,15 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
+        // Seed users first
+        $this->call([
+            UserSeeder::class,
+        ]);
+
         // Seed base data
         $this->call([
             CategorySeeder::class,
+            TagSeeder::class,
             PostSeeder::class,
             DiscussionSeeder::class,
             PackageSeeder::class,
@@ -22,7 +28,6 @@ class DatabaseSeeder extends Seeder
 
         // Seed tags and assign them to content
         $this->call([
-            TagSeeder::class,
             PostTagSeeder::class,
             DiscussionTagSeeder::class,
             PackageTagSeeder::class,
@@ -33,6 +38,13 @@ class DatabaseSeeder extends Seeder
             SeriesSeeder::class,
             EpisodeSeeder::class,
             PathwaySeeder::class,
+        ]);
+
+        // Seed user interactions
+        $this->call([
+            EpisodeCommentSeeder::class,
+            UserProgressSeeder::class,
+            UserWatchlistSeeder::class,
         ]);
     }
 }
