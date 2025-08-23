@@ -3,10 +3,13 @@
 namespace App\Livewire\Watch;
 
 use App\Models\Episode;
+use App\Models\EpisodeComment;
 use App\Models\Series;
 use App\Models\UserProgress;
 use App\Models\UserWatchlist;
 use Livewire\Attributes\Computed;
+use Livewire\Attributes\On;
+use Livewire\Attributes\Rule;
 use Livewire\Component;
 
 class EpisodeShow extends Component
@@ -18,6 +21,14 @@ class EpisodeShow extends Component
     public string $seriesSlug;
 
     public string $episodeSlug;
+
+    #[Rule('required|string|min:10|max:1000')]
+    public string $newComment = '';
+
+    public ?int $editingCommentId = null;
+
+    #[Rule('required|string|min:10|max:1000')]
+    public string $editCommentContent = '';
 
     public function mount(string $seriesSlug, string $episodeSlug): void
     {
@@ -32,7 +43,7 @@ class EpisodeShow extends Component
 
         // Find the episode within this series
         $this->episode = Episode::published()
-            ->with(['category', 'user', 'tags', 'series'])
+            ->with(['category', 'user', 'tags', 'series', 'comments.user'])
             ->where('slug', $episodeSlug)
             ->where('series_id', $this->series->id)
             ->firstOrFail();
@@ -41,8 +52,9 @@ class EpisodeShow extends Component
     public function toggleWatchlist(): void
     {
         if (! auth()->check()) {
-            $this->dispatch('auth-required', [
-                'message' => 'Please login to manage your watchlist.',
+            $this->dispatch('show-notification', [
+                'type' => 'warning',
+                'message' => 'Please login to manage your watchlist',
             ]);
 
             return;
@@ -50,17 +62,20 @@ class EpisodeShow extends Component
 
         if ($this->isInWatchlist) {
             UserWatchlist::removeFromWatchlist(auth()->id(), Episode::class, $this->episode->id);
-            $this->dispatch('watchlist-updated', [
-                'type' => 'removed',
-                'message' => 'Removed from watchlist!',
+            $this->dispatch('show-notification', [
+                'type' => 'info',
+                'message' => 'Episode removed from your watchlist',
             ]);
         } else {
             UserWatchlist::addToWatchlist(auth()->id(), Episode::class, $this->episode->id);
-            $this->dispatch('watchlist-updated', [
-                'type' => 'added',
-                'message' => 'Added to watchlist!',
+            $this->dispatch('show-notification', [
+                'type' => 'success',
+                'message' => 'Episode added to your watchlist',
             ]);
         }
+
+        // Force refresh the computed property
+        unset($this->isInWatchlist);
     }
 
     public function updateProgress(int $watchedSeconds, int $totalSeconds): void
@@ -106,8 +121,8 @@ class EpisodeShow extends Component
         if ($progress) {
             $progress->markAsCompleted();
 
-            $this->dispatch('episode-completed', [
-                'episode_id' => $this->episode->id,
+            $this->dispatch('show-notification', [
+                'type' => 'success',
                 'message' => 'Episode completed! 🎉',
             ]);
         }
@@ -166,33 +181,144 @@ class EpisodeShow extends Component
             ->first();
     }
 
-    #[Computed]
-    public function relatedEpisodes(): array
+    #[On('content-updated')]
+    public function updateCommentContent(string $name, string $content): void
     {
-        if (! $this->series) {
-            return [];
+        if ($name === 'newComment') {
+            $this->newComment = $content;
+        } elseif ($name === 'editCommentContent') {
+            $this->editCommentContent = $content;
+        }
+    }
+
+    public function postComment(): void
+    {
+        if (! auth()->check()) {
+            $this->dispatch('show-notification', [
+                'type' => 'warning',
+                'message' => 'Please login to post a comment',
+            ]);
+
+            return;
         }
 
-        $episodes = Episode::published()
-            ->where('series_id', $this->series->id)
-            ->where('id', '!=', $this->episode->id)
-            ->orderBy('episode_number')
-            ->limit(6)
-            ->get();
+        $this->validateOnly('newComment');
 
-        return $episodes->map(function (Episode $episode) {
-            return [
-                'id' => $episode->id,
-                'title' => $episode->title,
-                'episode_number' => $episode->episode_number,
-                'duration' => $episode->formatted_duration,
-                'thumbnail' => $episode->thumbnail,
-                'url' => route('watch.episode.show', [
-                    'seriesSlug' => $this->series->slug,
-                    'episodeSlug' => $episode->slug,
-                ]),
-            ];
-        })->toArray();
+        EpisodeComment::create([
+            'episode_id' => $this->episode->id,
+            'user_id' => auth()->id(),
+            'content' => $this->newComment,
+        ]);
+
+        // Reset the form and clear the editor
+        $this->newComment = '';
+        $this->dispatch('clear-editor-content');
+        $this->dispatch('show-notification', [
+            'type' => 'success',
+            'message' => 'Your comment has been posted!',
+        ]);
+
+        // Refresh episode with comments
+        $this->episode->load('comments.user');
+    }
+
+    public function startEditingComment(int $commentId): void
+    {
+        $comment = EpisodeComment::findOrFail($commentId);
+
+        // Only comment author can edit their comment
+        if (auth()->id() !== $comment->user_id) {
+            abort(403, 'You can only edit your own comments.');
+        }
+
+        $this->editingCommentId = $commentId;
+        $this->editCommentContent = $comment->content;
+    }
+
+    public function updateComment(): void
+    {
+        $this->validateOnly('editCommentContent');
+
+        $comment = EpisodeComment::findOrFail($this->editingCommentId);
+
+        // Only comment author can edit their comment
+        if (auth()->id() !== $comment->user_id) {
+            abort(403, 'You can only edit your own comments.');
+        }
+
+        $comment->update([
+            'content' => $this->editCommentContent,
+        ]);
+
+        // Reset editing state
+        $this->editingCommentId = null;
+        $this->editCommentContent = '';
+        $this->dispatch('comment-updated');
+
+        // Refresh episode with comments
+        $this->episode->load('comments.user');
+
+        $this->dispatch('show-notification', [
+            'type' => 'success',
+            'message' => 'Comment updated successfully!',
+        ]);
+    }
+
+    public function cancelEditingComment(): void
+    {
+        $this->editingCommentId = null;
+        $this->editCommentContent = '';
+    }
+
+    public function deleteComment(int $commentId): void
+    {
+        $comment = EpisodeComment::findOrFail($commentId);
+
+        // Only comment author can delete their comment
+        if (auth()->id() !== $comment->user_id) {
+            abort(403, 'You can only delete your own comments.');
+        }
+
+        $comment->delete();
+
+        // Refresh episode with comments
+        $this->episode->load('comments.user');
+
+        $this->dispatch('show-notification', [
+            'type' => 'success',
+            'message' => 'Comment deleted successfully!',
+        ]);
+    }
+
+    public function markAsBestAnswer(int $commentId): void
+    {
+        // Only episode author can mark best answer
+        if (auth()->id() !== $this->episode->user_id) {
+            abort(403, 'Only the episode author can mark a best answer.');
+        }
+
+        $comment = EpisodeComment::findOrFail($commentId);
+
+        // Ensure the comment belongs to this episode
+        if ($comment->episode_id !== $this->episode->id) {
+            abort(403, 'This comment does not belong to this episode.');
+        }
+
+        $comment->markAsBestAnswer();
+
+        // Refresh episode with comments
+        $this->episode->load('comments.user');
+
+        $this->dispatch('show-notification', [
+            'type' => 'success',
+            'message' => 'Comment marked as best answer!',
+        ]);
+    }
+
+    #[Computed]
+    public function commentsCount(): int
+    {
+        return $this->episode->comments->count();
     }
 
     public function render()

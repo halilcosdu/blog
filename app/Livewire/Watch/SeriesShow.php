@@ -66,6 +66,9 @@ class SeriesShow extends Component
                 'message' => 'Series added to your watchlist',
             ]);
         }
+
+        // Force refresh the computed property
+        unset($this->isInWatchlist);
     }
 
     public function updateProgress(int $watchedSeconds, int $totalSeconds): void
