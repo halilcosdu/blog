@@ -82,7 +82,7 @@
 
                 <!-- Article Body -->
                 <div class="prose prose-lg lg:prose-xl prose-gray dark:prose-invert max-w-none mx-auto">
-                    {!! $post->content !!}
+                    {!! \Illuminate\Support\Str::markdown($post->content, ['html_input' => 'strip', 'allow_unsafe_links' => false]) !!}
                 </div>
 
                 <!-- Tags -->

@@ -59,6 +59,42 @@
         border-bottom-left-radius: 0.5rem !important;
         border-bottom-right-radius: 0.5rem !important;
     }
+
+    /* Enhanced code block styling for markdown */
+    .prose pre {
+        @apply bg-slate-900 dark:bg-slate-950;
+        @apply text-slate-200;
+        @apply border border-slate-700 dark:border-slate-800;
+        @apply rounded-lg;
+        @apply p-4;
+        @apply overflow-x-auto;
+        @apply text-sm;
+        @apply leading-relaxed;
+    }
+
+    .prose pre code {
+        @apply bg-transparent;
+        @apply text-inherit;
+        @apply p-0;
+        @apply text-sm;
+        font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace !important;
+    }
+
+    /* Inline code styling */
+    .prose code {
+        @apply bg-slate-100 dark:bg-slate-800;
+        @apply text-slate-800 dark:text-slate-200;
+        @apply px-1.5 py-0.5;
+        @apply rounded;
+        @apply text-sm;
+        font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace !important;
+    }
+
+    /* Don't apply inline styles to code inside pre */
+    .prose pre code {
+        @apply bg-transparent;
+        @apply px-0 py-0;
+    }
     
     /* Markdown table cell padding */
     .prose table th,

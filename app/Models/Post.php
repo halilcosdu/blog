@@ -123,6 +123,18 @@ class Post extends Model
         return $this->published_at->diffForHumans();
     }
 
+    public function getContentHtmlAttribute(): string
+    {
+        if (empty($this->content)) {
+            return '';
+        }
+        
+        return Str::markdown($this->content, [
+            'html_input' => 'strip',
+            'allow_unsafe_links' => false,
+        ]);
+    }
+
     private static function calculateReadTime(string $content): int
     {
         $wordCount = str_word_count(strip_tags($content));
