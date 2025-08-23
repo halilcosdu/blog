@@ -11,6 +11,7 @@
             @elseif($notification['type'] === 'error') bg-red-50/95 dark:bg-red-900/90 ring-red-200 dark:ring-red-700 border border-red-200 dark:border-red-700
             @elseif($notification['type'] === 'warning') bg-yellow-50/95 dark:bg-yellow-900/90 ring-yellow-200 dark:ring-yellow-700 border border-yellow-200 dark:border-yellow-700
             @elseif($notification['type'] === 'info') bg-blue-50/95 dark:bg-blue-900/90 ring-blue-200 dark:ring-blue-700 border border-blue-200 dark:border-blue-700
+            @elseif($notification['type'] === 'watchlist') bg-purple-50/95 dark:bg-purple-900/90 ring-purple-200 dark:ring-purple-700 border border-purple-200 dark:border-purple-700
             @endif"
             x-data="{ show: true }"
             x-show="show"
@@ -40,6 +41,10 @@
                             <svg class="h-5 w-5 text-blue-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
                                 <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
                             </svg>
+                        @elseif($notification['type'] === 'watchlist')
+                            <svg class="h-5 w-5 text-purple-400" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M17.593 3.322c1.1.128 1.907 1.077 1.907 2.185V21L12 17.25 4.5 21V5.507c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0z" />
+                            </svg>
                         @endif
                     </div>
                     <div class="ml-3 w-0 flex-1 pt-0.5">
@@ -48,6 +53,7 @@
                         @elseif($notification['type'] === 'error') text-red-800 dark:text-red-200
                         @elseif($notification['type'] === 'warning') text-yellow-800 dark:text-yellow-200
                         @elseif($notification['type'] === 'info') text-blue-800 dark:text-blue-200
+                        @elseif($notification['type'] === 'watchlist') text-purple-800 dark:text-purple-200
                         @endif">
                             {{ $notification['message'] }}
                         </p>
@@ -60,6 +66,7 @@
                             @elseif($notification['type'] === 'error') text-red-400 hover:text-red-500 focus:ring-red-600
                             @elseif($notification['type'] === 'warning') text-yellow-400 hover:text-yellow-500 focus:ring-yellow-600
                             @elseif($notification['type'] === 'info') text-blue-400 hover:text-blue-500 focus:ring-blue-600
+                            @elseif($notification['type'] === 'watchlist') text-purple-400 hover:text-purple-500 focus:ring-purple-600
                             @endif"
                         >
                             <span class="sr-only">Close</span>

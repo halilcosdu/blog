@@ -45,8 +45,9 @@ class SeriesShow extends Component
     public function toggleWatchlist(): void
     {
         if (! auth()->check()) {
-            $this->dispatch('auth-required', [
-                'message' => 'Please login to manage your watchlist.',
+            $this->dispatch('show-notification', [
+                'type' => 'warning',
+                'message' => 'Please login to manage your watchlist',
             ]);
 
             return;
@@ -54,15 +55,15 @@ class SeriesShow extends Component
 
         if ($this->isInWatchlist) {
             UserWatchlist::removeFromWatchlist(auth()->id(), Series::class, $this->series->id);
-            $this->dispatch('watchlist-updated', [
-                'type' => 'removed',
-                'message' => 'Removed from watchlist!',
+            $this->dispatch('show-notification', [
+                'type' => 'info',
+                'message' => 'Series removed from your watchlist',
             ]);
         } else {
             UserWatchlist::addToWatchlist(auth()->id(), Series::class, $this->series->id);
-            $this->dispatch('watchlist-updated', [
-                'type' => 'added',
-                'message' => 'Added to watchlist!',
+            $this->dispatch('show-notification', [
+                'type' => 'success',
+                'message' => 'Series added to your watchlist',
             ]);
         }
     }
