@@ -37,9 +37,23 @@ class NotificationManager extends Component
         );
     }
 
-    public function handleGlobalNotification($data): void
+    public function handleGlobalNotification(...$params): void
     {
-        $this->addNotification($data['type'], $data['message']);
+        // Handle different parameter formats
+        if (count($params) === 1 && is_array($params[0])) {
+            // Passed as array: ['type' => 'success', 'message' => 'Message']
+            $data = $params[0];
+        } elseif (count($params) >= 2) {
+            // Passed as separate parameters: 'success', 'Message'
+            $data = ['type' => $params[0], 'message' => $params[1]];
+        } else {
+            // Fallback
+            $data = [];
+        }
+
+        $type = $data['type'] ?? 'info';
+        $message = $data['message'] ?? '';
+        $this->addNotification($type, $message);
     }
 
     private function addSessionNotifications(): void

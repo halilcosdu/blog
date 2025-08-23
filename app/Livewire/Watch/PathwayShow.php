@@ -51,6 +51,10 @@ class PathwayShow extends Component
                 'message' => 'Added to watchlist!',
             ]);
         }
+
+        // Force refresh the computed properties
+        unset($this->isInWatchlist);
+        unset($this->userProgress);
     }
 
     public function updateProgress(int $watchedSeconds, int $totalSeconds): void
@@ -99,12 +103,92 @@ class PathwayShow extends Component
             return 0;
         }
 
-        $progress = UserProgress::where('user_id', auth()->id())
-            ->where('progressable_type', Pathway::class)
-            ->where('progressable_id', $this->pathway->id)
-            ->first();
+        return $this->calculatePathwayProgress();
+    }
 
-        return $progress ? (int) $progress->progress_percentage : 0;
+    private function calculatePathwayProgress(): int
+    {
+        $pathwayItems = $this->pathway->pathwayItems;
+        if ($pathwayItems->count() === 0) {
+            return 0;
+        }
+
+        $totalWeight = 0;
+        $weightedProgress = 0;
+        $completedItems = 0;
+
+        foreach ($pathwayItems as $pathwayItem) {
+            $itemProgress = 0;
+
+            // Get individual item progress
+            if ($pathwayItem->item_type === Series::class) {
+                $userProgress = UserProgress::where('user_id', auth()->id())
+                    ->where('progressable_type', Series::class)
+                    ->where('progressable_id', $pathwayItem->item_id)
+                    ->first();
+                $itemProgress = $userProgress ? $userProgress->progress_percentage : 0;
+            } elseif ($pathwayItem->item_type === Episode::class) {
+                $userProgress = UserProgress::where('user_id', auth()->id())
+                    ->where('progressable_type', Episode::class)
+                    ->where('progressable_id', $pathwayItem->item_id)
+                    ->first();
+                $itemProgress = $userProgress ? $userProgress->progress_percentage : 0;
+            }
+
+            // Weight required items more heavily
+            $weight = $pathwayItem->is_required ? 2.0 : 1.0;
+
+            $totalWeight += $weight;
+            $weightedProgress += ($itemProgress * $weight);
+
+            if ($itemProgress >= 100) {
+                $completedItems++;
+            }
+        }
+
+        // Calculate weighted average progress
+        $averageProgress = $totalWeight > 0 ? round($weightedProgress / $totalWeight) : 0;
+
+        // Update pathway progress record
+        $this->updatePathwayProgressRecord($averageProgress, $completedItems, $pathwayItems->count());
+
+        return (int) $averageProgress;
+    }
+
+    private function updatePathwayProgressRecord(int $averageProgress, int $completedItems, int $totalItems): void
+    {
+        UserProgress::updateOrCreate([
+            'user_id' => auth()->id(),
+            'progressable_type' => Pathway::class,
+            'progressable_id' => $this->pathway->id,
+        ], [
+            'progress_percentage' => $averageProgress,
+            'is_completed' => $completedItems === $totalItems && $averageProgress >= 100,
+            'watched_seconds' => 0, // Not applicable for pathways
+            'total_seconds' => $this->pathway->total_duration_minutes * 60,
+        ]);
+    }
+
+    #[Computed]
+    public function nextIncompleteItem(): ?array
+    {
+        if (! auth()->check()) {
+            // If not authenticated, return first item
+            $items = $this->pathwayItems;
+
+            return count($items) > 0 ? $items[0] : null;
+        }
+
+        foreach ($this->pathwayItems as $item) {
+            if ($item['progress'] < 100) {
+                return $item;
+            }
+        }
+
+        // If all items are completed, return first item
+        $items = $this->pathwayItems;
+
+        return count($items) > 0 ? $items[0] : null;
     }
 
     #[Computed]
